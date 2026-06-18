@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import heroMap from "@/assets/hero-map.jpg";
 import catDates from "@/assets/cat-dates.jpg";
 import catSteel from "@/assets/cat-steel.jpg";
 import catPhosphate from "@/assets/cat-phosphate.jpg";
+import { joinWaitlist } from "@/lib/api";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -62,6 +64,26 @@ const commodities = [
 ];
 
 function Index() {
+  const [waitlistEmail, setWaitlistEmail] = useState("");
+  const [waitlistStatus, setWaitlistStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [waitlistMessage, setWaitlistMessage] = useState("");
+
+  async function handleWaitlistSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!waitlistEmail) return;
+    setWaitlistStatus("loading");
+    setWaitlistMessage("");
+    try {
+      await joinWaitlist(waitlistEmail);
+      setWaitlistStatus("success");
+      setWaitlistMessage("You're on the Tureep AI+ waitlist. We'll be in touch.");
+      setWaitlistEmail("");
+    } catch (err: any) {
+      setWaitlistStatus("error");
+      setWaitlistMessage(err.message || "Something went wrong. Please try again.");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
       {/* Nav */}
@@ -75,12 +97,20 @@ function Index() {
               <a href="#network" className="hover:text-foreground transition-colors">Network</a>
             </div>
           </div>
-          <a
-            href="#waitlist"
-            className="bg-foreground text-background px-5 py-2 text-xs font-mono uppercase tracking-widest hover:bg-primary transition-all"
-          >
-            Join Waitlist
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="/login"
+              className="text-xs font-mono uppercase tracking-widest hover:text-foreground transition-colors"
+            >
+              Sign In
+            </a>
+            <a
+              href="/dashboard"
+              className="bg-foreground text-background px-5 py-2 text-xs font-mono uppercase tracking-widest hover:bg-primary transition-all"
+            >
+              Terminal
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -103,27 +133,32 @@ function Index() {
             </div>
             <form
               id="waitlist"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const f = e.currentTarget as HTMLFormElement;
-                f.reset();
-                alert("Thanks — you're on the Tureep AI+ waitlist.");
-              }}
+              onSubmit={handleWaitlistSubmit}
               className="flex flex-col sm:flex-row gap-3"
             >
               <input
                 type="email"
                 required
+                value={waitlistEmail}
+                onChange={(e) => setWaitlistEmail(e.target.value)}
                 placeholder="Enter institutional email"
-                className="bg-white border border-border px-4 py-3 w-full sm:w-80 font-mono text-sm focus:outline-none focus:border-primary"
+                disabled={waitlistStatus === "loading"}
+                className="bg-white border border-border px-4 py-3 w-full sm:w-80 font-mono text-sm focus:outline-none focus:border-primary disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="bg-primary text-primary-foreground px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-foreground transition-colors"
+                disabled={waitlistStatus === "loading"}
+                className="bg-primary text-primary-foreground px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-foreground transition-colors disabled:opacity-50"
               >
-                Access Terminal
+                {waitlistStatus === "loading" ? "Submitting..." : "Access Terminal"}
               </button>
             </form>
+            {waitlistStatus === "success" && (
+              <p className="text-sm text-green-600 font-mono">{waitlistMessage}</p>
+            )}
+            {waitlistStatus === "error" && (
+              <p className="text-sm text-red-500 font-mono">{waitlistMessage}</p>
+            )}
           </div>
           <div className="relative animate-in-up [animation-delay:200ms]">
             <img
