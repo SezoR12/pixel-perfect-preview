@@ -2,7 +2,25 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DashboardStats, PreDeal, User, getDashboard, getMe, getPreDeals, removeToken } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
+import {
+  DashboardStats,
+  PreDeal,
+  User,
+  getDashboard,
+  getMe,
+  getPreDeals,
+  removeToken,
+} from "@/lib/api";
+import {
+  LayoutDashboard,
+  Package,
+  ClipboardList,
+  Handshake,
+  LogOut,
+  ArrowRight,
+  TrendingUp,
+} from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
@@ -36,10 +54,10 @@ function DashboardPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
         <Card className="max-w-md">
           <CardHeader>
-            <CardTitle className="font-mono">Access Denied</CardTitle>
+            <CardTitle>Access Denied</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">{error}</p>
@@ -51,80 +69,176 @@ function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <nav className="border-b border-border px-6 py-4 flex items-center justify-between">
-        <span className="font-mono font-bold tracking-tighter text-xl">TUREEP AI+</span>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">{user?.name}</span>
-          <span className="text-xs font-mono uppercase px-2 py-1 bg-primary/10 text-primary rounded">
-            {user?.account_type}
-          </span>
-          <Button variant="outline" size="sm" onClick={logout}>
-            Logout
-          </Button>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <MetricCard label="Products" value={stats?.total_products ?? 0} />
-          <MetricCard label="Demands" value={stats?.total_demands ?? 0} />
-          <MetricCard label="Active Pre-Deals" value={stats?.active_pre_deals ?? 0} />
-          <MetricCard label="Accepted Deals" value={stats?.accepted_deals ?? 0} />
-        </div>
-
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold tracking-tight">Pre-Deals</h2>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate({ to: "/products" })}>
+    <div className="min-h-screen bg-background">
+      {/* Sidebar + header layout */}
+      <div className="flex min-h-screen">
+        {/* Sidebar */}
+        <aside className="hidden w-64 flex-col border-r border-border bg-white lg:flex">
+          <div className="flex h-16 items-center gap-2 border-b border-border px-6">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <span className="font-mono text-sm font-bold">T</span>
+            </div>
+            <span className="text-lg font-semibold text-foreground">Tureep AI+</span>
+          </div>
+          <nav className="flex-1 space-y-1 p-4">
+            <a
+              href="/dashboard"
+              className="flex items-center gap-3 rounded-md bg-secondary px-3 py-2 text-sm font-medium text-foreground"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </a>
+            <a
+              href="/products"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <Package className="h-4 w-4" />
               Products
-            </Button>
-            <Button variant="outline" onClick={() => navigate({ to: "/pre-deals" })}>
-              View All
-            </Button>
+            </a>
+            <a
+              href="/pre-deals"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <Handshake className="h-4 w-4" />
+              Pre-Deals
+            </a>
+          </nav>
+          <div className="border-t border-border p-4">
+            <button
+              onClick={logout}
+              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <LogOut className="h-4 w-4" />
+              Log out
+            </button>
           </div>
-        </div>
+        </aside>
 
-        {preDeals.length === 0 ? (
-          <p className="text-muted-foreground">No active pre-deals found.</p>
-        ) : (
-          <div className="grid gap-4">
-            {preDeals.slice(0, 5).map((deal) => (
-              <Card key={deal.id}>
-                <CardContent className="p-4">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                      <h3 className="font-semibold">{deal.product?.name}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {deal.quantity} {deal.product?.unit} @ ${deal.suggested_price}/{deal.product?.unit} —{" "}
-                        {deal.payment_terms}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Buyer: {deal.buyer?.name} ({deal.buyer?.country}) • Match Score: {deal.match_score}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono uppercase px-2 py-1 bg-primary/10 text-primary rounded">
-                        {deal.status}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+        {/* Main */}
+        <main className="flex-1">
+          {/* Header */}
+          <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">
+            <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm font-medium text-foreground">{user?.name}</p>
+                <p className="text-xs text-muted-foreground">{user?.account_type}</p>
+              </div>
+              <Badge variant="secondary" className="capitalize">
+                {user?.account_type}
+              </Badge>
+            </div>
+          </header>
+
+          <div className="p-6 lg:p-8">
+            {/* Metrics */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <MetricCard
+                icon={Package}
+                label="Products"
+                value={stats?.total_products ?? 0}
+              />
+              <MetricCard
+                icon={ClipboardList}
+                label="Demands"
+                value={stats?.total_demands ?? 0}
+              />
+              <MetricCard
+                icon={Handshake}
+                label="Active Pre-Deals"
+                value={stats?.active_pre_deals ?? 0}
+              />
+              <MetricCard
+                icon={TrendingUp}
+                label="Accepted Deals"
+                value={stats?.accepted_deals ?? 0}
+              />
+            </div>
+
+            {/* Pre-deals */}
+            <div className="mt-8">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-foreground">Active Pre-Deals</h2>
+                <Button variant="outline" onClick={() => navigate({ to: "/pre-deals" })}>
+                  View all
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+
+              {preDeals.length === 0 ? (
+                <Card className="p-8 text-center">
+                  <p className="text-muted-foreground">No active pre-deals found.</p>
+                  <Button
+                    className="mt-4"
+                    variant="outline"
+                    onClick={() => navigate({ to: "/products" })}
+                  >
+                    Add products
+                  </Button>
+                </Card>
+              ) : (
+                <div className="grid gap-4">
+                  {preDeals.slice(0, 5).map((deal) => (
+                    <Card key={deal.id} className="overflow-hidden">
+                      <CardContent className="p-4">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-semibold text-foreground">
+                                {deal.product?.name}
+                              </h3>
+                              <Badge variant={deal.is_exclusive ? "default" : "secondary"}>
+                                {deal.status}
+                              </Badge>
+                            </div>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {deal.quantity} {deal.product?.unit} @ ${deal.suggested_price} —{" "}
+                              {deal.payment_terms}
+                            </p>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              Buyer: {deal.buyer?.name} ({deal.buyer?.country}) • Match{" "}
+                              {deal.match_score}
+                            </p>
+                          </div>
+                          <Button
+                            size="sm"
+                            onClick={() => navigate({ to: "/pre-deals" })}
+                          >
+                            Review
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
 
-function MetricCard({ label, value }: { label: string; value: number }) {
+function MetricCard({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: number;
+}) {
   return (
     <Card>
-      <CardContent className="p-4">
-        <p className="text-xs font-mono uppercase text-muted-foreground">{label}</p>
-        <p className="text-2xl font-bold mt-1">{value}</p>
+      <CardContent className="flex items-center gap-4 p-4">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div>
+          <p className="text-2xl font-bold text-foreground">{value}</p>
+          <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        </div>
       </CardContent>
     </Card>
   );

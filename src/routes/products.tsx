@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Product, createProduct, getProducts } from "@/lib/api";
+import { Package, ArrowLeft, Plus, LayoutDashboard, Handshake } from "lucide-react";
 
 export const Route = createFileRoute("/products")({
   component: ProductsPage,
@@ -15,6 +16,7 @@ function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     name: "",
     category: "",
@@ -48,6 +50,7 @@ function ProductsPage() {
       });
       setProducts([product, ...products]);
       setForm({ name: "", category: "", price: "", quantity: "", unit: "ton", origin: "", location: "", description: "" });
+      setShowForm(false);
     } catch (err: any) {
       setError(err.message);
     }
@@ -55,39 +58,122 @@ function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b border-border px-6 py-4 flex items-center justify-between">
-        <span className="font-mono font-bold tracking-tighter text-xl">TUREEP AI+</span>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => navigate({ to: "/dashboard" })}>
-            Dashboard
-          </Button>
-          <Button variant="outline" onClick={() => navigate({ to: "/pre-deals" })}>
-            Pre-Deals
-          </Button>
-        </div>
-      </nav>
+      <div className="flex min-h-screen">
+        <aside className="hidden w-64 flex-col border-r border-border bg-white lg:flex">
+          <div className="flex h-16 items-center gap-2 border-b border-border px-6">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <span className="font-mono text-sm font-bold">T</span>
+            </div>
+            <span className="text-lg font-semibold text-foreground">Tureep AI+</span>
+          </div>
+          <nav className="flex-1 space-y-1 p-4">
+            <a
+              href="/dashboard"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </a>
+            <a
+              href="/products"
+              className="flex items-center gap-3 rounded-md bg-secondary px-3 py-2 text-sm font-medium text-foreground"
+            >
+              <Package className="h-4 w-4" />
+              Products
+            </a>
+            <a
+              href="/pre-deals"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <Handshake className="h-4 w-4" />
+              Pre-Deals
+            </a>
+          </nav>
+        </aside>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold tracking-tight mb-6">Products</h2>
+        <main className="flex-1">
+          <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">
+            <div className="flex items-center gap-3">
+              <button onClick={() => navigate({ to: "/dashboard" })} className="text-muted-foreground hover:text-foreground">
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <h1 className="text-lg font-semibold text-foreground">Products</h1>
+            </div>
+            <Button onClick={() => setShowForm(!showForm)}>
+              <Plus className="mr-2 h-4 w-4" />
+              {showForm ? "Cancel" : "List product"}
+            </Button>
+          </header>
+
+          <div className="p-6 lg:p-8">
+            {showForm && (
+              <Card className="mb-8">
+                <CardHeader>
+                  <CardTitle className="text-lg">List a new product</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Product name</Label>
+                      <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="category">Category</Label>
+                      <Input id="category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required placeholder="e.g. dates" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="price">Price per unit</Label>
+                      <Input id="price" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="quantity">Quantity</Label>
+                      <Input id="quantity" type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="unit">Unit</Label>
+                      <Input id="unit" value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="origin">Origin country</Label>
+                      <Input id="origin" value={form.origin} onChange={(e) => setForm({ ...form, origin: e.target.value })} required />
+                    </div>
+                    <div className="space-y-2 sm:col-span-2 lg:col-span-3">
+                      <Label htmlFor="location">Location</Label>
+                      <Input id="location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required placeholder="e.g. Basra, Iraq" />
+                    </div>
+                    <div className="sm:col-span-2 lg:col-span-3">
+                      <Button type="submit">Create product</Button>
+                    </div>
+                    {error && <p className="col-span-full text-sm font-medium text-red-600">{error}</p>}
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+
             {loading ? (
-              <p>Loading...</p>
+              <p className="text-muted-foreground">Loading products...</p>
             ) : products.length === 0 ? (
-              <p className="text-muted-foreground">No products available.</p>
+              <Card className="p-12 text-center">
+                <Package className="mx-auto h-10 w-10 text-muted-foreground" />
+                <p className="mt-4 text-muted-foreground">No products listed yet.</p>
+                <Button className="mt-4" onClick={() => setShowForm(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  List product
+                </Button>
+              </Card>
             ) : (
-              <div className="grid gap-4">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {products.map((p) => (
-                  <Card key={p.id}>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold">{p.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {p.category} • {p.quantity} {p.unit} @ ${p.price} • {p.origin}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">{p.location}</p>
-                        </div>
+                  <Card key={p.id} className="overflow-hidden">
+                    <CardContent className="p-5">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-primary">{p.category}</p>
+                      <h3 className="mt-2 text-lg font-semibold text-foreground">{p.name}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">{p.origin} • {p.location}</p>
+                      <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+                        <p className="text-sm font-medium text-foreground">
+                          {p.quantity} {p.unit}
+                        </p>
+                        <p className="text-sm font-semibold text-foreground">${p.price}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -95,52 +181,8 @@ function ProductsPage() {
               </div>
             )}
           </div>
-
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">List Product</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-3">
-                  <div>
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="category">Category</Label>
-                    <Input id="category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required placeholder="e.g. dates" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label htmlFor="price">Price</Label>
-                      <Input id="price" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
-                    </div>
-                    <div>
-                      <Label htmlFor="quantity">Quantity</Label>
-                      <Input id="quantity" type="number" value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} required />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="unit">Unit</Label>
-                    <Input id="unit" value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="origin">Origin</Label>
-                    <Input id="origin" value={form.origin} onChange={(e) => setForm({ ...form, origin: e.target.value })} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="location">Location</Label>
-                    <Input id="location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required placeholder="e.g. Basra, Iraq" />
-                  </div>
-                  {error && <p className="text-sm text-red-500">{error}</p>}
-                  <Button type="submit" className="w-full">Create Product</Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

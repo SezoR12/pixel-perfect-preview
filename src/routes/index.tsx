@@ -5,21 +5,30 @@ import catDates from "@/assets/cat-dates.jpg";
 import catSteel from "@/assets/cat-steel.jpg";
 import catPhosphate from "@/assets/cat-phosphate.jpg";
 import { joinWaitlist } from "@/lib/api";
+import {
+  ArrowRight,
+  Globe,
+  Shield,
+  Zap,
+  TrendingUp,
+  Truck,
+  CheckCircle2,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Tureep AI+ — Intelligent Corridors for Global Trade" },
+      { title: "Tureep AI+ — B2B Trade Intelligence" },
       {
         name: "description",
         content:
           "AI-powered B2B trade platform connecting sellers in Iraq and Iran to buyers in Turkey and global markets. Institutional pre-deals, brokered in milliseconds.",
       },
-      { property: "og:title", content: "Tureep AI+ — Intelligent Corridors for Global Trade" },
+      { property: "og:title", content: "Tureep AI+ — B2B Trade Intelligence" },
       {
         property: "og:description",
         content:
-          "AI brokerage for Middle Eastern commodities. Dates, steel scrap, phosphate — matched, cleared, and shipped through a single intelligent layer.",
+          "AI-powered B2B trade platform connecting sellers in Iraq and Iran to buyers in Turkey and global markets.",
       },
       { property: "og:image", content: heroMap },
       { name: "twitter:image", content: heroMap },
@@ -28,208 +37,254 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const stats = [
+  { label: "Pre-deals generated", value: "12,800+" },
+  { label: "Trade value facilitated", value: "$4.2B" },
+  { label: "Verified companies", value: "1,400+" },
+  { label: "Corridors active", value: "24" },
+];
+
+const features = [
+  {
+    icon: Zap,
+    title: "AI-Powered Matching",
+    description:
+      "Our engine analyzes price, location, reputation, and urgency to generate high-confidence pre-deals automatically.",
+  },
+  {
+    icon: Shield,
+    title: "Compliance First",
+    description:
+      "Built-in sanctions screening, trade agreement checks, and verified counterparties for every transaction.",
+  },
+  {
+    icon: Truck,
+    title: "Integrated Logistics",
+    description:
+      "Shipping quotes, tracking, and documentation in one place. Road, sea, and air freight supported.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Market Intelligence",
+    description:
+      "Real-time price signals, demand forecasting, and corridor analytics to inform every decision.",
+  },
+  {
+    icon: Globe,
+    title: "Global Reach",
+    description:
+      "From Iraq and Iran to Turkey, Europe, Africa, and Asia. Multi-currency and multi-language ready.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Secure Settlement",
+    description:
+      "Escrow, L/C, and D/P workflows with integrated payment tracking and dispute resolution.",
+  },
+];
+
 const tiers = [
-  { idx: "01/05", name: "Bronze", swatch: "#A8715C", items: ["Basic Pre-Deal", "Standard Clearing"] },
-  { idx: "02/05", name: "Silver", swatch: "#A1A1AA", items: ["24h Support", "Custom Escrow"] },
-  { idx: "03/05", name: "Gold", swatch: "#D4AF37", items: ["Regional Priority", "Trade Credit"] },
-  { idx: "04/05", name: "Platinum", swatch: "#E5E7EB", items: ["Direct Concierge", "Zero Lag Execution"] },
-  { idx: "05/INVITE", name: "Black", swatch: "#FFFFFF", items: ["Unlimited Cap", "Institutional API"], elite: true },
+  { name: "Free", price: "$0", description: "Explore the platform and basic deal flow." },
+  { name: "Bronze", price: "$100/mo", description: "Priority listing and reduced notifications." },
+  { name: "Silver", price: "$300/mo", description: "Featured badge and 12h early access." },
+  { name: "Gold", price: "$1,000/mo", description: "Exclusive deals, auctions, and analytics." },
+  { name: "Platinum", price: "$5,000/mo", description: "Dedicated manager and custom insights." },
+  { name: "Black", price: "$20,000/mo", description: "White-glove service and instant execution." },
 ];
 
 const commodities = [
   {
     img: catDates,
-    cat: "Agricultural",
+    category: "Agricultural",
     name: "Premium Dates",
-    delta: "+2.4%",
-    deltaUp: true,
-    copy: "Direct sourcing from Basra and Ahvaz. AI-verified quality grades and moisture tracking.",
+    description: "Direct sourcing from Basra and Ahvaz farms. Verified grades and moisture tracking.",
   },
   {
     img: catSteel,
-    cat: "Industrial",
+    category: "Industrial",
     name: "Steel Scrap",
-    delta: "Stable",
-    deltaUp: false,
-    copy: "Aggregated high-yield industrial scrap routes. Real-time weight verification and logistics clearing.",
+    description: "Aggregated HMS 1/2 scrap routes with real-time weight verification.",
   },
   {
     img: catPhosphate,
-    cat: "Chemical",
+    category: "Chemical",
     name: "Phosphate",
-    delta: "+5.1%",
-    deltaUp: true,
-    copy: "High-purity phosphate rock from Iraqi basins. Direct-to-port automation for global buyers.",
+    description: "High-purity phosphate rock from Iraqi basins. Direct-to-port automation.",
   },
 ];
 
-function Index() {
-  const [waitlistEmail, setWaitlistEmail] = useState("");
-  const [waitlistStatus, setWaitlistStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [waitlistMessage, setWaitlistMessage] = useState("");
+export default function Index() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
 
-  async function handleWaitlistSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!waitlistEmail) return;
-    setWaitlistStatus("loading");
-    setWaitlistMessage("");
+    if (!email) return;
+    setStatus("loading");
+    setMessage("");
     try {
-      await joinWaitlist(waitlistEmail);
-      setWaitlistStatus("success");
-      setWaitlistMessage("You're on the Tureep AI+ waitlist. We'll be in touch.");
-      setWaitlistEmail("");
+      await joinWaitlist(email);
+      setStatus("success");
+      setMessage("Thank you. You're on the Tureep AI+ waitlist.");
+      setEmail("");
     } catch (err: any) {
-      setWaitlistStatus("error");
-      setWaitlistMessage(err.message || "Something went wrong. Please try again.");
+      setStatus("error");
+      setMessage(err.message || "Something went wrong. Please try again.");
     }
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
-      {/* Nav */}
-      <nav className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <span className="font-mono font-bold tracking-tighter text-xl">TUREEP AI+</span>
-            <div className="hidden md:flex gap-6 text-xs font-mono uppercase tracking-widest text-muted">
-              <a href="#categories" className="hover:text-foreground transition-colors">Categories</a>
-              <a href="#tiers" className="hover:text-foreground transition-colors">Tiers</a>
-              <a href="#network" className="hover:text-foreground transition-colors">Network</a>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-border bg-white/80 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+          <a href="/" className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+              <span className="font-mono text-sm font-bold">T</span>
             </div>
-          </div>
+            <span className="text-lg font-semibold tracking-tight text-foreground">Tureep AI+</span>
+          </a>
+          <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
+            <a href="#features" className="hover:text-foreground">Platform</a>
+            <a href="#tiers" className="hover:text-foreground">Master Accounts</a>
+            <a href="#commodities" className="hover:text-foreground">Commodities</a>
+            <a href="#contact" className="hover:text-foreground">Contact</a>
+          </nav>
           <div className="flex items-center gap-3">
             <a
               href="/login"
-              className="text-xs font-mono uppercase tracking-widest hover:text-foreground transition-colors"
+              className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:block"
             >
-              Sign In
+              Sign in
             </a>
             <a
-              href="/dashboard"
-              className="bg-foreground text-background px-5 py-2 text-xs font-mono uppercase tracking-widest hover:bg-primary transition-all"
+              href="/login"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              Terminal
+              Access Terminal
+              <ArrowRight className="h-4 w-4" />
             </a>
           </div>
         </div>
-      </nav>
+      </header>
 
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 pt-24 pb-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          <div className="space-y-8 animate-in-up">
-            <div className="space-y-4">
-              <span className="font-mono text-xs uppercase tracking-[0.3em] text-primary">
-                Intelligent Corridors
-              </span>
-              <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight text-balance leading-[0.95]">
-                The Route to <br />
-                Global Trade.
-              </h1>
-              <p className="text-xl text-muted max-w-md text-pretty leading-relaxed">
-                Connecting Iraq and Iran to the world through a high-fidelity AI brokerage engine.
-                Institutional grade commodities, brokered in milliseconds.
-              </p>
+      <section className="overflow-hidden bg-white">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:py-28">
+          <div className="max-w-2xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-muted-foreground">
+              <span className="h-2 w-2 rounded-full bg-green-500"></span>
+              Now live for Iraq → Turkey corridors
             </div>
-            <form
-              id="waitlist"
-              onSubmit={handleWaitlistSubmit}
-              className="flex flex-col sm:flex-row gap-3"
-            >
+            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              AI-powered trade infrastructure for the Middle East
+            </h1>
+            <p className="mt-6 text-lg text-muted-foreground">
+              Connect sellers in Iraq and Iran with buyers in Turkey and global markets. Our AI engine
+              generates pre-deals, verifies compliance, and clears logistics — in milliseconds.
+            </p>
+            <form onSubmit={handleSubmit} className="mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
               <input
                 type="email"
                 required
-                value={waitlistEmail}
-                onChange={(e) => setWaitlistEmail(e.target.value)}
-                placeholder="Enter institutional email"
-                disabled={waitlistStatus === "loading"}
-                className="bg-white border border-border px-4 py-3 w-full sm:w-80 font-mono text-sm focus:outline-none focus:border-primary disabled:opacity-50"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your business email"
+                disabled={status === "loading"}
+                className="flex-1 rounded-md border border-input bg-white px-4 py-3 text-sm text-foreground shadow-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
               />
               <button
                 type="submit"
-                disabled={waitlistStatus === "loading"}
-                className="bg-primary text-primary-foreground px-8 py-3 font-mono text-sm uppercase tracking-widest hover:bg-foreground transition-colors disabled:opacity-50"
+                disabled={status === "loading"}
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
               >
-                {waitlistStatus === "loading" ? "Submitting..." : "Access Terminal"}
+                {status === "loading" ? "Joining..." : "Join waitlist"}
+                <ArrowRight className="h-4 w-4" />
               </button>
             </form>
-            {waitlistStatus === "success" && (
-              <p className="text-sm text-green-600 font-mono">{waitlistMessage}</p>
+            {status === "success" && (
+              <p className="mt-3 text-sm font-medium text-green-600">{message}</p>
             )}
-            {waitlistStatus === "error" && (
-              <p className="text-sm text-red-500 font-mono">{waitlistMessage}</p>
-            )}
+            {status === "error" && <p className="mt-3 text-sm font-medium text-red-600">{message}</p>}
+            <p className="mt-4 text-xs text-muted-foreground">
+              Trusted by commodity traders, manufacturers, and logistics providers across 24 corridors.
+            </p>
           </div>
-          <div className="relative animate-in-up [animation-delay:200ms]">
+          <div className="relative">
+            <div className="absolute -left-4 -top-4 h-72 w-72 rounded-full bg-primary/10 blur-3xl"></div>
+            <div className="absolute -bottom-4 -right-4 h-72 w-72 rounded-full bg-blue-300/20 blur-3xl"></div>
             <img
               src={heroMap}
-              alt="Trade corridor map across Basra, Tehran, and Istanbul"
-              width={1280}
-              height={960}
-              className="w-full aspect-[4/3] object-cover rounded-sm outline outline-1 -outline-offset-1 outline-black/5"
+              alt="Trade corridors across Basra, Tehran, and Istanbul"
+              className="relative rounded-xl border border-border shadow-lg"
             />
-            <div className="absolute -bottom-6 -left-6 bg-white p-6 border border-border shadow-xl max-w-xs space-y-3">
-              <div className="flex justify-between items-end">
-                <span className="font-mono text-[10px] uppercase text-muted">Live Nodes</span>
-                <span className="font-mono text-lg leading-none">1,402</span>
-              </div>
-              <div className="h-1 bg-foreground/5 w-full">
-                <div className="h-full bg-primary w-2/3"></div>
-              </div>
-              <p className="text-[10px] font-mono text-muted uppercase">
-                Iraq → Turkey throughput: +14.2%
-              </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="border-y border-border bg-secondary">
+        <div className="mx-auto grid max-w-7xl divide-y divide-border px-6 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div key={s.label} className="py-8 text-center sm:px-4">
+              <p className="text-3xl font-bold text-foreground">{s.value}</p>
+              <p className="mt-1 text-sm font-medium text-muted-foreground">{s.label}</p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              One platform for the full trade cycle
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              From discovery and matching to settlement and tracking, Tureep AI+ handles the complexity
+              so you can focus on the deal.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((f) => (
+              <div
+                key={f.title}
+                className="group rounded-xl border border-border bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <f.icon className="h-5 w-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Tiers */}
-      <section id="tiers" className="bg-foreground text-background py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
-            <div className="space-y-2">
-              <span className="font-mono text-xs uppercase tracking-widest text-primary">
-                Master Accounts
-              </span>
-              <h2 className="text-4xl font-bold tracking-tight">Select Your Tier</h2>
-            </div>
-            <p className="text-muted max-w-xs font-mono text-[10px] uppercase leading-relaxed">
-              Each tier unlocks higher leverage, priority clearance, and deep-market analytics tools.
+      <section id="tiers" className="border-y border-border bg-white py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Master Accounts
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Tiered access designed for every scale of trade. Higher tiers unlock priority, exclusivity,
+              and lower fees.
             </p>
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-white/10 border border-white/10">
-            {tiers.map((t, i) => (
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {tiers.map((t) => (
               <div
                 key={t.name}
-                className={`bg-foreground p-8 space-y-12 hover:bg-white/5 transition-colors group ${
-                  i === 2 ? "border-x border-white/5" : i === 4 ? "border-l border-white/5" : ""
-                }`}
+                className="rounded-xl border border-border bg-background p-6 transition-shadow hover:shadow-md"
               >
-                <span
-                  className={`font-mono text-[10px] text-muted ${
-                    t.elite ? "tracking-tighter" : ""
-                  }`}
-                >
-                  {t.idx}
-                </span>
-                <div>
-                  <h3 className="text-xl font-bold mb-2">{t.name}</h3>
-                  <div
-                    className="h-1 w-8 mb-6 group-hover:w-full transition-all duration-500"
-                    style={{ backgroundColor: t.swatch }}
-                  />
-                  <ul
-                    className={`text-[10px] font-mono uppercase space-y-2 ${
-                      t.elite ? "text-background" : "text-muted"
-                    }`}
-                  >
-                    {t.items.map((x) => (
-                      <li key={x}>• {x}</li>
-                    ))}
-                  </ul>
-                </div>
+                <p className="text-sm font-medium text-primary">{t.name}</p>
+                <p className="mt-2 text-3xl font-bold text-foreground">{t.price}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{t.description}</p>
               </div>
             ))}
           </div>
@@ -237,82 +292,71 @@ function Index() {
       </section>
 
       {/* Commodities */}
-      <section id="categories" className="max-w-7xl mx-auto px-6 py-24">
-        <div className="grid md:grid-cols-3 gap-8">
-          {commodities.map((c) => (
-            <div key={c.name} className="space-y-4">
-              <img
-                src={c.img}
-                alt={c.name}
-                loading="lazy"
-                width={800}
-                height={1024}
-                className="w-full aspect-[4/5] object-cover grayscale hover:grayscale-0 transition-all duration-700"
-              />
-              <p className="text-[10px] font-mono uppercase tracking-widest text-muted">
-                Category: {c.cat}
-              </p>
-              <div className="flex justify-between items-baseline">
-                <h4 className="text-2xl font-bold">{c.name}</h4>
-                <span
-                  className={`font-mono text-xs ${c.deltaUp ? "text-primary" : "text-muted"}`}
-                >
-                  {c.delta}
-                </span>
+      <section id="commodities" className="py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Active commodity corridors
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Start with high-volume corridors and expand into new markets and categories.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {commodities.map((c) => (
+              <div key={c.name} className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
+                <img
+                  src={c.img}
+                  alt={c.name}
+                  className="h-56 w-full object-cover"
+                />
+                <div className="p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">{c.category}</p>
+                  <h3 className="mt-2 text-xl font-semibold text-foreground">{c.name}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{c.description}</p>
+                </div>
               </div>
-              <p className="text-sm text-muted">{c.copy}</p>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section id="contact" className="bg-primary py-16">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Ready to trade smarter?
+          </h2>
+          <p className="mt-4 text-lg text-blue-100">
+            Join the platform that turns commodity data into closed deals. Priority access for founding
+            members.
+          </p>
+          <a
+            href="/login"
+            className="mt-8 inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 text-base font-semibold text-primary transition-colors hover:bg-blue-50"
+          >
+            Access Terminal
+            <ArrowRight className="h-5 w-5" />
+          </a>
         </div>
       </section>
 
       {/* Footer */}
-      <footer id="network" className="border-t border-border py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-12">
-            <div className="col-span-2">
-              <span className="font-mono font-bold tracking-tighter text-2xl">TUREEP AI+</span>
-              <p className="mt-4 text-muted max-w-sm text-sm">
-                The sovereign layer for Middle Eastern trade. Brokering the future of the silk road
-                with neural intelligence.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-8 col-span-2">
-              <div className="space-y-4">
-                <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">
-                  Network Stats
-                </span>
-                <div className="space-y-2">
-                  {[
-                    ["GMV", "$4.2B"],
-                    ["TRADES", "12.8K"],
-                    ["NODES", "324"],
-                  ].map(([k, v]) => (
-                    <div key={k} className="flex justify-between border-b border-border pb-1">
-                      <span className="text-[10px] font-mono">{k}</span>
-                      <span className="text-[10px] font-mono text-primary">{v}</span>
-                    </div>
-                  ))}
-                </div>
+      <footer className="border-t border-border bg-white py-12">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                <span className="font-mono text-sm font-bold">T</span>
               </div>
-              <div className="space-y-4">
-                <span className="block font-mono text-[10px] uppercase tracking-widest text-muted">
-                  Contact Terminal
-                </span>
-                <p className="text-sm">desk@tureep.ai</p>
-                <p className="text-[10px] font-mono text-muted uppercase">
-                  DIFC, Dubai // Istanbul // Baghdad
-                </p>
-              </div>
+              <span className="text-lg font-semibold text-foreground">Tureep AI+</span>
             </div>
-          </div>
-          <div className="mt-12 pt-12 border-t border-border flex justify-between items-center">
-            <span className="text-[10px] font-mono text-muted">
-              © 2026 TUREEP LOGISTICS SYSTEMS. ALL RIGHTS RESERVED.
-            </span>
-            <div className="flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[10px] font-mono text-muted">SYSTEMS NOMINAL</span>
+            <p className="text-sm text-muted-foreground">
+              © 2026 Tureep Logistics Systems. All rights reserved.
+            </p>
+            <div className="flex gap-6 text-sm font-medium text-muted-foreground">
+              <a href="/login" className="hover:text-foreground">Sign in</a>
+              <a href="/dashboard" className="hover:text-foreground">Dashboard</a>
             </div>
           </div>
         </div>

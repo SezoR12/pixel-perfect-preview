@@ -8,46 +8,60 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-border: var(--border);
-  --color-card: var(--background);
-  --color-card-foreground: var(--foreground);
-  --color-popover: var(--background);
-  --color-popover-foreground: var(--foreground);
-  --color-secondary: var(--background);
-  --color-secondary-foreground: var(--foreground);
-  --color-accent: var(--primary);
-  --color-accent-foreground: var(--primary-foreground);
-  --color-destructive: oklch(0.55 0.22 27);
-  --color-destructive-foreground: var(--primary-foreground);
-  --color-input: var(--border);
-  --color-ring: var(--primary);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
   --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 6px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
 }
 
 :root {
-  --background: hsl(38 25% 96%);
-  --foreground: hsl(210 20% 12%);
-  --muted: hsl(210 10% 40%);
-  --primary: hsl(32 60% 45%);
-  --primary-foreground: hsl(38 25% 96%);
-  --border: hsl(210 20% 12% / 0.1);
+  --background: hsl(210 40% 98%);
+  --foreground: hsl(222 47% 11%);
+  --muted: hsl(215 16% 47%);
+  --muted-foreground: hsl(215 16% 47%);
+  --primary: hsl(221 83% 53%);
+  --primary-foreground: hsl(0 0% 100%);
+  --border: hsl(214 32% 91%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+  --secondary: hsl(210 40% 96%);
+  --secondary-foreground: hsl(222 47% 11%);
+  --accent: hsl(217 91% 60%);
+  --accent-foreground: hsl(0 0% 100%);
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --input: hsl(214 32% 91%);
+  --ring: hsl(221 83% 53%);
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-in-up {
-  animation: slideUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @layer base {
