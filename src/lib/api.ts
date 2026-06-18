@@ -10,6 +10,8 @@ export interface User {
   country: string;
   account_type: AccountType;
   is_verified: boolean;
+  kyc_status?: string;
+  sanctions_screened?: boolean;
   reputation_score: number;
   created_at: string;
   last_login?: string;
@@ -196,5 +198,112 @@ export async function joinWaitlist(email: string): Promise<{ id: number; email: 
   return api<{ id: number; email: string; source: string; created_at: string }>("/api/waitlist/", {
     method: "POST",
     body: JSON.stringify({ email }),
+  });
+}
+
+export interface OrderItem {
+  id: number;
+  product_id: number;
+  quantity: number;
+  unit: string;
+  unit_price: string;
+  total_price: string;
+  currency: string;
+  fulfillment_status: string;
+  product?: Product;
+}
+
+export interface Order {
+  id: number;
+  order_number: string;
+  pre_deal_id?: number;
+  buyer_id: number;
+  seller_id: number;
+  status: string;
+  payment_status: string;
+  payment_method: string;
+  total_value: string;
+  platform_fee: string;
+  currency: string;
+  incoterm: string;
+  origin_country: string;
+  destination_country: string;
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+  buyer?: User;
+  seller?: User;
+  items: OrderItem[];
+  payments: Payment[];
+}
+
+export interface KYCRecord {
+  id: number;
+  user_id: number;
+  status: string;
+  document_type: string;
+  document_url: string;
+  document_hash: string;
+  rejection_reason?: string;
+  submitted_at: string;
+  reviewed_at?: string;
+}
+
+export interface SanctionsScreening {
+  id: number;
+  user_id: number;
+  entity_name: string;
+  entity_type: string;
+  screened_against: string;
+  match_found: boolean;
+  match_details?: string;
+  screened_at: string;
+  review_status: string;
+}
+
+export async function getOrders(): Promise<Order[]> {
+  return api<Order[]>("/api/orders/");
+}
+
+export async function getOrder(orderId: number): Promise<Order> {
+  return api<Order>(`/api/orders/${orderId}`);
+}
+
+export async function createOrderFromPreDeal(preDealId: number): Promise<Order> {
+  return api<Order>("/api/orders/", {
+    method: "POST",
+    body: JSON.stringify({ pre_deal_id: preDealId }),
+  });
+}
+
+export async function createPayment(orderId: number, method: string, amount: string, currency: string): Promise<Payment> {
+  return api<Payment>(`/api/orders/${orderId}/payments`, {
+    method: "POST",
+    body: JSON.stringify({ order_id: orderId, method, amount, currency }),
+  });
+}
+
+export async function actOnPayment(orderId: number, paymentId: number, action: "pay" | "release" | "refund"): Promise<{ status: string; payment_id: number }> {
+  return api<{ status: string; payment_id: number }>(`/api/orders/${orderId}/payments/${paymentId}/action`, {
+    method: "POST",
+    body: JSON.stringify({ action }),
+  });
+}
+
+export async function submitKYC(documentType: string, documentUrl: string, documentHash: string): Promise<KYCRecord> {
+  return api<KYCRecord>("/api/kyc/submit", {
+    method: "POST",
+    body: JSON.stringify({ document_type: documentType, document_url: documentUrl, document_hash: documentHash }),
+  });
+}
+
+export async function getKYCStatus(): Promise<KYCRecord> {
+  return api<KYCRecord>("/api/kyc/status");
+}
+
+export async function screenSanctions(entityName: string, entityType: string = "user"): Promise<SanctionsScreening> {
+  return api<SanctionsScreening>("/api/compliance/sanctions/screen", {
+    method: "POST",
+    body: JSON.stringify({ entity_name: entityName, entity_type: entityType }),
   });
 }

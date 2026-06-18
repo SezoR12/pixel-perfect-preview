@@ -20,6 +20,9 @@ import {
   LogOut,
   ArrowRight,
   TrendingUp,
+  ShoppingCart,
+  Shield,
+  FileCheck,
 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
@@ -102,6 +105,27 @@ function DashboardPage() {
               <Handshake className="h-4 w-4" />
               Pre-Deals
             </a>
+            <a
+              href="/orders"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              Orders
+            </a>
+            <a
+              href="/kyc"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <FileCheck className="h-4 w-4" />
+              KYC
+            </a>
+            <a
+              href="/sanctions"
+              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <Shield className="h-4 w-4" />
+              Sanctions
+            </a>
           </nav>
           <div className="border-t border-border p-4">
             <button
@@ -132,7 +156,7 @@ function DashboardPage() {
 
           <div className="p-6 lg:p-8">
             {/* Metrics */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               <MetricCard
                 icon={Package}
                 label="Products"
@@ -153,6 +177,45 @@ function DashboardPage() {
                 label="Accepted Deals"
                 value={stats?.accepted_deals ?? 0}
               />
+              <MetricCard
+                icon={ShoppingCart}
+                label="Active Orders"
+                value={stats?.active_orders ?? 0}
+              />
+            </div>
+
+            {/* Compliance quick actions */}
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <Card className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <FileCheck className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">KYC Verification</p>
+                    <p className="text-sm text-muted-foreground">Status: {user?.kyc_status || "pending"}</p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => navigate({ to: "/kyc" })}>
+                    Verify
+                  </Button>
+                </div>
+              </Card>
+              <Card className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Shield className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">Sanctions Screening</p>
+                    <p className="text-sm text-muted-foreground">
+                      {user?.sanctions_screened ? "Cleared" : "Not screened"}
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => navigate({ to: "/sanctions" })}>
+                    Screen
+                  </Button>
+                </div>
+              </Card>
             </div>
 
             {/* Pre-deals */}

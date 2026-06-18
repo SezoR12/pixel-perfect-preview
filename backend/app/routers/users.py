@@ -39,9 +39,20 @@ def dashboard(
         )
         .count()
     )
+    from app.models import Order, OrderStatus
+
+    active_orders = (
+        db.query(Order)
+        .filter(
+            ((Order.seller_id == current_user.id) | (Order.buyer_id == current_user.id)),
+            Order.status.in_(["pending", "confirmed", "payment_pending", "paid", "in_transit"]),
+        )
+        .count()
+    )
     return DashboardStats(
         total_products=total_products,
         total_demands=total_demands,
         active_pre_deals=active_pre_deals,
         accepted_deals=accepted_deals,
+        active_orders=active_orders,
     )

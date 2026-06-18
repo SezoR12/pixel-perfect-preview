@@ -9,12 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SanctionsRouteImport } from './routes/sanctions'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PreDealsRouteImport } from './routes/pre-deals'
+import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as KycRouteImport } from './routes/kyc'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SanctionsRoute = SanctionsRouteImport.update({
+  id: '/sanctions',
+  path: '/sanctions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -25,9 +33,19 @@ const PreDealsRoute = PreDealsRouteImport.update({
   path: '/pre-deals',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrdersRoute = OrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KycRoute = KycRouteImport.update({
+  id: '/kyc',
+  path: '/kyc',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -44,43 +62,87 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
+  '/sanctions': typeof SanctionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
+  '/sanctions': typeof SanctionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
+  '/sanctions': typeof SanctionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/pre-deals' | '/products'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/kyc'
+    | '/login'
+    | '/orders'
+    | '/pre-deals'
+    | '/products'
+    | '/sanctions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/pre-deals' | '/products'
-  id: '__root__' | '/' | '/dashboard' | '/login' | '/pre-deals' | '/products'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/kyc'
+    | '/login'
+    | '/orders'
+    | '/pre-deals'
+    | '/products'
+    | '/sanctions'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/kyc'
+    | '/login'
+    | '/orders'
+    | '/pre-deals'
+    | '/products'
+    | '/sanctions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  KycRoute: typeof KycRoute
   LoginRoute: typeof LoginRoute
+  OrdersRoute: typeof OrdersRoute
   PreDealsRoute: typeof PreDealsRoute
   ProductsRoute: typeof ProductsRoute
+  SanctionsRoute: typeof SanctionsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sanctions': {
+      id: '/sanctions'
+      path: '/sanctions'
+      fullPath: '/sanctions'
+      preLoaderRoute: typeof SanctionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products': {
       id: '/products'
       path: '/products'
@@ -95,11 +157,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreDealsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/orders': {
+      id: '/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof OrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kyc': {
+      id: '/kyc'
+      path: '/kyc'
+      fullPath: '/kyc'
+      preLoaderRoute: typeof KycRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -122,9 +198,12 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  KycRoute: KycRoute,
   LoginRoute: LoginRoute,
+  OrdersRoute: OrdersRoute,
   PreDealsRoute: PreDealsRoute,
   ProductsRoute: ProductsRoute,
+  SanctionsRoute: SanctionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

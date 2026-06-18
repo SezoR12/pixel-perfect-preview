@@ -157,6 +157,7 @@ class DashboardStats(BaseModel):
     total_demands: int
     active_pre_deals: int
     accepted_deals: int
+    active_orders: int
 
 
 class WaitlistEntryCreate(BaseModel):
@@ -170,3 +171,128 @@ class WaitlistEntryRead(BaseModel):
     email: str
     source: str
     created_at: datetime
+
+
+class KYCStatus(str, Enum):
+    PENDING = "pending"
+    SUBMITTED = "submitted"
+    IN_REVIEW = "in_review"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    EXPIRED = "expired"
+
+
+class KYCSubmission(BaseModel):
+    document_type: str
+    document_url: str
+    document_hash: str
+
+
+class KYCRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    status: str
+    document_type: str
+    document_url: str
+    document_hash: str
+    rejection_reason: Optional[str] = None
+    submitted_at: datetime
+    reviewed_at: Optional[datetime] = None
+
+
+class KYCReview(BaseModel):
+    status: str = Field(..., pattern="^(approved|rejected)$")
+    rejection_reason: Optional[str] = None
+
+
+class SanctionsScreenRequest(BaseModel):
+    entity_name: str
+    entity_type: str = "user"
+
+
+class SanctionsScreenResult(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    entity_name: str
+    entity_type: str
+    screened_against: str
+    match_found: bool
+    match_details: Optional[str] = None
+    screened_at: datetime
+    review_status: str
+
+
+class OrderItemBase(BaseModel):
+    product_id: int
+    quantity: int
+    unit: str
+    unit_price: Decimal
+    currency: str
+
+
+class OrderItemRead(OrderItemBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    total_price: Decimal
+    fulfillment_status: str
+    product: Optional[ProductRead] = None
+
+
+class OrderCreate(BaseModel):
+    pre_deal_id: int
+
+
+class OrderRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    order_number: str
+    pre_deal_id: Optional[int] = None
+    buyer_id: int
+    seller_id: int
+    status: str
+    payment_status: str
+    payment_method: str
+    total_value: Decimal
+    platform_fee: Decimal
+    currency: str
+    incoterm: str
+    origin_country: str
+    destination_country: str
+    created_at: datetime
+    updated_at: datetime
+    completed_at: Optional[datetime] = None
+    buyer: Optional[UserRead] = None
+    seller: Optional[UserRead] = None
+    items: List[OrderItemRead] = []
+    payments: List["PaymentRead"] = []
+
+
+class PaymentRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    order_id: int
+    method: str
+    amount: Decimal
+    currency: str
+    status: str
+    processor: Optional[str] = None
+    processor_transaction_id: Optional[str] = None
+    created_at: datetime
+
+
+class PaymentAction(BaseModel):
+    action: str = Field(..., pattern="^(pay|release|refund)$")
+
+
+class PaymentCreate(BaseModel):
+    order_id: int
+    method: str = Field(..., pattern="^(Escrow|Card|L/C|D/P)$")
+    amount: Decimal
+    currency: str
