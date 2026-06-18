@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { joinWaitlist } from "@/lib/api";
 import {
@@ -94,30 +94,30 @@ export default function Index() {
       {/* Nav */}
       <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-          <a href="/" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full border border-yellow-500/50 bg-yellow-500/10">
               <span className="font-serif text-lg font-bold text-yellow-400">T</span>
             </div>
             <span className="font-serif text-xl font-medium tracking-wide text-white">
               Tureep <span className="text-yellow-400">AI+</span>
             </span>
-          </a>
+          </Link>
           <div className="hidden items-center gap-10 text-sm font-medium tracking-wide text-white/60 md:flex">
             <a href="#platform" className="hover:text-white">Platform</a>
             <a href="#tiers" className="hover:text-white">Membership</a>
             <a href="#corridors" className="hover:text-white">Corridors</a>
           </div>
           <div className="flex items-center gap-4">
-            <a href="/login" className="hidden text-sm font-medium text-white/60 hover:text-white sm:block">
+            <Link to="/login" className="hidden text-sm font-medium text-white/60 hover:text-white sm:block">
               Sign in
-            </a>
-            <a
-              href="/login"
+            </Link>
+            <Link
+              to="/login"
               className="group inline-flex items-center gap-2 rounded-full border border-yellow-500/50 bg-yellow-500/10 px-5 py-2.5 text-sm font-medium text-yellow-400 transition-all hover:bg-yellow-500 hover:text-black"
             >
               Access Terminal
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </a>
+            </Link>
           </div>
         </div>
       </nav>
@@ -348,13 +348,13 @@ export default function Index() {
           <p className="mt-4 text-lg text-white/40">
             Priority access is limited. Apply today and our team will review your membership.
           </p>
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="mt-10 inline-flex items-center gap-2 rounded-full bg-yellow-500 px-8 py-4 text-base font-semibold text-black transition-colors hover:bg-yellow-400"
           >
             Access Terminal
             <ArrowRight className="h-5 w-5" />
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -362,20 +362,20 @@ export default function Index() {
       <footer className="bg-black py-12">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-            <a href="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full border border-yellow-500/50 bg-yellow-500/10">
                 <span className="font-serif text-lg font-bold text-yellow-400">T</span>
               </div>
               <span className="font-serif text-xl font-medium tracking-wide text-white">
                 Tureep <span className="text-yellow-400">AI+</span>
               </span>
-            </a>
+            </Link>
             <p className="text-sm text-white/30">
               © 2026 Tureep Logistics Systems. All rights reserved.
             </p>
             <div className="flex gap-8 text-sm font-medium text-white/40">
-              <a href="/login" className="hover:text-white">Sign in</a>
-              <a href="/dashboard" className="hover:text-white">Dashboard</a>
+              <Link to="/login" className="hover:text-white">Sign in</Link>
+              <Link to="/dashboard" className="hover:text-white">Dashboard</Link>
             </div>
           </div>
         </div>
