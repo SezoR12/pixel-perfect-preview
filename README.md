@@ -75,11 +75,11 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 ```bash
 # From repo root
-npm install
-VITE_API_BASE_URL=http://localhost:8000 npm run dev
+bun install
+VITE_API_BASE_URL=http://localhost:8000 bun run dev
 ```
 
-The frontend will be available at `http://localhost:8080/` (or `3000` depending on the port setup).
+The frontend will be available at `http://localhost:8080/`.
 
 ### Docker Compose (Full Stack)
 
@@ -88,6 +88,39 @@ docker-compose up --build
 ```
 
 This starts PostgreSQL, Redis, backend (`:8000`), and frontend (`:3000`).
+
+## Deploy with Lovable
+
+This project was created in [Lovable](https://lovable.dev) and syncs from GitHub.
+
+1. In Lovable, open the connected project.
+2. Pull the latest changes from the `main` branch (Lovable auto-syncs every few minutes, but you can force a sync).
+3. Click **Preview** to verify the build.
+4. Click **Publish** to deploy the frontend to your Lovable domain.
+
+**Important:** Lovable hosts the frontend only. The backend API must be deployed separately (see backend deployment options below). After deploying the backend, set the environment variable in Lovable:
+
+```
+VITE_API_BASE_URL=https://your-backend-domain.com
+```
+
+## Backend Deployment Options
+
+Lovable does not deploy the backend. Choose one of these:
+
+- **AWS ECS + RDS:** Use the `backend/Dockerfile` and deploy to Amazon ECS with RDS PostgreSQL and ElastiCache Redis.
+- **Railway / Render:** Connect the `backend` folder to Railway or Render; set `DATABASE_URL` and `REDIS_URL`.
+- **Docker Compose on a VPS:** Use `docker-compose.yml` on a server with Docker installed.
+
+For any backend deployment, set these environment variables:
+
+```env
+DATABASE_URL=postgresql://... (Supabase or RDS)
+REDIS_URL=redis://... (Redis Labs or ElastiCache)
+SECRET_KEY=secure-random-key-min-32-chars
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+```
 
 ## Demo Accounts
 
