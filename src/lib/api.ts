@@ -179,6 +179,11 @@ export async function getPreDeals(): Promise<PreDeal[]> {
   return api<PreDeal[]>("/api/deals/pre-deals");
 }
 
+export async function actOnPreDeal(dealId: number, action: "accept" | "reject"): Promise<{ status: string; pre_deal_id: number }> {
+  return api<{ status: string; pre_deal_id: number }>(`/api/deals/pre-deals/${dealId}/${action}`, {
+    method: "POST",
+  });
+}
 
 export async function generatePreDeals(): Promise<{ created_pre_deal_ids: number[]; count: number }> {
   return api<{ created_pre_deal_ids: number[]; count: number }>("/api/deals/generate-pre-deals", {
