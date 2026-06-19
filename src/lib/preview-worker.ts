@@ -15,7 +15,7 @@ export interface PreviewHealthLog {
 const LOG_STORAGE_KEY = "tureep_preview_health_logs";
 const MAX_LOGS = 100;
 
-function saveHealthLog(level: PreviewHealthLog["level"], event: string, details: string) {
+export function saveHealthLog(level: PreviewHealthLog["level"], event: string, details: string) {
   if (typeof window === "undefined") return;
   
   const currentLogs = getPreviewHealthLogs();

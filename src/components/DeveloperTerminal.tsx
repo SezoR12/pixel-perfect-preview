@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { setToken, getMe } from "@/lib/api";
-import { Terminal, X, Minimize2, Maximize2, Play, Trash2, ShieldCheck, Database, Zap } from "lucide-react";
+import { forceCleanPreviewRebuild, getPreviewHealthLogs } from "@/lib/preview-worker";
+import { executeFrontendSmokeTest, clearAppCacheAndReload } from "@/lib/smoke-tester";
+import { getActiveVersionManifest } from "@/lib/version";
+import { Terminal, X, Minimize2, Maximize2, Play, Trash2, ShieldCheck, Database, Zap, Bot, Rocket, RefreshCw } from "lucide-react";
 
 export function DeveloperTerminal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +50,11 @@ export function DeveloperTerminal() {
           <p><strong className="text-amber-400">login &lt;email&gt;</strong> — Instantly inject cryptographic JWT auth session (e.g., <span className="text-primary-300">login buyer.turkey@tureep.ai</span>).</p>
           <p><strong className="text-amber-400">logout</strong> — Destroy active authorization keys.</p>
           <p><strong className="text-amber-400">query &lt;sql&gt;</strong> — Execute simulated PostgreSQL queries against local B2B tables.</p>
+          <p><strong className="text-amber-400">smoke-test</strong> — Execute automated Node/GUI preview smoke test verification runner.</p>
+          <p><strong className="text-amber-400">version</strong> — Display active GitHub deployed commit manifest & full SHA hash.</p>
+          <p><strong className="text-amber-400">rebuild</strong> — Trigger Force Clean Preview Rebuild recovery command.</p>
+          <p><strong className="text-amber-400">clear-cache</strong> — Unregister volatile service workers and wipe session/local caching.</p>
+          <p><strong className="text-amber-400">preview-logs</strong> — Inspect active Lovable Preview diagnostic HMR & Watchdog LEDGER.</p>
           <p><strong className="text-amber-400">reset</strong> — Re-seed pristine default demo ledgers (users, products, orders).</p>
           <p><strong className="text-amber-400">test-json</strong> — Run automated self-healing JSON parser diagnostics suite.</p>
           <p><strong className="text-amber-400">clear</strong> — Wipe console scroll screen.</p>
@@ -56,6 +64,64 @@ export function DeveloperTerminal() {
       setHistory([]);
       setInput("");
       return;
+    } else if (cmd === "rebuild") {
+      out = <p className="text-emerald-400 font-bold">🔄 Manual force clean rebuild executed. Wiping build state...</p>;
+      forceCleanPreviewRebuild();
+    } else if (cmd === "clear-cache") {
+      out = <p className="text-amber-400 font-bold">🧹 Cache Purge recovery utility triggered. Unregistering service workers...</p>;
+      clearAppCacheAndReload();
+    } else if (cmd === "version") {
+      const vm = getActiveVersionManifest();
+      out = (
+        <div className="space-y-1 text-xs bg-slate-900 p-3 rounded border border-slate-800 font-mono">
+          <p className="text-primary-400 font-extrabold uppercase">🚀 Immutable GitHub Deployed Manifest:</p>
+          <p className="text-slate-300">● Deployed Commit: <strong className="text-emerald-300">#{vm.commitHash}</strong></p>
+          <p className="text-slate-300">● Full SHA Hash: <span className="text-amber-400 select-all">{vm.fullHash}</span></p>
+          <p className="text-slate-300">● Deployed Release: {vm.release}</p>
+          <p className="text-slate-300">● Timestamp: {new Date(vm.timestamp).toUTCString()}</p>
+          <p className="text-slate-300">● Author: {vm.author}</p>
+          <p className="text-slate-400 text-[10px] pt-1 leading-relaxed border-t border-slate-800">Commit Message: "{vm.message}"</p>
+        </div>
+      );
+    } else if (cmd === "preview-logs") {
+      const logs = getPreviewHealthLogs();
+      out = (
+        <div className="space-y-1.5 text-xs font-mono">
+          <p className="text-primary-300 font-bold">● Lovable Preview Active Health Watchdog Logs ({logs.length}):</p>
+          {logs.slice(0, 10).map((l, lIdx) => (
+            <div key={lIdx} className="p-2 rounded bg-slate-900 border border-slate-800 text-[11px] space-y-0.5">
+              <div className="flex items-center justify-between text-slate-400">
+                <span className={l.level === "ERROR" ? "text-red-400 font-bold" : l.level === "WARN" ? "text-amber-400 font-bold" : "text-emerald-400 font-bold"}>
+                  [{l.level}] {l.event}
+                </span>
+                <span className="text-[9px]">{new Date(l.timestamp).toLocaleTimeString()}</span>
+              </div>
+              <p className="text-slate-300">{l.details}</p>
+            </div>
+          ))}
+        </div>
+      );
+    } else if (cmd === "smoke-test") {
+      out = <p className="text-emerald-400 font-bold">🤖 Initiating Automated GUI Smoke Test Suite. Asserting endpoints...</p>;
+      executeFrontendSmokeTest().then((res) => {
+        setHistory((prev) => [
+          ...prev,
+          {
+            command: "smoke-test runtime validation",
+            output: (
+              <div className="space-y-1 text-xs font-mono bg-slate-900 p-3 rounded border border-slate-800">
+                <p className={res.success ? "text-emerald-400 font-black" : "text-red-400 font-black"}>
+                  {res.success ? "🟢 SMOKE SUITE VERIFIED (11/11 ROUTES HTTP 200 OK)" : `🔴 SMOKE SUITE DROPPED (${res.failures} FAILURES)`}
+                </p>
+                {res.logs.map((logStr, lIdx) => (
+                  <p key={lIdx} className="text-[10px] text-slate-300 leading-relaxed">{logStr}</p>
+                ))}
+              </div>
+            ),
+            time: new Date().toLocaleTimeString(),
+          },
+        ]);
+      });
     } else if (cmd === "status") {
       const token = localStorage.getItem("tureep_token") || "Unregistered";
       out = (
