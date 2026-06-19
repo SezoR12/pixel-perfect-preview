@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AppSidebar } from "@/components/AppSidebar";
 import {
   DashboardStats,
   PreDeal,
@@ -10,14 +11,11 @@ import {
   getDashboard,
   getMe,
   getPreDeals,
-  removeToken,
 } from "@/lib/api";
 import {
-  LayoutDashboard,
   Package,
   ClipboardList,
   Handshake,
-  LogOut,
   ArrowRight,
   TrendingUp,
   ShoppingCart,
@@ -75,70 +73,8 @@ function DashboardPage() {
     <div className="min-h-screen bg-background">
       {/* Sidebar + header layout */}
       <div className="flex min-h-screen">
-        {/* Sidebar */}
-        <aside className="hidden w-64 flex-col border-r border-border bg-white lg:flex">
-          <div className="flex h-16 items-center gap-2 border-b border-border px-6">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <span className="font-mono text-sm font-bold">T</span>
-            </div>
-            <span className="text-lg font-semibold text-foreground">Tureep AI+</span>
-          </div>
-          <nav className="flex-1 space-y-1 p-4">
-            <a
-              href="/dashboard"
-              className="flex items-center gap-3 rounded-md bg-secondary px-3 py-2 text-sm font-medium text-foreground"
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              Dashboard
-            </a>
-            <a
-              href="/products"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <Package className="h-4 w-4" />
-              Products
-            </a>
-            <a
-              href="/pre-deals"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <Handshake className="h-4 w-4" />
-              Pre-Deals
-            </a>
-            <a
-              href="/orders"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              Orders
-            </a>
-            <a
-              href="/kyc"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <FileCheck className="h-4 w-4" />
-              KYC
-            </a>
-            <a
-              href="/sanctions"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <Shield className="h-4 w-4" />
-              Sanctions
-            </a>
-          </nav>
-          <div className="border-t border-border p-4">
-            <button
-              onClick={logout}
-              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <LogOut className="h-4 w-4" />
-              Log out
-            </button>
-          </div>
-        </aside>
+        <AppSidebar activeRoute="dashboard" />
 
-        {/* Main */}
         <main className="flex-1">
           {/* Header */}
           <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">

@@ -62,6 +62,16 @@ def seed():
             is_verified=True,
             reputation_score=92,
         ),
+        User(
+            email="admin@tureep.ai",
+            password_hash=hash_password("password123"),
+            name="Tureep Compliance Admin",
+            phone="+905300000000",
+            country="Turkey",
+            account_type=AccountType.BLACK,
+            is_verified=True,
+            reputation_score=100,
+        ),
     ]
     db.add_all(users)
     db.commit()
@@ -155,9 +165,52 @@ def seed():
     for match in matches:
         create_pre_deal_from_match(db, match)
 
+    from app.models import KYCVerification, KYCStatus, SanctionsScreening
+    kycs = [
+        KYCVerification(
+            user_id=users[2].id, # seller.iran
+            status=KYCStatus.SUBMITTED,
+            document_type="passport",
+            document_url="https://s3.tureep.ai/kyc/iran_seller_passport.pdf",
+            document_hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            next_review_date=datetime.utcnow() + timedelta(days=365),
+        ),
+        KYCVerification(
+            user_id=users[3].id, # buyer.global
+            status=KYCStatus.SUBMITTED,
+            document_type="business_license",
+            document_url="https://s3.tureep.ai/kyc/buyer_global_license.pdf",
+            document_hash="8f9c044298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            next_review_date=datetime.utcnow() + timedelta(days=365),
+        ),
+    ]
+    db.add_all(kycs)
+
+    screenings = [
+        SanctionsScreening(
+            user_id=users[2].id,
+            entity_type="company",
+            entity_name="IRAN OIL COMPANY",
+            screened_against="demo_sanctions_list",
+            match_found=True,
+            match_details="Matched against demo sanctions list: IRAN OIL COMPANY",
+            review_status="pending",
+        ),
+        SanctionsScreening(
+            user_id=users[0].id,
+            entity_type="company",
+            entity_name="Basra Dates Co.",
+            screened_against="demo_sanctions_list",
+            match_found=False,
+            match_details="No match found",
+            review_status="cleared",
+        )
+    ]
+    db.add_all(screenings)
+
     db.commit()
     db.close()
-    print(f"Seeded {len(users)} users, {len(products)} products, {len(demands)} demands, {len(matches)} pre-deals.")
+    print(f"Seeded {len(users)} users, {len(products)} products, {len(demands)} demands, {len(matches)} pre-deals, {len(kycs)} KYC entries, {len(screenings)} sanctions screenings.")
 
 
 if __name__ == "__main__":

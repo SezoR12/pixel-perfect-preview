@@ -15,6 +15,7 @@ import { Route as PreDealsRouteImport } from './routes/pre-deals'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as KycRouteImport } from './routes/kyc'
+import { Route as HardeningNotesRouteImport } from './routes/hardening-notes'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -48,6 +49,11 @@ const KycRoute = KycRouteImport.update({
   path: '/kyc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HardeningNotesRoute = HardeningNotesRouteImport.update({
+  id: '/hardening-notes',
+  path: '/hardening-notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -62,6 +68,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
   '/orders': typeof OrdersRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/hardening-notes'
     | '/kyc'
     | '/login'
     | '/orders'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/hardening-notes'
     | '/kyc'
     | '/login'
     | '/orders'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/hardening-notes'
     | '/kyc'
     | '/login'
     | '/orders'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  HardeningNotesRoute: typeof HardeningNotesRoute
   KycRoute: typeof KycRoute
   LoginRoute: typeof LoginRoute
   OrdersRoute: typeof OrdersRoute
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KycRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hardening-notes': {
+      id: '/hardening-notes'
+      path: '/hardening-notes'
+      fullPath: '/hardening-notes'
+      preLoaderRoute: typeof HardeningNotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -198,6 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  HardeningNotesRoute: HardeningNotesRoute,
   KycRoute: KycRoute,
   LoginRoute: LoginRoute,
   OrdersRoute: OrdersRoute,

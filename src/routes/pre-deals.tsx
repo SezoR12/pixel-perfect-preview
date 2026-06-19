@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AppSidebar } from "@/components/AppSidebar";
 import {
   PreDeal,
   actOnPreDeal,
+  createOrderFromPreDeal,
   generatePreDeals,
   getPreDeals,
 } from "@/lib/api";
@@ -13,12 +15,12 @@ import {
   Handshake,
   ArrowLeft,
   Sparkles,
-  LayoutDashboard,
   Package,
   CheckCircle2,
   XCircle,
   Clock,
   Truck,
+  ShoppingCart,
 } from "lucide-react";
 
 export const Route = createFileRoute("/pre-deals")({
@@ -75,40 +77,19 @@ function PreDealsPage() {
     }
   }
 
+  async function handleCreateOrder(dealId: number) {
+    try {
+      await createOrderFromPreDeal(dealId);
+      navigate({ to: "/orders" });
+    } catch (err: any) {
+      setError(err.message || "Failed to create order");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="flex min-h-screen">
-        <aside className="hidden w-64 flex-col border-r border-border bg-white lg:flex">
-          <div className="flex h-16 items-center gap-2 border-b border-border px-6">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <span className="font-mono text-sm font-bold">T</span>
-            </div>
-            <span className="text-lg font-semibold text-foreground">Tureep AI+</span>
-          </div>
-          <nav className="flex-1 space-y-1 p-4">
-            <a
-              href="/dashboard"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              Dashboard
-            </a>
-            <a
-              href="/products"
-              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
-            >
-              <Package className="h-4 w-4" />
-              Products
-            </a>
-            <a
-              href="/pre-deals"
-              className="flex items-center gap-3 rounded-md bg-secondary px-3 py-2 text-sm font-medium text-foreground"
-            >
-              <Handshake className="h-4 w-4" />
-              Pre-Deals
-            </a>
-          </nav>
-        </aside>
+        <AppSidebar activeRoute="pre-deals" />
 
         <main className="flex-1">
           <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">
@@ -190,22 +171,34 @@ function PreDealsPage() {
                           </div>
                         </div>
 
-                        {deal.status === "pending" && (
-                          <div className="flex gap-2 lg:flex-col">
-                            <Button size="sm" onClick={() => handleAction(deal.id, "accept")}>
-                              <CheckCircle2 className="mr-2 h-4 w-4" />
-                              Accept
-                            </Button>
+                        <div className="flex gap-2 lg:flex-col">
+                          {deal.status === "pending" && (
+                            <>
+                              <Button size="sm" onClick={() => handleAction(deal.id, "accept")}>
+                                <CheckCircle2 className="mr-2 h-4 w-4" />
+                                Accept Deal
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleAction(deal.id, "reject")}
+                              >
+                                <XCircle className="mr-2 h-4 w-4" />
+                                Reject
+                              </Button>
+                            </>
+                          )}
+                          {deal.status === "accepted" && (
                             <Button
                               size="sm"
-                              variant="outline"
-                              onClick={() => handleAction(deal.id, "reject")}
+                              className="bg-green-600 hover:bg-green-700 text-white"
+                              onClick={() => handleCreateOrder(deal.id)}
                             >
-                              <XCircle className="mr-2 h-4 w-4" />
-                              Reject
+                              <ShoppingCart className="mr-2 h-4 w-4" />
+                              Convert to Order
                             </Button>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

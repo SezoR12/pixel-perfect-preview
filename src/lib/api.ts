@@ -201,6 +201,18 @@ export async function joinWaitlist(email: string): Promise<{ id: number; email: 
   });
 }
 
+export interface Payment {
+  id: number;
+  order_id: number;
+  method: string;
+  amount: string;
+  currency: string;
+  status: string;
+  processor?: string;
+  processor_transaction_id?: string;
+  created_at: string;
+}
+
 export interface OrderItem {
   id: number;
   product_id: number;
@@ -307,3 +319,19 @@ export async function screenSanctions(entityName: string, entityType: string = "
     body: JSON.stringify({ entity_name: entityName, entity_type: entityType }),
   });
 }
+
+export async function listPendingKYC(): Promise<KYCRecord[]> {
+  return api<KYCRecord[]>("/api/kyc/pending");
+}
+
+export async function reviewKYC(kycId: number, status: "approved" | "rejected", rejectionReason?: string): Promise<KYCRecord> {
+  return api<KYCRecord>(`/api/kyc/${kycId}/review`, {
+    method: "POST",
+    body: JSON.stringify({ status, rejection_reason: rejectionReason }),
+  });
+}
+
+export async function getMyScreenings(): Promise<SanctionsScreening[]> {
+  return api<SanctionsScreening[]>("/api/compliance/sanctions/my-screenings");
+}
+

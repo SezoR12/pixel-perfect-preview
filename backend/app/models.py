@@ -35,12 +35,7 @@ class DealStatus(str, PyEnum):
     EXPIRED = "expired"
 
 
-class OrderStatus(str, PyEnum):
-    PENDING = "pending"
-    CONFIRMED = "confirmed"
-    SHIPPED = "shipped"
-    DELIVERED = "delivered"
-    CANCELLED = "cancelled"
+
 
 
 class KYCStatus(str, PyEnum):
