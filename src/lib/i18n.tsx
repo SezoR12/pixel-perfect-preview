@@ -149,7 +149,8 @@ const DICTIONARY: Translations = {
   // Dashboard Nav & Buttons
   "nav.dashboard": { en: "Dashboard", ar: "لوحة التحكم", fa: "داشبورد", ku: "پێشبین (داشبۆرد)", tr: "Gösterge Paneli" },
   "nav.products": { en: "Products", ar: "المنتجات", fa: "محصولات", ku: "بەرهەمەکان", tr: "Ürünler" },
-  "nav.demands": { en: "Demands", ar: "الطلبات", fa: "تقاضاها", ku: "داواکارییەکان", tr: "Talepler" },
+  "nav.workflow": { en: "Deal Workflow & Explorer", ar: "مسار عمل الصفقة والمستكشف", fa: "مسیر معامله و کاوشگر", ku: "ڕێڕەوی ڕێککەوتن و گەڕان", tr: "Anlaşma Akışı ve Kaşif" },
+  "wf.title": { en: "Definitive 7-Stage Trade Workflow & System Explorer", ar: "المسار المعتمد للصفقة من 7 مراحل والمستكشف التفاعلي", fa: "مسیر 7 مرحله‌ای معامله و کاوشگر سیستم", ku: "ڕێڕەوی 7 قۆناغی ڕێککەوتن و گەڕانی سیستم", tr: "7 Aşamalı Ticaret Akışı ve Sistem Kaşif" },
   "nav.pre_deals": { en: "Pre-Deals", ar: "الصفقات المبدئية", fa: "پیش‌قراردادها", ku: "پێش-ڕێککەوتنەکان", tr: "Ön Anlaşmalar" },
   "nav.orders": { en: "Orders & Escrow", ar: "الطلبات والضمان", fa: "سفارشات و امانی", ku: "داواکارییەکان و پارەی ئەمانی", tr: "Siparişler ve Escrow" },
   "nav.finance": { en: "Trade Finance (L/C & D/P)", ar: "التمويل التجاري (L/C & D/P)", fa: "تأمین مالی تجارت (L/C & D/P)", ku: "دارایی بازرگانی (L/C & D/P)", tr: "Ticaret Finansmanı (L/C & D/P)" },

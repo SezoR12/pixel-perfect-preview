@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as TradeFinanceRouteImport } from './routes/trade-finance'
 import { Route as SupabasePortalRouteImport } from './routes/supabase-portal'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
@@ -28,6 +29,11 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WorkflowRoute = WorkflowRouteImport.update({
+  id: '/workflow',
+  path: '/workflow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TradeFinanceRoute = TradeFinanceRouteImport.update({
   id: '/trade-finance',
   path: '/trade-finance',
@@ -138,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
+  '/workflow': typeof WorkflowRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
+  '/workflow': typeof WorkflowRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
+  '/workflow': typeof WorkflowRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -201,6 +210,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/supabase-portal'
     | '/trade-finance'
+    | '/workflow'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -221,6 +231,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/supabase-portal'
     | '/trade-finance'
+    | '/workflow'
   id:
     | '__root__'
     | '/'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/shipments'
     | '/supabase-portal'
     | '/trade-finance'
+    | '/workflow'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,10 +274,18 @@ export interface RootRouteChildren {
   ShipmentsRoute: typeof ShipmentsRoute
   SupabasePortalRoute: typeof SupabasePortalRoute
   TradeFinanceRoute: typeof TradeFinanceRoute
+  WorkflowRoute: typeof WorkflowRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workflow': {
+      id: '/workflow'
+      path: '/workflow'
+      fullPath: '/workflow'
+      preLoaderRoute: typeof WorkflowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trade-finance': {
       id: '/trade-finance'
       path: '/trade-finance'
@@ -414,6 +434,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShipmentsRoute: ShipmentsRoute,
   SupabasePortalRoute: SupabasePortalRoute,
   TradeFinanceRoute: TradeFinanceRoute,
+  WorkflowRoute: WorkflowRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

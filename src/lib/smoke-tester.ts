@@ -16,6 +16,7 @@ export async function executeFrontendSmokeTest(): Promise<SmokeTestResult> {
     "/",
     "/dashboard",
     "/profile",
+    "/workflow",
     "/products",
     "/demands",
     "/pre-deals",

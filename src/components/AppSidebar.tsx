@@ -19,6 +19,7 @@ import {
   Network,
   Globe,
   Database,
+  Workflow,
 } from "lucide-react";
 
 interface AppSidebarProps {
@@ -50,6 +51,7 @@ export function AppSidebar({ activeRoute }: AppSidebarProps) {
     { id: "notifications", label: t("nav.notifications", "Notifications"), path: "/notifications", icon: Bell },
     { id: "supabase-portal", label: t("nav.supabase", "Supabase Core & RLS"), path: "/supabase-portal", icon: Database },
     { id: "microservices-spec", label: t("nav.microservices", "Microservices Architecture"), path: "/microservices-spec", icon: Network },
+    { id: "workflow", label: t("nav.workflow", "Deal Workflow & Explorer"), path: "/workflow", icon: Workflow },
     { id: "hardening-notes", label: t("nav.hardening", "HTTPS / Hardening"), path: "/hardening-notes", icon: Lock },
   ];
 

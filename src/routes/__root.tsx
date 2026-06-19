@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../lib/i18n";
 import { DeveloperTerminal } from "../components/DeveloperTerminal";
+import { TopWorkflowBar } from "../components/TopWorkflowBar";
 import { initPreviewWorkerWatchdog } from "../lib/preview-worker";
 
 function NotFoundComponent() {
@@ -129,6 +130,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
+        <TopWorkflowBar />
         <Outlet />
         <DeveloperTerminal />
       </I18nProvider>
