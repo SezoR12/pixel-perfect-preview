@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../lib/i18n";
 import { DeveloperTerminal } from "../components/DeveloperTerminal";
+import { initPreviewWorkerWatchdog } from "../lib/preview-worker";
 
 function NotFoundComponent() {
   return (
@@ -120,6 +121,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    initPreviewWorkerWatchdog();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
