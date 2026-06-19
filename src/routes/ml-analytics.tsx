@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
 import { PricePrediction, DemandAnalytics, getFeatureWeights, getPricePredictions, getDemandImbalances, simulateMLMatching } from "@/lib/api";
 import { Sparkles, TrendingUp, TrendingDown, Activity, Sliders, Cpu, AlertTriangle, CheckCircle2, DollarSign, RefreshCw, BarChart3, LineChart, Globe } from "lucide-react";
 

@@ -11,6 +11,7 @@ import {
   getDashboard,
   getMe,
   getPreDeals,
+  removeToken,
 } from "@/lib/api";
 import {
   Package,
