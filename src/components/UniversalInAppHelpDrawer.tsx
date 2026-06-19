@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HelpCircle, ExternalLink, Search, BookOpen, ShieldAlert, FileText, X, ChevronRight, MessageSquare, Sparkles } from "lucide-react";
+import { HelpCircle, ExternalLink, Search, Shield, FileText, X, ChevronRight, Sparkles } from "lucide-react";
 
 export const UniversalInAppHelpDrawer: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -101,7 +101,7 @@ export const UniversalInAppHelpDrawer: React.FC = () => {
           <div className="p-6 space-y-4 flex-1 overflow-y-auto select-text">
             {filteredTopics.length === 0 ? (
               <div className="py-12 text-center text-surface-400 font-mono text-xs">
-                <BookOpen className="w-8 h-8 mx-auto mb-2 text-surface-600" />
+                <FileText className="w-8 h-8 mx-auto mb-2 text-surface-600" />
                 <p>Zero matching documentation topics found.</p>
                 <span className="text-[10px]">Try searching for 'Stripe', 'KYC', or 'PgBouncer'.</span>
               </div>

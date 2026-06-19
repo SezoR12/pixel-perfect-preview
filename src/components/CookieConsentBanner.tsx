@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ShieldAlert, CheckCircle2, Sliders, X } from "lucide-react";
+import { Shield, CheckCircle2, Settings, X } from "lucide-react";
 
 export const CookieConsentBanner: React.FC = () => {
   const [showBanner, setShowBanner] = useState(false);
@@ -41,7 +41,7 @@ export const CookieConsentBanner: React.FC = () => {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-primary-500/20 text-primary-400 border border-primary-500/30 flex-shrink-0">
-              <ShieldAlert className="w-6 h-6 animate-pulse" />
+              <Shield className="w-6 h-6 animate-pulse" />
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">Institutional GDPR Privacy & Consent Handshake</h3>
@@ -56,7 +56,7 @@ export const CookieConsentBanner: React.FC = () => {
               onClick={() => setShowDetails(!showDetails)}
               className="px-4 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 text-surface-300 hover:text-white font-semibold text-xs flex items-center gap-2 border border-surface-700 transition-all font-mono"
             >
-              <Sliders className="w-3.5 h-3.5" />
+              <Settings className="w-3.5 h-3.5" />
               <span>{showDetails ? "Hide SLA" : "Customize"}</span>
             </button>
             <button

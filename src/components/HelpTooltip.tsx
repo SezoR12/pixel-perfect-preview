@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HelpCircle, ExternalLink, Sliders, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react";
+import { HelpCircle, ExternalLink, Settings, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react";
 
 interface HelpTooltipProps {
   title: string;

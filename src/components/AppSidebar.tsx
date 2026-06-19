@@ -55,60 +55,71 @@ export function AppSidebar({ activeRoute }: AppSidebarProps) {
     { id: "hardening-notes", label: t("nav.hardening", "HTTPS / Hardening"), path: "/hardening-notes", icon: Lock },
   ];
 
+  const normalizedActive = activeRoute.toLowerCase();
+
   return (
-    <aside className="hidden w-64 flex-col border-r border-border bg-white lg:flex flex-shrink-0 select-none">
-      <div className="flex h-16 items-center gap-3 border-b border-border px-6">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-          <span className="font-mono text-sm font-bold">T</span>
+    <aside className="hidden w-64 flex-col border-r border-border bg-white lg:flex flex-shrink-0 select-none shadow-lg">
+      {/* Platform Header Logo */}
+      <div className="flex h-16 items-center gap-3 border-b border-border px-6 bg-slate-950 text-white cursor-pointer" onClick={() => navigate({ to: "/" })}>
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-yellow-500 text-slate-950 shadow-md">
+          <span className="font-serif text-base font-black">T</span>
         </div>
-        <span className="text-lg font-semibold text-foreground">{t("app.title", "Tureep AI+")}</span>
+        <div>
+          <span className="text-base font-extrabold tracking-tight font-serif text-white block leading-tight">{t("app.title", "Tureep AI+")}</span>
+          <span className="text-[10px] text-yellow-400 font-mono block">Institutional Trade Terminal</span>
+        </div>
       </div>
 
-      <div className="p-3 border-b border-border bg-secondary/30">
+      {/* Language Bar Widget */}
+      <div className="p-3 border-b border-border bg-secondary/40">
         <div className="flex items-center gap-2">
-          <Globe className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <Globe className="h-4 w-4 text-primary flex-shrink-0" />
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value as Language)}
-            className="w-full bg-transparent text-xs font-medium text-foreground cursor-pointer focus:outline-none"
+            className="w-full bg-transparent text-xs font-bold text-foreground cursor-pointer focus:outline-none font-mono uppercase"
           >
-            <option value="en">English (LTR)</option>
-            <option value="ar">العربية (RTL)</option>
-            <option value="tr">Türkçe (LTR)</option>
-            <option value="ku">کوردی (RTL)</option>
-            <option value="fa">فارسی (RTL)</option>
+            <option value="en">🇬🇧 English (LTR)</option>
+            <option value="ar">🇸🇦 العربية (RTL)</option>
+            <option value="tr">🇹🇷 Türkçe (LTR)</option>
+            <option value="ku">☀️ کوردی (RTL)</option>
+            <option value="fa">🇮🇷 فارسی (RTL)</option>
           </select>
         </div>
       </div>
 
-      <nav className="flex-1 space-y-0.5 p-3 overflow-y-auto">
+      {/* Interactive Navigation Menu */}
+      <nav className="flex-1 space-y-1 p-3 overflow-y-auto select-none">
         {items.map((item) => {
           const Icon = item.icon;
-          const isActive = activeRoute === item.id;
+          const isActive = normalizedActive === item.id || normalizedActive.includes("/" + item.id);
+          
           return (
             <button
               key={item.id}
               onClick={() => navigate({ to: item.path })}
-              className={`flex w-full items-center gap-3 rounded-md px-3 py-2 text-xs font-medium transition-colors ${
+              className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
                 isActive
-                  ? "bg-secondary text-foreground font-semibold shadow-sm"
-                  : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                  ? "bg-primary text-white font-extrabold shadow-md translate-x-1"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               }`}
             >
               <Icon className="h-4 w-4 flex-shrink-0" />
               <span className="truncate">{item.label}</span>
+              {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse flex-shrink-0" />}
             </button>
           );
         })}
       </nav>
 
-      <div className="border-t border-border p-3">
+      {/* Support / Logout Sidebar Footer */}
+      <div className="border-t border-border p-3 space-y-1 bg-secondary/20">
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"
+          className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold text-danger-600 hover:bg-danger hover:text-white transition-all cursor-pointer"
         >
           <LogOut className="h-4 w-4 flex-shrink-0" />
-          <span>{t("btn.logout", "Log out")}</span>
+          <span>{t("btn.logout", "Sign Out of Terminal")}</span>
         </button>
       </div>
     </aside>
