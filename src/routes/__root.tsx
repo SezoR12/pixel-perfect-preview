@@ -24,6 +24,7 @@ import { getMe, removeToken, type User as ApiUser } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalStoreProvider } from "@/stores/GlobalStoreProvider";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
+import { UniversalInAppHelpDrawer } from "@/components/UniversalInAppHelpDrawer";
 
 export const Route = createFileRoute("/__root")({
   component: RootLayout,
@@ -233,6 +234,7 @@ function RootLayout() {
           <Outlet />
         </div>
         <CookieConsentBanner />
+        <UniversalInAppHelpDrawer />
       </main>
     </div>
     </GlobalStoreProvider>
