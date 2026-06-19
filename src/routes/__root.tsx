@@ -26,6 +26,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { GlobalStoreProvider } from "@/stores/GlobalStoreProvider";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { UniversalInAppHelpDrawer } from "@/components/UniversalInAppHelpDrawer";
+import { ClientErrorConsole } from "@/components/ClientErrorConsole";
 
 export const Route = createFileRoute("/__root")({
   component: RootLayout,
@@ -236,6 +237,7 @@ function RootLayout() {
         </div>
         <CookieConsentBanner />
         <UniversalInAppHelpDrawer />
+        <ClientErrorConsole />
       </main>
     </div>
     </GlobalStoreProvider>
