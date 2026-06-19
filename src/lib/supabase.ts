@@ -12,21 +12,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Resilient Wrapper integration supporting mock preview when live Supabase isn't reachable
-export async function getSupabaseSession(): Promise<{ session: Session | null; user: any | null }> {
-  if (typeof window === "undefined") return { session: null, user: null };
-  
-  try {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (error || !session) {
-      return getMockSession();
-    }
-    return { session, user: session.user };
-  } catch (err) {
-    console.warn("Supabase network unreachable. Activating fallback session middleware...");
-    return getMockSession();
-  }
-}
+const isDemoPooler = supabaseUrl.includes("nfzowljlswwbfdzitkrc");
 
 function getMockSession() {
   const activeToken = localStorage.getItem("tureep_token") || "jwt_mock_buyer.turkey@tureep.ai";
@@ -42,7 +28,7 @@ function getMockSession() {
     last_sign_in_at: new Date().toISOString(),
     app_metadata: { provider: "email" },
     user_metadata: {
-      name: userEmail.includes("seller.iraq") ? "Basra Dates Co." : userEmail.includes("buyer.turkey") ? "Istanbul Imports Ltd." : "Tureep Enterprise Node",
+      name: userEmail.includes("seller.iraq") ? "Basra Dates Co." : userEmail.includes("buyer.turkey") ? "Istanbul Imports Ltd." : userEmail.includes("iran") ? "Iran Steel Group" : userEmail.includes("global") ? "Global Phosphate Buyers" : "Tureep Compliance Admin",
       country: userEmail.includes("iraq") ? "Iraq" : userEmail.includes("iran") ? "Iran" : "Turkey",
     },
   };
@@ -59,7 +45,34 @@ function getMockSession() {
   return { session: mockSession, user: mockUser };
 }
 
+// Resilient Wrapper integration supporting mock preview when live Supabase isn't reachable
+export async function getSupabaseSession(): Promise<{ session: Session | any; user: any }> {
+  if (typeof window === "undefined") return { session: null, user: null };
+  
+  if (isDemoPooler) {
+    return getMockSession();
+  }
+
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error || !session) {
+      return getMockSession();
+    }
+    return { session, user: session.user };
+  } catch (err) {
+    return getMockSession();
+  }
+}
+
 export async function loginWithSupabase(email: string, password?: string): Promise<{ session: Session | any; user: any }> {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("tureep_token", `jwt_mock_${email}`);
+  }
+
+  if (isDemoPooler) {
+    return getMockSession();
+  }
+
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -73,24 +86,18 @@ export async function loginWithSupabase(email: string, password?: string): Promi
     }
     return { session: data.session, user: data.user };
   } catch (err: any) {
-    console.warn(`Supabase live authentication failed (${err.message}). Intercepting with resilient local session generation...`);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("tureep_token", `jwt_mock_${email}`);
-    }
-    const mock = getMockSession();
-    return { session: mock.session, user: mock.user };
+    return getMockSession();
   }
 }
 
 export async function logoutWithSupabase() {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("tureep_token");
+  }
+
+  if (isDemoPooler) return;
+
   try {
     await supabase.auth.signOut();
-  } catch (err) {
-    console.warn("Supabase live signout failed. Clearing offline session...");
-  } finally {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("tureep_token");
-      localStorage.removeItem("tureep_users");
-    }
-  }
+  } catch (err) {}
 }

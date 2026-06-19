@@ -753,8 +753,9 @@ async function runOfflineMock(path: string, options: RequestInit = {}): Promise<
 // Interceptor wrapper
 async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
+  const isForm = options.body instanceof URLSearchParams || (options.headers as any)?.["Content-Type"] === "application/x-www-form-urlencoded";
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+    "Content-Type": isForm ? "application/x-www-form-urlencoded" : "application/json",
     ...(options.headers as Record<string, string>),
   };
   if (token) {
@@ -791,6 +792,7 @@ async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
 export async function login(email: string, password?: string): Promise<{ access_token: string }> {
   return api<{ access_token: string }>("/api/auth/login", {
     method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ username: email, password: password || "password123" }),
   });
 }

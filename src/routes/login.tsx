@@ -34,6 +34,14 @@ function LoginPage() {
     }
   }
 
+  function handleQuickLogin(testEmail: string) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tureep_token", `jwt_mock_${testEmail}`);
+    }
+    setToken(`jwt_mock_${testEmail}`);
+    navigate({ to: "/dashboard" });
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-white">
@@ -118,6 +126,27 @@ function LoginPage() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </form>
+
+            {/* Quick 1-Click Sandbox Bypass Buttons */}
+            <div className="mt-6 pt-4 border-t border-border space-y-2">
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block font-mono">
+                Instant 1-Click Snappy Terminal Launch:
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <Button size="sm" variant="outline" className="text-xs font-mono h-8 border-primary text-primary hover:bg-primary/5" onClick={() => handleQuickLogin("seller.iraq@tureep.ai")}>
+                  Silver Seller (Iraq)
+                </Button>
+                <Button size="sm" variant="outline" className="text-xs font-mono h-8 border-amber-500 text-amber-700 hover:bg-amber-50" onClick={() => handleQuickLogin("buyer.turkey@tureep.ai")}>
+                  Gold Buyer (Turkey)
+                </Button>
+                <Button size="sm" variant="outline" className="text-xs font-mono h-8 border-purple-500 text-purple-700 hover:bg-purple-50" onClick={() => handleQuickLogin("buyer.global@tureep.ai")}>
+                  Platinum Enterprise
+                </Button>
+                <Button size="sm" variant="outline" className="text-xs font-mono h-8 border-slate-900 text-slate-900 hover:bg-slate-100" onClick={() => handleQuickLogin("admin@tureep.ai")}>
+                  Compliance Officer
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
