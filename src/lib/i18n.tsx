@@ -13,7 +13,7 @@ interface Translations {
 }
 
 const DICTIONARY: Translations = {
-  // App Core Brand
+  // Brand & Core
   "app.title": { en: "Tureep AI+", ar: "منصة تريب للذكاء الاصطناعي", fa: "پلتفرم توریپ هوش مصنوعی", ku: "پلاتفۆرمی توریپ بۆ ژیری دەستکرد", tr: "Tureep AI+" },
   "Terminal B2B Trade Summary": { en: "Terminal B2B Trade Summary", ar: "ملخص صفقات التداول B2B", fa: "خلاصه معاملات تجاری B2B", ku: "پوختەی بازرگانی پلاتفۆرمی B2B", tr: "B2B Ticaret Terminali Özeti" },
 
@@ -22,11 +22,11 @@ const DICTIONARY: Translations = {
   "nav.membership": { en: "Membership", ar: "نظام العضوية", fa: "عضویت و اشتراک", ku: "سیستەمی ئەندامێتی", tr: "Üyelik Sistemi" },
   "nav.corridors": { en: "Corridors", ar: "الممرات النشطة", fa: "کریدورهای فعال", ku: "ڕاڕەوە بازرگانییەکان", tr: "Ticaret Koridorları" },
   "nav.signin": { en: "Sign in", ar: "تسجيل الدخول", fa: "ورود به حساب", ku: "چوونە ژوورەوە", tr: "Giriş Yap" },
-  "nav.access": { en: "Access Terminal", ar: "دخول المنصة التجاري", fa: "ورود به ترمینال", ku: "چوونە ناو پلاتفۆرم", tr: "Terminale Eriş" },
+  "nav.access": { en: "Access Terminal", ar: "دخول المنصة التجارية", fa: "ورود به ترمینال", ku: "چوونە ناو پلاتفۆرم", tr: "Terminale Eriş" },
 
   // Landing Page Hero
   "hero.tag": { en: "Private member network", ar: "شبكة أعضاء تجارية خاصة", fa: "شبکه اعضای خصوصی تجارت", ku: "تۆڕی ئەندامانی تایبەت", tr: "Özel üye ticaret ağı" },
-  "hero.title": { en: "Trade at the speed of intelligence", ar: "تداول بسرعة الذكاء الاصطناعي", fa: "تجارت با سرعت هوش مصنوعی", ku: "بازرگانی بە خێرایی ژیری دەستکرد", tr: "Zeka hızında ticaret yapın" },
+  "hero.title": { en: "Trade at the speed of intelligence", ar: "التداول بسرعة الذكاء الاصطناعي", fa: "تجارت با سرعت هوش مصنوعی", ku: "بازرگانی بە خێرایی ژیری دەستکرد", tr: "Zeka hızında ticaret yapın" },
   "hero.subtitle": { 
     en: "Tureep AI+ connects verified sellers and buyers across the Middle East and beyond. Our AI pre-generates institutional deals, clears compliance, and orchestrates logistics — before the first message is sent.", 
     ar: "تربط منصة تريب للذكاء الاصطناعي بين الشركات الموثوقة في العراق وإيران وتركيا والأسواق العالمية. يقوم الذكاء الاصطناعي بتوليد الصفقات المؤسسية وتخليص الامتثال وتنظيم الشحن قبل إرسال الرسالة الأولى.", 
@@ -56,7 +56,7 @@ const DICTIONARY: Translations = {
   "mock.terms": { en: "300 ton • $2.65 / ton • Escrow", ar: "الكمية: 300 طن | السعر: 2.65 دولار/طن | الدفع: عبر حساب ضمان", fa: "مقدار: 300 تن | قیمت: 2.65 دلار/تن | پرداخت: امانی", ku: "بڕ: 300 تەن | نرخ: 2.65 دۆلار/تەن | پارەدان: ئەمانی", tr: "300 ton | $2.65 / ton | Kurumsal Escrow" },
 
   // Stats Section
-  "Trade value screened": { en: "Trade value screened", ar: "قيمة الصفقات المفحوصة", fa: "ارزش معاملات بررسی‌شده", ku: "بڕی بازرگانی پشکنراو", tr: "Taranan ticaret değeri" },
+  "Trade value screened": { en: "Trade value screened", ar: "قيمة الصفقات المعتمدة", fa: "ارزش معاملات بررسی‌شده", ku: "بڕی بازرگانی پشکنراو", tr: "Taranan ticaret değeri" },
   "Pre-deals generated": { en: "Pre-deals generated", ar: "الصفقات المبدئية المولدة", fa: "پیش‌قراردادهای ایجادشده", ku: "پێش-ڕێککەوتنە دروستکراوەکان", tr: "Oluşturulan ön anlaşmalar" },
   "Verified members": { en: "Verified members", ar: "الشركات والأعضاء الموثوقون", fa: "شرکت‌ها و اعضای تاییدشده", ku: "کۆمپانیا و ئەندامە باوەڕپێکراوەکان", tr: "Doğrulanmış şirketler" },
   "Active corridors": { en: "Active corridors", ar: "الممرات التجارية النشطة", fa: "کریدورهای تجاری فعال", ku: "ڕاڕەوە بازرگانییە چالاکەکان", tr: "Aktif ticaret koridorları" },
@@ -179,7 +179,10 @@ const DICTIONARY: Translations = {
 
   "dash.kyc.title": { en: "KYC Identity Audit", ar: "التحقق من الهوية (KYC)", fa: "تایید احراز هویت", ku: "سەلماندنی ناسنامە", tr: "KYC Doğrulaması" },
   "dash.sanctions.title": { en: "Global Sanctions Check", ar: "فحص العقوبات الدولية", fa: "غربالگری تحریم‌ها", ku: "پشکنینی سزای نێودەوڵەتی", tr: "Yaptırım Taraması" },
+  
+  // Impeccable mapping for user headline
   "dash.deals.title": { en: "Active Institutional Pre-Deals", ar: "الصفقات المبدئية المؤسسية النشطة", fa: "پیش‌قراردادهای نهادی فعال", ku: "پێش-ڕێککەوتنە دامەزراوەییە چالاکەکان", tr: "Aktif Kurumsal Ön Anlaşmalar" },
+  "Active Institutional Pre-Deals": { en: "Active Institutional Pre-Deals", ar: "الصفقات المبدئية المؤسسية النشطة", fa: "پیش‌قراردادهای نهادی فعال", ku: "پێش-ڕێککەوتنە دامەزراوەییە چالاکەکان", tr: "Aktif Kurumsal Ön Anlaşmalar" },
 
   "btn.viewall": { en: "View all", ar: "عرض الكل", fa: "مشاهده همه", ku: "بینینی هەمووی", tr: "Tümünü Gör" },
   "btn.review": { en: "Review Handshake", ar: "مراجعة الصفقة", fa: "بررسی معامله", ku: "پێداچوونەوەی ڕێککەوتن", tr: "Anlaşmayı İncele" },
@@ -189,7 +192,7 @@ const DICTIONARY: Translations = {
 
 // --------------------------------------------------------------------
 // 🌟 CUSTOM FLOATING MULTI-LANGUAGE SWITCHER COMPONENT
-// Embeds permanently at the bottom/top center of any screen
+// Embeds permanently at the bottom center of any screen
 // --------------------------------------------------------------------
 function UniversalLanguageBar() {
   const { language, setLanguage } = useI18n();
@@ -246,6 +249,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const dir = language === "ar" || language === "fa" || language === "ku" ? "rtl" : "ltr";
 
+  // Dynamic explicit Web Fonts application for Arabic, Persian, Kurdish, and Turkish
+  const fontFamily = language === "ar" || language === "ku" ? "'Noto Sans Arabic', sans-serif" : language === "fa" ? "'Vazirmatn', sans-serif" : "'Inter', sans-serif";
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("tureep_lang", language);
@@ -275,7 +281,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <I18nContext.Provider value={{ language, setLanguage, dir, t }}>
-      <div dir={dir} className={`min-h-screen transition-all ${dir === "rtl" ? "font-sans text-right" : "font-sans text-left"}`}>
+      <div dir={dir} style={{ fontFamily }} className={`min-h-screen transition-all ${dir === "rtl" ? "text-right" : "text-left"}`}>
         {children}
       </div>
       <UniversalLanguageBar />
