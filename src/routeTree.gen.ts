@@ -13,6 +13,7 @@ import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as TradeFinanceRouteImport } from './routes/trade-finance'
 import { Route as SupabasePortalRouteImport } from './routes/supabase-portal'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SanctionsRouteImport } from './routes/sanctions'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
@@ -21,12 +22,17 @@ import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MlAnalyticsRouteImport } from './routes/ml-analytics'
 import { Route as MicroservicesSpecRouteImport } from './routes/microservices-spec'
+import { Route as LogisticsRouteImport } from './routes/logistics'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as KycRouteImport } from './routes/kyc'
 import { Route as HardeningNotesRouteImport } from './routes/hardening-notes'
+import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as DemandsRouteImport } from './routes/demands'
+import { Route as DealsRouteImport } from './routes/deals'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as BillingRouteImport } from './routes/billing'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 
 const WorkflowRoute = WorkflowRouteImport.update({
@@ -47,6 +53,11 @@ const SupabasePortalRoute = SupabasePortalRouteImport.update({
 const ShipmentsRoute = ShipmentsRouteImport.update({
   id: '/shipments',
   path: '/shipments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SanctionsRoute = SanctionsRouteImport.update({
@@ -89,6 +100,11 @@ const MicroservicesSpecRoute = MicroservicesSpecRouteImport.update({
   path: '/microservices-spec',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LogisticsRoute = LogisticsRouteImport.update({
+  id: '/logistics',
+  path: '/logistics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -104,9 +120,19 @@ const HardeningNotesRoute = HardeningNotesRouteImport.update({
   path: '/hardening-notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FinanceRoute = FinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemandsRoute = DemandsRouteImport.update({
   id: '/demands',
   path: '/demands',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DealsRoute = DealsRouteImport.update({
+  id: '/deals',
+  path: '/deals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -114,9 +140,19 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComplianceRoute = ComplianceRouteImport.update({
+  id: '/compliance',
+  path: '/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BillingRoute = BillingRouteImport.update({
   id: '/billing',
   path: '/billing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -127,12 +163,17 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/billing': typeof BillingRoute
+  '/compliance': typeof ComplianceRoute
   '/dashboard': typeof DashboardRoute
+  '/deals': typeof DealsRoute
   '/demands': typeof DemandsRoute
+  '/finance': typeof FinanceRoute
   '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/logistics': typeof LogisticsRoute
   '/microservices-spec': typeof MicroservicesSpecRoute
   '/ml-analytics': typeof MlAnalyticsRoute
   '/notifications': typeof NotificationsRoute
@@ -141,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/sanctions': typeof SanctionsRoute
+  '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
@@ -148,12 +190,17 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/billing': typeof BillingRoute
+  '/compliance': typeof ComplianceRoute
   '/dashboard': typeof DashboardRoute
+  '/deals': typeof DealsRoute
   '/demands': typeof DemandsRoute
+  '/finance': typeof FinanceRoute
   '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/logistics': typeof LogisticsRoute
   '/microservices-spec': typeof MicroservicesSpecRoute
   '/ml-analytics': typeof MlAnalyticsRoute
   '/notifications': typeof NotificationsRoute
@@ -162,6 +209,7 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/sanctions': typeof SanctionsRoute
+  '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
@@ -170,12 +218,17 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/billing': typeof BillingRoute
+  '/compliance': typeof ComplianceRoute
   '/dashboard': typeof DashboardRoute
+  '/deals': typeof DealsRoute
   '/demands': typeof DemandsRoute
+  '/finance': typeof FinanceRoute
   '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/logistics': typeof LogisticsRoute
   '/microservices-spec': typeof MicroservicesSpecRoute
   '/ml-analytics': typeof MlAnalyticsRoute
   '/notifications': typeof NotificationsRoute
@@ -184,6 +237,7 @@ export interface FileRoutesById {
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/sanctions': typeof SanctionsRoute
+  '/settings': typeof SettingsRoute
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
@@ -193,12 +247,17 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/analytics'
     | '/billing'
+    | '/compliance'
     | '/dashboard'
+    | '/deals'
     | '/demands'
+    | '/finance'
     | '/hardening-notes'
     | '/kyc'
     | '/login'
+    | '/logistics'
     | '/microservices-spec'
     | '/ml-analytics'
     | '/notifications'
@@ -207,6 +266,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/profile'
     | '/sanctions'
+    | '/settings'
     | '/shipments'
     | '/supabase-portal'
     | '/trade-finance'
@@ -214,12 +274,17 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/analytics'
     | '/billing'
+    | '/compliance'
     | '/dashboard'
+    | '/deals'
     | '/demands'
+    | '/finance'
     | '/hardening-notes'
     | '/kyc'
     | '/login'
+    | '/logistics'
     | '/microservices-spec'
     | '/ml-analytics'
     | '/notifications'
@@ -228,6 +293,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/profile'
     | '/sanctions'
+    | '/settings'
     | '/shipments'
     | '/supabase-portal'
     | '/trade-finance'
@@ -235,12 +301,17 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/analytics'
     | '/billing'
+    | '/compliance'
     | '/dashboard'
+    | '/deals'
     | '/demands'
+    | '/finance'
     | '/hardening-notes'
     | '/kyc'
     | '/login'
+    | '/logistics'
     | '/microservices-spec'
     | '/ml-analytics'
     | '/notifications'
@@ -249,6 +320,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/profile'
     | '/sanctions'
+    | '/settings'
     | '/shipments'
     | '/supabase-portal'
     | '/trade-finance'
@@ -257,12 +329,17 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   BillingRoute: typeof BillingRoute
+  ComplianceRoute: typeof ComplianceRoute
   DashboardRoute: typeof DashboardRoute
+  DealsRoute: typeof DealsRoute
   DemandsRoute: typeof DemandsRoute
+  FinanceRoute: typeof FinanceRoute
   HardeningNotesRoute: typeof HardeningNotesRoute
   KycRoute: typeof KycRoute
   LoginRoute: typeof LoginRoute
+  LogisticsRoute: typeof LogisticsRoute
   MicroservicesSpecRoute: typeof MicroservicesSpecRoute
   MlAnalyticsRoute: typeof MlAnalyticsRoute
   NotificationsRoute: typeof NotificationsRoute
@@ -271,6 +348,7 @@ export interface RootRouteChildren {
   ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
   SanctionsRoute: typeof SanctionsRoute
+  SettingsRoute: typeof SettingsRoute
   ShipmentsRoute: typeof ShipmentsRoute
   SupabasePortalRoute: typeof SupabasePortalRoute
   TradeFinanceRoute: typeof TradeFinanceRoute
@@ -305,6 +383,13 @@ declare module '@tanstack/react-router' {
       path: '/shipments'
       fullPath: '/shipments'
       preLoaderRoute: typeof ShipmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sanctions': {
@@ -363,6 +448,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MicroservicesSpecRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/logistics': {
+      id: '/logistics'
+      path: '/logistics'
+      fullPath: '/logistics'
+      preLoaderRoute: typeof LogisticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -384,11 +476,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HardeningNotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/finance': {
+      id: '/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof FinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demands': {
       id: '/demands'
       path: '/demands'
       fullPath: '/demands'
       preLoaderRoute: typeof DemandsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deals': {
+      id: '/deals'
+      path: '/deals'
+      fullPath: '/deals'
+      preLoaderRoute: typeof DealsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -398,11 +504,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/compliance': {
+      id: '/compliance'
+      path: '/compliance'
+      fullPath: '/compliance'
+      preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/billing': {
       id: '/billing'
       path: '/billing'
       fullPath: '/billing'
       preLoaderRoute: typeof BillingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -417,12 +537,17 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
   BillingRoute: BillingRoute,
+  ComplianceRoute: ComplianceRoute,
   DashboardRoute: DashboardRoute,
+  DealsRoute: DealsRoute,
   DemandsRoute: DemandsRoute,
+  FinanceRoute: FinanceRoute,
   HardeningNotesRoute: HardeningNotesRoute,
   KycRoute: KycRoute,
   LoginRoute: LoginRoute,
+  LogisticsRoute: LogisticsRoute,
   MicroservicesSpecRoute: MicroservicesSpecRoute,
   MlAnalyticsRoute: MlAnalyticsRoute,
   NotificationsRoute: NotificationsRoute,
@@ -431,6 +556,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
   SanctionsRoute: SanctionsRoute,
+  SettingsRoute: SettingsRoute,
   ShipmentsRoute: ShipmentsRoute,
   SupabasePortalRoute: SupabasePortalRoute,
   TradeFinanceRoute: TradeFinanceRoute,
@@ -439,13 +565,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
