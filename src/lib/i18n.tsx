@@ -149,6 +149,7 @@ const DICTIONARY: Translations = {
   // Dashboard Nav & Buttons
   "nav.dashboard": { en: "Dashboard", ar: "لوحة التحكم", fa: "داشبورد", ku: "پێشبین (داشبۆرد)", tr: "Gösterge Paneli" },
   "nav.products": { en: "Products", ar: "المنتجات", fa: "محصولات", ku: "بەرهەمەکان", tr: "Ürünler" },
+  "nav.demands": { en: "Demands", ar: "الطلبات", fa: "تقاضاها", ku: "داواکارییەکان", tr: "Talepler" },
   "nav.pre_deals": { en: "Pre-Deals", ar: "الصفقات المبدئية", fa: "پیش‌قراردادها", ku: "پێش-ڕێککەوتنەکان", tr: "Ön Anlaşmalar" },
   "nav.orders": { en: "Orders & Escrow", ar: "الطلبات والضمان", fa: "سفارشات و امانی", ku: "داواکارییەکان و پارەی ئەمانی", tr: "Siparişler ve Escrow" },
   "nav.finance": { en: "Trade Finance (L/C & D/P)", ar: "التمويل التجاري (L/C & D/P)", fa: "تأمین مالی تجارت (L/C & D/P)", ku: "دارایی بازرگانی (L/C & D/P)", tr: "Ticaret Finansmanı (L/C & D/P)" },

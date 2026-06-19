@@ -4,6 +4,7 @@ import { useI18n, Language } from "@/lib/i18n";
 import {
   LayoutDashboard,
   Package,
+  ClipboardList,
   Handshake,
   ShoppingCart,
   FileCheck,
@@ -35,6 +36,7 @@ export function AppSidebar({ activeRoute }: AppSidebarProps) {
   const items = [
     { id: "dashboard", label: t("nav.dashboard", "Dashboard"), path: "/dashboard", icon: LayoutDashboard },
     { id: "products", label: t("nav.products", "Products"), path: "/products", icon: Package },
+    { id: "demands", label: t("nav.demands", "Demands"), path: "/demands", icon: ClipboardList },
     { id: "pre-deals", label: t("nav.pre_deals", "Pre-Deals"), path: "/pre-deals", icon: Handshake },
     { id: "orders", label: t("nav.orders", "Orders & Escrow"), path: "/orders", icon: ShoppingCart },
     { id: "trade-finance", label: t("nav.finance", "Trade Finance (L/C & D/P)"), path: "/trade-finance", icon: CreditCard },
