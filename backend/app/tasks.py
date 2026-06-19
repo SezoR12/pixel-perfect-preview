@@ -93,7 +93,7 @@ def async_screen_sanctions_task(self, entity_name: str, entity_type: str, user_i
 @celery_app.task(bind=True, autoretry_for=(Exception,), retry_backoff=True, max_retries=5)
 def async_run_ml_inference_task(self, payload_matrix: List[float], execution_node: str):
     try:
-        task_logger.info(f"🧠 Executing asynchronous PyTorch / XGBoost feature matrix inference on node {execution_node}...")
+        task_logger.info(f"🧠 Executing asynchronous heuristic feature matrix inference on node {execution_node}...")
         return {"status": "computed", "execution_node": execution_node, "inference_score": 94.2}
     except Exception as exc:
         try:

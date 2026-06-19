@@ -20,8 +20,10 @@ import {
   Globe,
   User as UserIcon
 } from "lucide-react";
-import { getMe, removeToken, type User } from "@/lib/api";
+import { getMe, removeToken, type User as ApiUser } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
+import { GlobalStoreProvider } from "@/stores/GlobalStoreProvider";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 
 export const Route = createFileRoute("/__root")({
   component: RootLayout,
@@ -42,7 +44,7 @@ const navItems = [
 function RootLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<ApiUser | null>(null);
   const [notifications, setNotifications] = useState(3);
   const location = useLocation();
   const { logout } = useAuth();
@@ -63,8 +65,9 @@ function RootLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-50 flex">
-      {/* Mobile overlay */}
+    <GlobalStoreProvider>
+      <div className="min-h-screen bg-surface-50 flex">
+        {/* Mobile overlay */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -229,7 +232,9 @@ function RootLayout() {
         <div className="p-4 lg:p-8">
           <Outlet />
         </div>
+        <CookieConsentBanner />
       </main>
     </div>
+    </GlobalStoreProvider>
   );
 }

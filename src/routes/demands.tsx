@@ -121,9 +121,9 @@ function DemandsPage() {
             <CardContent className="p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div className="space-y-1.5 max-w-2xl select-text">
                 <Badge className="bg-amber-500 text-black font-extrabold uppercase font-mono text-[10px] tracking-widest">Workflow Trajectory Handshake Handoff</Badge>
-                <h2 className="text-lg font-extrabold text-foreground font-sans">Advance to Stage 02: Launch XGBoost Spot Matching</h2>
+                <h2 className="text-lg font-extrabold text-foreground font-sans">Advance to Stage 02: Launch Smart Spot Matching</h2>
                 <p className="text-xs text-muted-foreground leading-relaxed font-sans">
-                  Once your target corporate purchasing inquiries are active below, trigger our automated Python AI sidecar. The engine actively correlates purchasing volumes against verified international spot catalogs (/products) and generates bilateral handshakes.
+                  Once your target corporate purchasing inquiries are active below, trigger our automated smart matching sidecar. The engine actively correlates purchasing volumes against verified international spot catalogs (/products) and generates bilateral handshakes.
                 </p>
               </div>
 
