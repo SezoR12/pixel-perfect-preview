@@ -68,8 +68,9 @@ export function AppSidebar({ activeRoute }: AppSidebarProps) {
           >
             <option value="en">English (LTR)</option>
             <option value="ar">العربية (RTL)</option>
-            <option value="fa">فارسی (RTL)</option>
             <option value="tr">Türkçe (LTR)</option>
+            <option value="ku">کوردی (RTL)</option>
+            <option value="fa">فارسی (RTL)</option>
           </select>
         </div>
       </div>
