@@ -15,16 +15,6 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Tureep AI+ — Private B2B Trade Network" },
-      {
-        name: "description",
-        content:
-          "The AI-powered trade network for institutional buyers and sellers across Iraq, Iran, Turkey, and global markets.",
-      },
-    ],
-  }),
   component: Index,
 });
 
@@ -44,8 +34,8 @@ export default function Index() {
   const features = [
     {
       icon: Sparkles,
-      title: t("feat.1.t", "AI Matchmaking"),
-      description: t("feat.1.d", "Proprietary scoring across price, reputation, urgency, and logistics to surface the best counterparties."),
+      title: t("feat.1.t", "Smart Trade Matching"),
+      description: t("feat.1.d", "Proactive rule-based heuristics across price, reputation, urgency, and operational criteria to surface authentic counterparties."),
     },
     {
       icon: Shield,
@@ -217,7 +207,7 @@ export default function Index() {
               </h1>
 
               <p className="text-lg leading-relaxed text-white/60 font-medium">
-                {t("hero.subtitle", "Tureep AI+ connects verified sellers and buyers across the Middle East and beyond. Our AI pre-generates institutional deals, clears compliance, and orchestrates logistics — before the first message is sent.")}
+                {t("hero.subtitle", "Tureep AI+ connects verified sellers and buyers across MENA and global corridors. Our platform pre-generates institutional deal opportunities, clears compliance, and orchestrates haulage --- before the first message is sent.")}
               </p>
 
               <form onSubmit={handleSubmit} className="pt-4 flex flex-col gap-3 sm:flex-row max-w-md">
