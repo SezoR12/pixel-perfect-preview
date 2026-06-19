@@ -20,7 +20,8 @@ import {
   Globe,
   User as UserIcon
 } from "lucide-react";
-import { getMe, removeToken, type User as ApiUser } from "@/lib/api";
+import { getMe, removeToken } from "@/lib/api";
+import type { User as ApiUser } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalStoreProvider } from "@/stores/GlobalStoreProvider";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
