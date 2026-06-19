@@ -14,6 +14,7 @@ from sqlalchemy import (
     Enum,
     CheckConstraint,
     Index,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
 
@@ -151,6 +152,10 @@ class User(Base):
     demands = relationship("Demand", back_populates="buyer")
     seller_orders = relationship("Order", foreign_keys="Order.seller_id", back_populates="seller")
     buyer_orders = relationship("Order", foreign_keys="Order.buyer_id", back_populates="buyer")
+    
+    __table_args__ = (
+        Index("idx_user_email_account", "email", "account_type"),
+    )
 
 
 class MasterAccount(Base):
@@ -165,6 +170,7 @@ class MasterAccount(Base):
     monthly_price = Column(DECIMAL(10, 2), nullable=False)
 
     user = relationship("User")
+    __table_args__ = (CheckConstraint("monthly_price >= 0", name="check_master_price"),)
 
 
 class Product(Base):
@@ -187,7 +193,8 @@ class Product(Base):
     seller = relationship("User", back_populates="products")
     
     __table_args__ = (
-        CheckConstraint("quantity >= 0", name="check_quantity"),
+        CheckConstraint("quantity >= 0", name="check_product_quantity"),
+        CheckConstraint("price > 0", name="check_product_price"),
         Index("idx_product_category", "category"),
         Index("idx_product_user_id", "user_id"),
         Index("idx_product_available", "is_available"),
@@ -211,7 +218,11 @@ class Demand(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     buyer = relationship("User", back_populates="demands")
-    __table_args__ = (CheckConstraint("quantity >= 0", name="check_demand_quantity"),)
+    
+    __table_args__ = (
+        CheckConstraint("quantity >= 0", name="check_demand_quantity"),
+        CheckConstraint("budget > 0", name="check_demand_budget"),
+    )
 
 
 class PreDeal(Base):
@@ -237,6 +248,12 @@ class PreDeal(Base):
     product = relationship("Product")
     seller = relationship("User", foreign_keys=[seller_id])
     buyer = relationship("User", foreign_keys=[buyer_id])
+    
+    __table_args__ = (
+        CheckConstraint("quantity > 0", name="check_pre_deal_quantity"),
+        CheckConstraint("suggested_price > 0", name="check_pre_deal_price"),
+        Index("idx_pre_deal_composite", "seller_id", "buyer_id", "status", "match_score"),
+    )
 
 
 class WaitlistEntry(Base):
@@ -266,6 +283,10 @@ class KYCVerification(Base):
 
     user = relationship("User", foreign_keys=[user_id])
     reviewer = relationship("User", foreign_keys=[reviewed_by])
+    
+    __table_args__ = (
+        Index("idx_kyc_user_status", "user_id", "status"),
+    )
 
 
 class SanctionsScreening(Base):
@@ -314,10 +335,8 @@ class Order(Base):
     payments = relationship("Payment", back_populates="order")
     
     __table_args__ = (
-        Index("idx_order_buyer", "buyer_id"),
-        Index("idx_order_seller", "seller_id"),
-        Index("idx_order_status", "status"),
-        Index("idx_order_created", "created_at"),
+        CheckConstraint("total_value > 0", name="check_order_total"),
+        Index("idx_order_composite_5", "buyer_id", "seller_id", "status", "payment_status", "created_at"),
     )
 
 
@@ -336,6 +355,11 @@ class OrderItem(Base):
 
     order = relationship("Order", back_populates="items")
     product = relationship("Product")
+    
+    __table_args__ = (
+        CheckConstraint("quantity > 0", name="check_order_item_quantity"),
+        CheckConstraint("unit_price > 0", name="check_order_item_price"),
+    )
 
 
 class Payment(Base):
@@ -360,6 +384,10 @@ class Payment(Base):
     order = relationship("Order", back_populates="payments")
     payer = relationship("User", foreign_keys=[payer_id])
     payee = relationship("User", foreign_keys=[payee_id])
+    
+    __table_args__ = (
+        CheckConstraint("amount > 0", name="check_payment_amount"),
+    )
 
 
 class Notification(Base):
@@ -414,6 +442,10 @@ class LetterOfCredit(Base):
     order = relationship("Order")
     applicant = relationship("User", foreign_keys=[applicant_id])
     beneficiary = relationship("User", foreign_keys=[beneficiary_id])
+    
+    __table_args__ = (
+        CheckConstraint("amount > 0", name="check_lc_amount"),
+    )
 
 
 class DocumentaryCollection(Base):
@@ -435,6 +467,10 @@ class DocumentaryCollection(Base):
     order = relationship("Order")
     exporter = relationship("User", foreign_keys=[exporter_id])
     importer = relationship("User", foreign_keys=[importer_id])
+    
+    __table_args__ = (
+        CheckConstraint("amount > 0", name="check_dp_amount"),
+    )
 
 
 class Shipment(Base):

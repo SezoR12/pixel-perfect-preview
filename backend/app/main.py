@@ -1,4 +1,9 @@
-from fastapi import FastAPI, Request, Response, HTTPException, status
+import uuid
+import logging
+from datetime import datetime
+from fastapi import FastAPI, Request, Response, HTTPException, status, APIRouter
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
@@ -15,38 +20,59 @@ from app.routers import (
     ml_analytics, supabase_portal
 )
 
+main_logger = logging.getLogger("tureep.main")
+
 app = FastAPI(
-    title="Tureep AI+ API",
-    description="Smart B2B Cross-Border Commodity Trade Matching & Deal Execution Terminal",
-    version="0.2.0",
+    title="Tureep AI+ Institutional Trade API",
+    description="Smart B2B Cross-Border Commodity Matching Engine & Escrow Execution Terminal",
+    version="1.0.0",
 )
 
-# 1. Exceptional SlowAPI Exception Handler
+# 1. Exceptional SlowAPI Rate Limiter Exception Handler
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
-# 2. Strict Transport Security & Payload Inspection Middleware
+# 2. Universal Request ID Middleware for Deep Telemetry Tracing
 @app.middleware("http")
-async def enforce_transport_security(request: Request, call_next):
+async def attach_request_id_and_transport_security(request: Request, call_next):
+    # Formulate distributed unique request ID
+    req_id = request.headers.get("x-request-id") or str(uuid.uuid4())
+    request.state.request_id = req_id
+
     # Fully restrict HTTP methods
     if request.method not in ("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"):
-        raise HTTPException(
+        return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            detail=f"Security Gatekeeper: HTTP method {request.method} is actively restricted in production."
+            content={
+                "error": {
+                    "code": 405,
+                    "message": f"Security Gatekeeper: HTTP method {request.method} is actively restricted.",
+                    "request_id": req_id,
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            }
         )
 
     # Completely reject oversized payloads (> 5 MB)
     content_length = request.headers.get("content-length")
     if content_length and int(content_length) > 5 * 1024 * 1024:
-        raise HTTPException(
+        return JSONResponse(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            detail="Security Gatekeeper: Payload size exceeds active Enterprise 5MB transport limitation."
+            content={
+                "error": {
+                    "code": 413,
+                    "message": "Security Gatekeeper: Payload size exceeds active Enterprise 5MB limitation.",
+                    "request_id": req_id,
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+            }
         )
 
     response: Response = await call_next(request)
     
-    # Fully program HSTS & transport hardening headers
+    # Fully program active Request ID and Transport Hardening headers
+    response.headers["X-Request-ID"] = req_id
     if not settings.DEBUG:
         response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
         
@@ -56,7 +82,45 @@ async def enforce_transport_security(request: Request, call_next):
     return response
 
 
-# 3. CORS Middleware Hardening
+# 3. Standardized Error Formatter Handlers (Pydantic Validation & HTTP Exceptions)
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    req_id = getattr(request.state, "request_id", str(uuid.uuid4()))
+    errors = exc.errors()
+    # Mask potentially sensitive raw value errors or repeats mid-message
+    sanitized_errors = [{"field": str(err.get("loc", [])[-1]), "message": err.get("msg")} for err in errors]
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "error": {
+                "code": 422,
+                "message": "Payload structure validation failed.",
+                "details": sanitized_errors,
+                "request_id": req_id,
+                "timestamp": datetime.utcnow().isoformat()
+            }
+        }
+    )
+
+
+@app.exception_handler(HTTPException)
+async def standardized_http_exception_handler(request: Request, exc: HTTPException):
+    req_id = getattr(request.state, "request_id", str(uuid.uuid4()))
+    return JSONResponse(
+        status_code=exc.status_code,
+        headers=exc.headers,
+        content={
+            "error": {
+                "code": exc.status_code,
+                "message": exc.detail,
+                "request_id": req_id,
+                "timestamp": datetime.utcnow().isoformat()
+            }
+        }
+    )
+
+
+# 4. CORS Middleware Hardening
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS.split(",") if settings.ALLOWED_ORIGINS else [],
@@ -66,7 +130,7 @@ app.add_middleware(
     max_age=600,
 )
 
-# 4. Production HTTPS & Trusted Host Gatekeeper
+# 5. Production HTTPS & Trusted Host Gatekeeper
 if not settings.DEBUG:
     app.add_middleware(HTTPSRedirectMiddleware)
     app.add_middleware(
@@ -74,7 +138,29 @@ if not settings.DEBUG:
         allowed_hosts=["tureep.ai", "*.tureep.ai", "api.tureep.ai", "localhost", "127.0.0.1", "testserver"]
     )
 
-# 5. Domain Router Attachments
+
+# 6. Authoritative Dual-Mode Router Attachments (Supporting standard /api and robust /api/v1 versions)
+def _attach_versioned_routers(target_app: FastAPI, version_prefix: str):
+    v_router = APIRouter(prefix=version_prefix)
+    v_router.include_router(auth.router)
+    v_router.include_router(users.router)
+    v_router.include_router(products.router)
+    v_router.include_router(demands.router)
+    v_router.include_router(pre_deals.router)
+    v_router.include_router(waitlist.router)
+    v_router.include_router(orders.router)
+    v_router.include_router(kyc.router)
+    v_router.include_router(sanctions.router)
+    v_router.include_router(notifications.router)
+    v_router.include_router(billing.router)
+    v_router.include_router(trade_finance.router)
+    v_router.include_router(shipments.router)
+    v_router.include_router(ml_analytics.router)
+    v_router.include_router(supabase_portal.router)
+    target_app.include_router(v_router)
+
+
+# Attach Legacy/Standard paths (/api) and Active Versioned paths (/api/v1)
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(products.router)
@@ -91,11 +177,18 @@ app.include_router(shipments.router)
 app.include_router(ml_analytics.router)
 app.include_router(supabase_portal.router)
 
+_attach_versioned_routers(app, "/api/v1")
+
 
 @app.get("/health")
-def health_check():
-    return {
-        "status": "ok",
-        "service": "tureep-enterprise-backend",
-        "mode": "production" if not settings.DEBUG else "development"
-    }
+def health_check(request: Request):
+    req_id = getattr(request.state, "request_id", str(uuid.uuid4()))
+    return JSONResponse(
+        content={
+            "status": "ok",
+            "service": "tureep-institutional-backend",
+            "api_versions": ["v1", "legacy"],
+            "request_id": req_id,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    )
