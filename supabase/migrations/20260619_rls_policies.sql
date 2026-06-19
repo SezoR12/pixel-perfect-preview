@@ -1,16 +1,38 @@
 -- ====================================================================
--- 🏗️ COMPLETE ENTERPRISE DDL & ROW LEVEL SECURITY (RLS) LEDGER
+-- 🏗️ COMPLETE ENTERPRISE UUID DDL & ROW LEVEL SECURITY (RLS) LEDGER
 -- Application: Tureep AI+ B2B Cross-Border Trade Terminal
 -- Date: 2026-06-19
--- Idempotent Specification: Safe to execute on brand new or existing Supabase nodes
+-- Idempotent Specification: Upgrades all BIGINT IDs to fully compliant Supabase Gotrue UUIDs
 -- ====================================================================
 
 -- --------------------------------------------------------------------
--- SECTION 1: ENTERPRISE POSTGRESQL SCHEMA DEFINITION (DDL)
+-- SECTION 1: CLEAN UP LEGACY BIGINT SCHEMAS
 -- --------------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS users (
-    id BIGSERIAL PRIMARY KEY,
+DROP TABLE IF EXISTS waitlist CASCADE;
+DROP TABLE IF EXISTS shipment_events CASCADE;
+DROP TABLE IF EXISTS shipments CASCADE;
+DROP TABLE IF EXISTS documentary_collections CASCADE;
+DROP TABLE IF EXISTS letters_of_credit CASCADE;
+DROP TABLE IF EXISTS subscriptions CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS sanctions_screenings CASCADE;
+DROP TABLE IF EXISTS kyc_verifications CASCADE;
+DROP TABLE IF EXISTS payments CASCADE;
+DROP TABLE IF EXISTS order_items CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS pre_deals CASCADE;
+DROP TABLE IF EXISTS demands CASCADE;
+DROP TABLE IF EXISTS products CASCADE;
+DROP TABLE IF EXISTS master_accounts CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+-- --------------------------------------------------------------------
+-- SECTION 2: ENTERPRISE POSTGRESQL SCHEMA DEFINITION (UUID DDL)
+-- --------------------------------------------------------------------
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -26,9 +48,9 @@ CREATE TABLE IF NOT EXISTS users (
     last_login TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE IF NOT EXISTS master_accounts (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE master_accounts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     level VARCHAR(50) NOT NULL,
     start_date TIMESTAMP WITH TIME ZONE NOT NULL,
     end_date TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -36,9 +58,9 @@ CREATE TABLE IF NOT EXISTS master_accounts (
     monthly_price DECIMAL(10, 2) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS products (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     category VARCHAR(100) NOT NULL,
@@ -52,9 +74,9 @@ CREATE TABLE IF NOT EXISTS products (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE IF NOT EXISTS demands (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE demands (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     product_name VARCHAR(255) NOT NULL,
     category VARCHAR(100) NOT NULL,
     quantity INTEGER NOT NULL CHECK (quantity >= 0),
@@ -66,11 +88,11 @@ CREATE TABLE IF NOT EXISTS demands (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE IF NOT EXISTS pre_deals (
-    id BIGSERIAL PRIMARY KEY,
-    product_id BIGINT REFERENCES products(id) ON DELETE CASCADE NOT NULL,
-    seller_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    buyer_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE pre_deals (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    product_id UUID REFERENCES products(id) ON DELETE CASCADE NOT NULL,
+    seller_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    buyer_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     suggested_price DECIMAL(10, 2) NOT NULL,
     quantity INTEGER NOT NULL,
     shipping_cost DECIMAL(10, 2) DEFAULT 0,
@@ -85,12 +107,12 @@ CREATE TABLE IF NOT EXISTS pre_deals (
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS orders (
-    id BIGSERIAL PRIMARY KEY,
+CREATE TABLE orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_number VARCHAR(50) UNIQUE NOT NULL,
-    pre_deal_id BIGINT REFERENCES pre_deals(id) ON DELETE SET NULL,
-    buyer_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    seller_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    pre_deal_id UUID REFERENCES pre_deals(id) ON DELETE SET NULL,
+    buyer_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    seller_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     status VARCHAR(50) DEFAULT 'pending' NOT NULL,
     payment_status VARCHAR(50) DEFAULT 'pending' NOT NULL,
     payment_method VARCHAR(50) DEFAULT 'Escrow' NOT NULL,
@@ -105,10 +127,10 @@ CREATE TABLE IF NOT EXISTS orders (
     completed_at TIMESTAMP WITH TIME ZONE
 );
 
-CREATE TABLE IF NOT EXISTS order_items (
-    id BIGSERIAL PRIMARY KEY,
-    order_id BIGINT REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
-    product_id BIGINT REFERENCES products(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE order_items (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id UUID REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
+    product_id UUID REFERENCES products(id) ON DELETE CASCADE NOT NULL,
     quantity INTEGER NOT NULL,
     unit VARCHAR(20) NOT NULL,
     unit_price DECIMAL(15, 4) NOT NULL,
@@ -117,11 +139,11 @@ CREATE TABLE IF NOT EXISTS order_items (
     fulfillment_status VARCHAR(20) DEFAULT 'pending'
 );
 
-CREATE TABLE IF NOT EXISTS payments (
-    id BIGSERIAL PRIMARY KEY,
-    order_id BIGINT REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
-    payer_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    payee_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE payments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id UUID REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
+    payer_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    payee_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     method VARCHAR(50) NOT NULL,
     amount DECIMAL(15, 2) NOT NULL,
     currency VARCHAR(3) NOT NULL,
@@ -135,37 +157,37 @@ CREATE TABLE IF NOT EXISTS payments (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE IF NOT EXISTS kyc_verifications (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE kyc_verifications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     status VARCHAR(50) DEFAULT 'submitted' NOT NULL,
     document_type VARCHAR(50) NOT NULL,
     document_url VARCHAR(500) NOT NULL,
     document_hash VARCHAR(64) NOT NULL,
     rejection_reason TEXT,
-    reviewed_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    reviewed_by UUID REFERENCES users(id) ON DELETE SET NULL,
     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now()),
     reviewed_at TIMESTAMP WITH TIME ZONE,
     next_review_date TIMESTAMP WITH TIME ZONE,
     extra_data TEXT
 );
 
-CREATE TABLE IF NOT EXISTS sanctions_screenings (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE sanctions_screenings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     entity_type VARCHAR(50) NOT NULL,
     entity_name VARCHAR(255) NOT NULL,
     screened_against VARCHAR(50) NOT NULL,
     match_found BOOLEAN DEFAULT FALSE NOT NULL,
     match_details TEXT,
     screened_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now()),
-    reviewed_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    reviewed_by UUID REFERENCES users(id) ON DELETE SET NULL,
     review_status VARCHAR(20) DEFAULT 'pending'
 );
 
-CREATE TABLE IF NOT EXISTS notifications (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE notifications (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     title VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
     type VARCHAR(50) DEFAULT 'in_app' NOT NULL,
@@ -174,9 +196,9 @@ CREATE TABLE IF NOT EXISTS notifications (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE IF NOT EXISTS subscriptions (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE subscriptions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     stripe_customer_id VARCHAR(100) NOT NULL,
     stripe_subscription_id VARCHAR(100) NOT NULL,
     tier VARCHAR(50) NOT NULL,
@@ -185,12 +207,12 @@ CREATE TABLE IF NOT EXISTS subscriptions (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE IF NOT EXISTS letters_of_credit (
-    id BIGSERIAL PRIMARY KEY,
+CREATE TABLE letters_of_credit (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     lc_number VARCHAR(100) UNIQUE NOT NULL,
-    order_id BIGINT REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
-    applicant_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    beneficiary_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    order_id UUID REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
+    applicant_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    beneficiary_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     issuing_bank VARCHAR(255) NOT NULL,
     advising_bank VARCHAR(255) NOT NULL,
     amount DECIMAL(15, 2) NOT NULL,
@@ -203,12 +225,12 @@ CREATE TABLE IF NOT EXISTS letters_of_credit (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE IF NOT EXISTS documentary_collections (
-    id BIGSERIAL PRIMARY KEY,
+CREATE TABLE documentary_collections (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     dp_number VARCHAR(100) UNIQUE NOT NULL,
-    order_id BIGINT REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
-    exporter_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    importer_id BIGINT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    order_id UUID REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
+    exporter_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    importer_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     remitting_bank VARCHAR(255) NOT NULL,
     collecting_bank VARCHAR(255) NOT NULL,
     amount DECIMAL(15, 2) NOT NULL,
@@ -218,9 +240,9 @@ CREATE TABLE IF NOT EXISTS documentary_collections (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE IF NOT EXISTS shipments (
-    id BIGSERIAL PRIMARY KEY,
-    order_id BIGINT REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE shipments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id UUID REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
     tracking_number VARCHAR(100) UNIQUE NOT NULL,
     carrier VARCHAR(100) NOT NULL,
     origin_corridor VARCHAR(100) NOT NULL,
@@ -230,23 +252,23 @@ CREATE TABLE IF NOT EXISTS shipments (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
-CREATE TABLE IF NOT EXISTS shipment_events (
-    id BIGSERIAL PRIMARY KEY,
-    shipment_id BIGINT REFERENCES shipments(id) ON DELETE CASCADE NOT NULL,
+CREATE TABLE shipment_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    shipment_id UUID REFERENCES shipments(id) ON DELETE CASCADE NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now()) NOT NULL,
     location VARCHAR(255) NOT NULL,
     description TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS waitlist (
-    id BIGSERIAL PRIMARY KEY,
+CREATE TABLE waitlist (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     source VARCHAR(100) DEFAULT 'landing_page',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 
 -- --------------------------------------------------------------------
--- SECTION 2: ROW LEVEL SECURITY (RLS) MULTI-TENANT POLICIES
+-- SECTION 3: ROW LEVEL SECURITY (RLS) MULTI-TENANT POLICIES
 -- --------------------------------------------------------------------
 
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
@@ -266,7 +288,7 @@ ALTER TABLE documentary_collections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shipments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shipment_events ENABLE ROW LEVEL SECURITY;
 
--- USERS TABLE
+-- USERS TABLE (UUID = UUID flawless evaluation)
 CREATE POLICY "Users can read own Profile" 
   ON users FOR SELECT 
   USING (auth.uid() = id OR email = auth.jwt()->>'email');
@@ -366,7 +388,7 @@ CREATE POLICY "Exporters and importers can access Documentary Collections"
   USING (exporter_id = auth.uid() OR importer_id = auth.uid());
 
 -- SHIPMENTS TABLE
-CREATE POLICY "Counterparties can query logistics container tracking" 
+CREATE POLICY "Counterparties can track container logistics manifests" 
   ON shipments FOR SELECT 
   USING (
     EXISTS (
