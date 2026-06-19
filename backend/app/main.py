@@ -77,7 +77,7 @@ async def attach_request_id_and_transport_security(request: Request, call_next):
         response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
         
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Content-Security-Policy"] = "frame-ancestors 'self' https://*.lovable.dev https://*.lovableproject.com https://*.arena.ai https://*.e2b.dev https://*.e2b.local localhost:* 127.0.0.1:*;"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     return response
 

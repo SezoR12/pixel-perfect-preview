@@ -9,7 +9,7 @@ def test_jwt_tampering_rejection(client):
 
 def test_csrf_protection_headers(client):
     res = client.post("/api/v1/auth/login", data={})
-    assert res.headers.get("X-Frame-Options") == "DENY"
+    assert "frame-ancestors" in res.headers.get("Content-Security-Policy", "")
     assert res.headers.get("X-Content-Type-Options") == "nosniff"
 
 

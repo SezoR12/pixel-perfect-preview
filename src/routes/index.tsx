@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function Index() {
+export default function Index() {
   const { language, setLanguage, t, dir } = useI18n();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
