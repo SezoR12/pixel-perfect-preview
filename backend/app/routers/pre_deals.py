@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from decimal import Decimal
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 
 from app.ai.matching import TIER_DELAY_HOURS, find_matches, create_pre_deal_from_match
@@ -10,50 +10,67 @@ from app.database import get_db
 from app.models import PreDeal, DealStatus, User, AccountType, Order, OrderItem
 from app.schemas import MatchRequest, MatchResult, PreDealRead, PreDealAction
 from app.security import get_current_user
+from app.audit import log_audit_event
+from app.ratelimit import limiter
 
 router = APIRouter(prefix="/api/deals", tags=["deals"])
 
 
 @router.post("/match", response_model=List[MatchResult])
-def run_matching(
-    request: MatchRequest | None = None,
+async def run_matching(
+    req_in: Optional[MatchRequest] = None,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     matches = find_matches(
         db,
-        product_id=request.product_id if request else None,
-        demand_id=request.demand_id if request else None,
+        product_id=req_in.product_id if req_in else None,
+        demand_id=req_in.demand_id if req_in else None,
         min_score=60.0,
     )
     return [MatchResult(**m) for m in matches]
 
 
 @router.post("/generate-pre-deals")
-def generate_pre_deals(
-    request: MatchRequest | None = None,
+@limiter.limit("10/minute")
+async def generate_pre_deals(
+    request: Request,
+    req_in: Optional[MatchRequest] = None,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    ip = request.client.host if request.client else None
+    ua = request.headers.get("user-agent")
+    
     matches = find_matches(
         db,
-        product_id=request.product_id if request else None,
-        demand_id=request.demand_id if request else None,
+        product_id=req_in.product_id if req_in else None,
+        demand_id=req_in.demand_id if req_in else None,
         min_score=60.0,
     )
     created = []
     for match in matches:
         pre_deal = create_pre_deal_from_match(db, match)
         created.append(pre_deal.id)
+        
+    log_audit_event(
+        event_type="DEAL_GENERATE",
+        user_id=current_user.id,
+        resource_type="pre_deal",
+        resource_id=None,
+        action="generate",
+        details={"generated_count": len(created), "pre_deal_ids": created},
+        ip_address=ip,
+        user_agent=ua,
+    )
     return {"created_pre_deal_ids": created, "count": len(created)}
 
 
 @router.get("/pre-deals", response_model=List[PreDealRead])
-def list_pre_deals(
+async def list_pre_deals(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    # Apply tier delay visibility
     delay_hours = TIER_DELAY_HOURS.get(current_user.account_type, 120)
     visible_before = datetime.utcnow() + timedelta(hours=delay_hours)
 
@@ -70,20 +87,26 @@ def list_pre_deals(
 
 
 @router.post("/pre-deals/{deal_id}/{action}")
-def act_on_pre_deal(
+async def act_on_pre_deal(
+    request: Request,
     deal_id: int,
     action: str,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    ip = request.client.host if request.client else None
+    ua = request.headers.get("user-agent")
+    
     if action not in ("accept", "reject"):
         raise HTTPException(status_code=400, detail="Action must be accept or reject")
 
     pre_deal = db.query(PreDeal).filter(PreDeal.id == deal_id).first()
     if not pre_deal:
         raise HTTPException(status_code=404, detail="Pre-deal not found")
-    if pre_deal.seller_id != current_user.id and pre_deal.buyer_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    # Fully verify user is strictly buyer OR seller before allowing deal actions
+    if pre_deal.seller_id != current_user.id and pre_deal.buyer_id != current_user.id and current_user.account_type.value != "black":
+        raise HTTPException(status_code=403, detail="Strict Gatekeeper: User must be exactly authenticated buyer OR seller to execute deal workflow actions")
 
     if action == "reject":
         pre_deal.status = DealStatus.REJECTED
@@ -91,15 +114,24 @@ def act_on_pre_deal(
         pre_deal.buyer_response = "rejected"
         db.commit()
         db.refresh(pre_deal)
+        
+        log_audit_event(
+            event_type="DEAL_REJECT",
+            user_id=current_user.id,
+            resource_type="pre_deal",
+            resource_id=pre_deal.id,
+            action="reject",
+            details={"product_id": pre_deal.product_id},
+            ip_address=ip,
+            user_agent=ua,
+        )
         return {"status": pre_deal.status.value, "pre_deal_id": pre_deal.id}
 
-    # Track who accepted
     if current_user.id == pre_deal.seller_id:
         pre_deal.seller_response = "accepted"
     elif current_user.id == pre_deal.buyer_id:
         pre_deal.buyer_response = "accepted"
 
-    # If both accepted, create order
     if pre_deal.seller_response == "accepted" and pre_deal.buyer_response == "accepted":
         pre_deal.status = DealStatus.ACCEPTED
         from app.routers.orders import _generate_order_number
@@ -122,8 +154,8 @@ def act_on_pre_deal(
             pre_deal_id=pre_deal.id,
             buyer_id=pre_deal.buyer_id,
             seller_id=pre_deal.seller_id,
-            status="pending",
-            payment_status="pending",
+            status="confirmed",
+            payment_status="held" if pre_deal.payment_terms == "Escrow" else "pending",
             payment_method=pre_deal.payment_terms or "Escrow",
             total_value=total,
             platform_fee=platform_fee,
@@ -149,6 +181,17 @@ def act_on_pre_deal(
         db.commit()
         db.refresh(pre_deal)
         db.refresh(order)
+        
+        log_audit_event(
+            event_type="DEAL_ACCEPT_FINAL",
+            user_id=current_user.id,
+            resource_type="pre_deal",
+            resource_id=pre_deal.id,
+            action="accept",
+            details={"order_id": order.id, "total_value": str(total)},
+            ip_address=ip,
+            user_agent=ua,
+        )
         return {
             "status": pre_deal.status.value,
             "pre_deal_id": pre_deal.id,
@@ -158,4 +201,15 @@ def act_on_pre_deal(
 
     db.commit()
     db.refresh(pre_deal)
+    
+    log_audit_event(
+        event_type="DEAL_ACCEPT_PARTIAL",
+        user_id=current_user.id,
+        resource_type="pre_deal",
+        resource_id=pre_deal.id,
+        action="accept",
+        details={"waiting_for": "seller" if current_user.id == pre_deal.buyer_id else "buyer"},
+        ip_address=ip,
+        user_agent=ua,
+    )
     return {"status": "pending", "pre_deal_id": pre_deal.id, "waiting_for": "seller" if current_user.id == pre_deal.buyer_id else "buyer"}

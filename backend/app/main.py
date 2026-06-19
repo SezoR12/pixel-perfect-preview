@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
@@ -25,7 +25,38 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# 2. CORS Middleware Hardening
+
+# 2. Strict Transport Security & Payload Inspection Middleware
+@app.middleware("http")
+async def enforce_transport_security(request: Request, call_next):
+    # Fully restrict HTTP methods
+    if request.method not in ("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"):
+        raise HTTPException(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            detail=f"Security Gatekeeper: HTTP method {request.method} is actively restricted in production."
+        )
+
+    # Completely reject oversized payloads (> 5 MB)
+    content_length = request.headers.get("content-length")
+    if content_length and int(content_length) > 5 * 1024 * 1024:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail="Security Gatekeeper: Payload size exceeds active Enterprise 5MB transport limitation."
+        )
+
+    response: Response = await call_next(request)
+    
+    # Fully program HSTS & transport hardening headers
+    if not settings.DEBUG:
+        response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
+        
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
+
+
+# 3. CORS Middleware Hardening
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS.split(",") if settings.ALLOWED_ORIGINS else [],
@@ -35,7 +66,7 @@ app.add_middleware(
     max_age=600,
 )
 
-# 3. Production HTTPS & Trusted Host Gatekeeper
+# 4. Production HTTPS & Trusted Host Gatekeeper
 if not settings.DEBUG:
     app.add_middleware(HTTPSRedirectMiddleware)
     app.add_middleware(
@@ -43,7 +74,7 @@ if not settings.DEBUG:
         allowed_hosts=["tureep.ai", "*.tureep.ai", "api.tureep.ai", "localhost", "127.0.0.1", "testserver"]
     )
 
-# 4. Domain Router Attachments
+# 5. Domain Router Attachments
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(products.router)

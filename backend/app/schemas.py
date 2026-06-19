@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
@@ -5,6 +6,20 @@ from typing import Optional, List, Any
 
 from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
 from app.validators import sanitize_string
+
+
+def validate_password_strength(v: str) -> str:
+    if len(v) < 8:
+        raise ValueError("Password must be at least 8 characters long")
+    if not re.search(r"[A-Z]", v):
+        raise ValueError("Password must contain at least one uppercase letter")
+    if not re.search(r"[a-z]", v):
+        raise ValueError("Password must contain at least one lowercase letter")
+    if not re.search(r"\d", v):
+        raise ValueError("Password must contain at least one numeric digit")
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", v):
+        raise ValueError("Password must contain at least one special symbol")
+    return v
 
 
 class AccountType(str, Enum):
@@ -33,6 +48,11 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8)
 
+    @field_validator("password")
+    @classmethod
+    def enforce_password_strength(cls, v: str) -> str:
+        return validate_password_strength(v)
+
 
 class UserRead(UserBase):
     model_config = ConfigDict(from_attributes=True)
@@ -45,6 +65,20 @@ class UserRead(UserBase):
     last_login: Optional[datetime] = None
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(..., min_length=8)
+
+    @field_validator("new_password")
+    @classmethod
+    def enforce_reset_password_strength(cls, v: str) -> str:
+        return validate_password_strength(v)
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -54,7 +88,7 @@ class MasterAccountBase(BaseModel):
     level: AccountType
     start_date: datetime
     end_date: datetime
-    monthly_price: Decimal
+    monthly_price: Decimal = Field(..., ge=0)
 
 
 class MasterAccountRead(MasterAccountBase):
@@ -69,8 +103,8 @@ class ProductBase(BaseModel):
     name: str
     description: Optional[str] = None
     category: str
-    price: Decimal
-    quantity: int
+    price: Decimal = Field(..., gt=0)
+    quantity: int = Field(..., ge=0)
     unit: str
     origin: str
     location: str
@@ -100,9 +134,9 @@ class ProductRead(ProductBase):
 class DemandBase(BaseModel):
     product_name: str
     category: str
-    quantity: int
+    quantity: int = Field(..., gt=0)
     unit: str
-    budget: Decimal
+    budget: Decimal = Field(..., gt=0)
     location: str
     urgency: int = Field(default=1, ge=1, le=3)
 
@@ -131,9 +165,9 @@ class PreDealBase(BaseModel):
     product_id: int
     seller_id: int
     buyer_id: int
-    suggested_price: Decimal
-    quantity: int
-    shipping_cost: Optional[Decimal] = Decimal("0")
+    suggested_price: Decimal = Field(..., gt=0)
+    quantity: int = Field(..., gt=0)
+    shipping_cost: Optional[Decimal] = Field(Decimal("0"), ge=0)
     payment_terms: Optional[str] = "Escrow"
     priority_level: Optional[int] = 0
     is_exclusive: Optional[bool] = False
@@ -257,9 +291,9 @@ class SanctionsScreenResult(BaseModel):
 
 class OrderItemBase(BaseModel):
     product_id: int
-    quantity: int
+    quantity: int = Field(..., gt=0)
     unit: str
-    unit_price: Decimal
+    unit_price: Decimal = Field(..., gt=0)
     currency: str
 
 
@@ -323,7 +357,7 @@ class PaymentAction(BaseModel):
 class PaymentCreate(BaseModel):
     order_id: int
     method: str = Field(..., pattern="^(Escrow|Card|L/C|D/P)$")
-    amount: Decimal
+    amount: Decimal = Field(..., gt=0)
     currency: str
 
 
@@ -361,7 +395,7 @@ class LCCreate(BaseModel):
     order_id: int
     issuing_bank: str
     advising_bank: str
-    amount: Decimal
+    amount: Decimal = Field(..., gt=0)
     currency: str
     expiry_days: int = 90
 
@@ -395,7 +429,7 @@ class DPCreate(BaseModel):
     order_id: int
     remitting_bank: str
     collecting_bank: str
-    amount: Decimal
+    amount: Decimal = Field(..., gt=0)
     currency: str
 
 
