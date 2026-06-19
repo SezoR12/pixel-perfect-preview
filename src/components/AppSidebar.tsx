@@ -8,7 +8,7 @@ import {
   ClipboardList,
   Handshake,
   ShoppingCart,
-  FileCheck,
+  FileCheck2,
   Shield,
   LogOut,
   Lock,
@@ -19,7 +19,7 @@ import {
   Network,
   Globe,
   Database,
-  Workflow,
+  Layers,
 } from "lucide-react";
 
 interface AppSidebarProps {
@@ -45,13 +45,13 @@ export function AppSidebar({ activeRoute }: AppSidebarProps) {
     { id: "trade-finance", label: t("nav.finance", "Trade Finance (L/C & D/P)"), path: "/trade-finance", icon: CreditCard },
     { id: "shipments", label: t("nav.shipments", "Logistics & Tracking"), path: "/shipments", icon: Truck },
     { id: "billing", label: t("nav.billing", "Master Account Billing"), path: "/billing", icon: Globe },
-    { id: "ml-analytics", label: t("nav.analytics", "AI / ML Analytics"), path: "/ml-analytics", icon: Sparkles },
-    { id: "kyc", label: t("nav.kyc", "KYC / AML"), path: "/kyc", icon: FileCheck },
+    { id: "ml-analytics", label: t("nav.analytics", "Smart Trade Analytics"), path: "/ml-analytics", icon: Sparkles },
+    { id: "kyc", label: t("nav.kyc", "KYC / AML Workflow"), path: "/kyc", icon: FileCheck2 },
     { id: "sanctions", label: t("nav.sanctions", "Sanctions Screening"), path: "/sanctions", icon: Shield },
     { id: "notifications", label: t("nav.notifications", "Notifications"), path: "/notifications", icon: Bell },
     { id: "supabase-portal", label: t("nav.supabase", "Supabase Core & RLS"), path: "/supabase-portal", icon: Database },
-    { id: "microservices-spec", label: t("nav.microservices", "Microservices Architecture"), path: "/microservices-spec", icon: Network },
-    { id: "workflow", label: t("nav.workflow", "Deal Workflow & Explorer"), path: "/workflow", icon: Workflow },
+    { id: "microservices-spec", label: t("nav.microservices", "Microservices Layout"), path: "/microservices-spec", icon: Network },
+    { id: "workflow", label: t("nav.workflow", "Trade Workflow Explorer"), path: "/workflow", icon: Layers },
     { id: "hardening-notes", label: t("nav.hardening", "HTTPS / Hardening"), path: "/hardening-notes", icon: Lock },
   ];
 

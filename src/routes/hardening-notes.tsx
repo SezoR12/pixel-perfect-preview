@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Lock, ShieldCheck, Key, Server, FileCode, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Lock, ShieldCheck, CheckCircle2, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/hardening-notes")({
   component: HardeningNotesPage,
@@ -39,7 +39,7 @@ function HardeningNotesPage() {
             <Card className="border-border">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <Key className="h-5 w-5 text-primary" />
+                  <Lock className="h-5 w-5 text-primary" />
                   <CardTitle>1. Secrets Orchestration & KMS</CardTitle>
                 </div>
                 <CardDescription>Zero-trust secrets storage replacing hardcoded .env files</CardDescription>
@@ -69,7 +69,7 @@ function HardeningNotesPage() {
             <Card className="border-border">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <Server className="h-5 w-5 text-primary" />
+                  <ShieldCheck className="h-5 w-5 text-primary" />
                   <CardTitle>2. HTTPS, TLS 1.3 & Transport Security</CardTitle>
                 </div>
                 <CardDescription>Network perimeter and Transport Layer protection</CardDescription>
@@ -100,7 +100,7 @@ function HardeningNotesPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <FileCode className="h-5 w-5 text-primary" />
+                <Lock className="h-5 w-5 text-primary" />
                 <CardTitle>3. Database & Docker Architecture Hardening</CardTitle>
               </div>
               <CardDescription>Infrastructure protection and defense-in-depth configuration</CardDescription>
