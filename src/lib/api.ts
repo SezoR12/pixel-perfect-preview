@@ -335,3 +335,203 @@ export async function getMyScreenings(): Promise<SanctionsScreening[]> {
   return api<SanctionsScreening[]>("/api/compliance/sanctions/my-screenings");
 }
 
+export interface Notification {
+  id: number;
+  user_id: number;
+  title: string;
+  message: string;
+  type: "in_app" | "email" | "push" | "sms";
+  priority: "low" | "medium" | "high" | "urgent";
+  read: boolean;
+  created_at: string;
+}
+
+export interface Subscription {
+  id: number;
+  user_id: number;
+  stripe_customer_id: string;
+  stripe_subscription_id: string;
+  tier: AccountType;
+  status: string;
+  current_period_end: string;
+  created_at: string;
+}
+
+export interface LetterOfCredit {
+  id: number;
+  lc_number: string;
+  order_id: number;
+  applicant_id: number;
+  beneficiary_id: number;
+  issuing_bank: string;
+  advising_bank: string;
+  amount: string;
+  currency: string;
+  expiry_date: string;
+  status: string;
+  discrepancy_notes?: string;
+  documents_presented_at?: string;
+  settled_at?: string;
+  created_at: string;
+}
+
+export interface DocumentaryCollection {
+  id: number;
+  dp_number: string;
+  order_id: number;
+  exporter_id: number;
+  importer_id: number;
+  remitting_bank: string;
+  collecting_bank: string;
+  amount: string;
+  currency: string;
+  status: string;
+  documents_released_at?: string;
+  created_at: string;
+}
+
+export interface ShipmentEvent {
+  id: number;
+  shipment_id: number;
+  timestamp: string;
+  location: string;
+  description: string;
+}
+
+export interface Shipment {
+  id: number;
+  order_id: number;
+  tracking_number: string;
+  carrier: string;
+  origin_corridor: string;
+  destination_corridor: string;
+  status: string;
+  estimated_delivery?: string;
+  created_at: string;
+  events: ShipmentEvent[];
+}
+
+export interface PricePrediction {
+  commodity_name: string;
+  current_price: string;
+  forecast_30d: string;
+  confidence_interval_low: string;
+  confidence_interval_high: string;
+  trend: "bullish" | "bearish";
+}
+
+export interface DemandAnalytics {
+  corridor: string;
+  total_demand_tonnage: number;
+  total_supply_tonnage: number;
+  imbalance_ratio: string;
+  recommended_action: string;
+}
+
+// Notifications API
+export async function getNotifications(): Promise<Notification[]> {
+  return api<Notification[]>("/api/notifications/");
+}
+
+export async function markNotificationRead(id: number): Promise<Notification> {
+  return api<Notification>(`/api/notifications/mark-read/${id}`, { method: "POST" });
+}
+
+export async function markAllNotificationsRead(): Promise<{ status: string }> {
+  return api<{ status: string }>("/api/notifications/mark-all-read", { method: "POST" });
+}
+
+export async function triggerMockNotification(title: string, message: string, type: string = "push", priority: string = "high"): Promise<Notification> {
+  return api<Notification>(`/api/notifications/trigger-mock?title=${encodeURIComponent(title)}&message=${encodeURIComponent(message)}&type=${type}&priority=${priority}`, { method: "POST" });
+}
+
+// Subscriptions API
+export async function getMySubscription(): Promise<Subscription | null> {
+  return api<Subscription | null>("/api/billing/my-subscription");
+}
+
+export async function createCheckoutSession(tier: string): Promise<Subscription> {
+  return api<Subscription>("/api/billing/create-checkout-session", {
+    method: "POST",
+    body: JSON.stringify({ tier }),
+  });
+}
+
+export async function cancelSubscription(): Promise<{ status: string }> {
+  return api<{ status: string }>("/api/billing/cancel-subscription", { method: "POST" });
+}
+
+// Trade Finance API
+export async function createLC(data: { order_id: number; issuing_bank: string; advising_bank: string; amount: string; currency: string; expiry_days: number }): Promise<LetterOfCredit> {
+  return api<LetterOfCredit>("/api/trade-finance/lc", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getLCs(): Promise<LetterOfCredit[]> {
+  return api<LetterOfCredit[]>("/api/trade-finance/lc");
+}
+
+export async function actOnLC(lcId: number, action: string, notes?: string): Promise<LetterOfCredit> {
+  return api<LetterOfCredit>(`/api/trade-finance/lc/${lcId}/action`, {
+    method: "POST",
+    body: JSON.stringify({ action, notes }),
+  });
+}
+
+export async function createDP(data: { order_id: number; remitting_bank: string; collecting_bank: string; amount: string; currency: string }): Promise<DocumentaryCollection> {
+  return api<DocumentaryCollection>("/api/trade-finance/dp", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getDPs(): Promise<DocumentaryCollection[]> {
+  return api<DocumentaryCollection[]>("/api/trade-finance/dp");
+}
+
+export async function actOnDP(dpId: number, action: string): Promise<DocumentaryCollection> {
+  return api<DocumentaryCollection>(`/api/trade-finance/dp/${dpId}/action`, {
+    method: "POST",
+    body: JSON.stringify({ action }),
+  });
+}
+
+// Logistics API
+export async function createShipment(data: { order_id: number; carrier: string; origin_corridor: string; destination_corridor: string }): Promise<Shipment> {
+  return api<Shipment>("/api/logistics/shipments/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getShipments(): Promise<Shipment[]> {
+  return api<Shipment[]>("/api/logistics/shipments/");
+}
+
+export async function addTrackingEvent(shipmentId: number, location: string, description: string, nextStatus: string): Promise<Shipment> {
+  return api<Shipment>(`/api/logistics/shipments/${shipmentId}/events?next_status=${nextStatus}`, {
+    method: "POST",
+    body: JSON.stringify({ location, description }),
+  });
+}
+
+// ML Analytics API
+export async function getFeatureWeights(): Promise<{ model_version: string; accuracy_r2: string; weights: any[] }> {
+  return api<{ model_version: string; accuracy_r2: string; weights: any[] }>("/api/ml-analytics/feature-weights");
+}
+
+export async function getPricePredictions(): Promise<PricePrediction[]> {
+  return api<PricePrediction[]>("/api/ml-analytics/price-predictions");
+}
+
+export async function getDemandImbalances(): Promise<DemandAnalytics[]> {
+  return api<DemandAnalytics[]>("/api/ml-analytics/demand-imbalance");
+}
+
+export async function simulateMLMatching(crudeOil: number, freightRisk: number, urgency: number): Promise<any> {
+  return api<any>(`/api/ml-analytics/simulate?crude_oil_price=${crudeOil}&freight_risk_index=${freightRisk}&urgency_multiplier=${urgency}`, { method: "POST" });
+}
+
+

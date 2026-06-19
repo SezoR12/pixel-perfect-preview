@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine
-from app.routers import auth, users, products, demands, pre_deals, waitlist, orders, kyc, sanctions
+from app.routers import auth, users, products, demands, pre_deals, waitlist, orders, kyc, sanctions, notifications, billing, trade_finance, shipments, ml_analytics
 
 Base.metadata.create_all(bind=engine)
 
@@ -34,6 +34,11 @@ app.include_router(waitlist.router)
 app.include_router(orders.router)
 app.include_router(kyc.router)
 app.include_router(sanctions.router)
+app.include_router(notifications.router)
+app.include_router(billing.router)
+app.include_router(trade_finance.router)
+app.include_router(shipments.router)
+app.include_router(ml_analytics.router)
 
 
 @app.get("/health")

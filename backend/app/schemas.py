@@ -296,3 +296,151 @@ class PaymentCreate(BaseModel):
     method: str = Field(..., pattern="^(Escrow|Card|L/C|D/P)$")
     amount: Decimal
     currency: str
+
+
+class NotificationRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    title: str
+    message: str
+    type: str
+    priority: str
+    read: bool
+    created_at: datetime
+
+
+class SubscriptionCreate(BaseModel):
+    tier: str
+
+
+class SubscriptionRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    stripe_customer_id: str
+    stripe_subscription_id: str
+    tier: str
+    status: str
+    current_period_end: datetime
+    created_at: datetime
+
+
+class LCCreate(BaseModel):
+    order_id: int
+    issuing_bank: str
+    advising_bank: str
+    amount: Decimal
+    currency: str
+    expiry_days: int = 90
+
+
+class LCRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    lc_number: str
+    order_id: int
+    applicant_id: int
+    beneficiary_id: int
+    issuing_bank: str
+    advising_bank: str
+    amount: Decimal
+    currency: str
+    expiry_date: datetime
+    status: str
+    discrepancy_notes: Optional[str] = None
+    documents_presented_at: Optional[datetime] = None
+    settled_at: Optional[datetime] = None
+    created_at: datetime
+
+
+class LCAction(BaseModel):
+    action: str = Field(..., pattern="^(advise|present|discrepancy|clean|settle|cancel)$")
+    notes: Optional[str] = None
+
+
+class DPCreate(BaseModel):
+    order_id: int
+    remitting_bank: str
+    collecting_bank: str
+    amount: Decimal
+    currency: str
+
+
+class DPRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    dp_number: str
+    order_id: int
+    exporter_id: int
+    importer_id: int
+    remitting_bank: str
+    collecting_bank: str
+    amount: Decimal
+    currency: str
+    status: str
+    documents_released_at: Optional[datetime] = None
+    created_at: datetime
+
+
+class DPAction(BaseModel):
+    action: str = Field(..., pattern="^(send|present|pay|reject)$")
+
+
+class ShipmentEventCreate(BaseModel):
+    location: str
+    description: str
+
+
+class ShipmentEventRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    shipment_id: int
+    timestamp: datetime
+    location: str
+    description: str
+
+
+class ShipmentCreate(BaseModel):
+    order_id: int
+    carrier: str
+    origin_corridor: str
+    destination_corridor: str
+
+
+class ShipmentRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    order_id: int
+    tracking_number: str
+    carrier: str
+    origin_corridor: str
+    destination_corridor: str
+    status: str
+    estimated_delivery: Optional[datetime] = None
+    created_at: datetime
+    events: List[ShipmentEventRead] = []
+
+
+class PricePrediction(BaseModel):
+    commodity_name: str
+    current_price: Decimal
+    forecast_30d: Decimal
+    confidence_interval_low: Decimal
+    confidence_interval_high: Decimal
+    trend: str
+
+
+class DemandAnalytics(BaseModel):
+    corridor: str
+    total_demand_tonnage: int
+    total_supply_tonnage: int
+    imbalance_ratio: Decimal
+    recommended_action: str
+

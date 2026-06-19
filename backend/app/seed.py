@@ -165,7 +165,25 @@ def seed():
     for match in matches:
         create_pre_deal_from_match(db, match)
 
-    from app.models import KYCVerification, KYCStatus, SanctionsScreening
+    from app.models import (
+        KYCVerification,
+        KYCStatus,
+        SanctionsScreening,
+        Notification,
+        NotificationType,
+        NotificationPriority,
+        Subscription,
+        SubscriptionStatus,
+        LetterOfCredit,
+        DocumentaryCollection,
+        LCStatus,
+        DPStatus,
+        Shipment,
+        ShipmentEvent,
+        ShipmentStatus,
+        Order,
+        OrderItem,
+    )
     kycs = [
         KYCVerification(
             user_id=users[2].id, # seller.iran
@@ -208,9 +226,110 @@ def seed():
     ]
     db.add_all(screenings)
 
+    # 1. Orders
+    o1 = Order(
+        order_number="TUR-2026-000001",
+        buyer_id=users[1].id,
+        seller_id=users[0].id,
+        status="confirmed",
+        payment_status="held",
+        payment_method="L/C",
+        total_value=Decimal("7500.00"),
+        platform_fee=Decimal("22.50"),
+        currency="USD",
+        incoterm="FOB",
+        origin_country="Iraq",
+        destination_country="Turkey",
+    )
+    db.add(o1)
+    db.commit()
+    db.refresh(o1)
+
+    # 2. L/C & D/P
+    lc1 = LetterOfCredit(
+        lc_number="LC-SWIFT-2026-00001",
+        order_id=o1.id,
+        applicant_id=users[1].id,
+        beneficiary_id=users[0].id,
+        issuing_bank="Garanti BBVA Istanbul",
+        advising_bank="Trade Bank of Iraq (TBI)",
+        amount=Decimal("7500.00"),
+        currency="USD",
+        expiry_date=datetime.utcnow() + timedelta(days=90),
+        status=LCStatus.ADVISED,
+    )
+    db.add(lc1)
+
+    dp1 = DocumentaryCollection(
+        dp_number="DP-COLLECT-2026-00001",
+        order_id=o1.id,
+        exporter_id=users[2].id,
+        importer_id=users[1].id,
+        remitting_bank="Bank Pasargad",
+        collecting_bank="Isbank Turkey",
+        amount=Decimal("3800.00"),
+        currency="USD",
+        status=DPStatus.PRESENTED_TO_IMPORTER,
+    )
+    db.add(dp1)
+
+    # 3. Shipments
+    sh1 = Shipment(
+        order_id=o1.id,
+        tracking_number="TRK-DHL-2026-889102",
+        carrier="DHL Global Forwarding",
+        origin_corridor="Basra Port, Iraq",
+        destination_corridor="Mersin Free Zone, Turkey",
+        status=ShipmentStatus.IN_TRANSIT,
+        estimated_delivery=datetime.utcnow() + timedelta(days=5),
+    )
+    db.add(sh1)
+    db.commit()
+    db.refresh(sh1)
+
+    ev1 = ShipmentEvent(
+        shipment_id=sh1.id,
+        location="Customs Clearing Export Node — Umm Qasr Port",
+        description="Container passed phytosanitary inspection. Export tariff locked under Iraq-Turkey FTA.",
+    )
+    ev2 = ShipmentEvent(
+        shipment_id=sh1.id,
+        location="Maritime GPS Waypoint — Persian Gulf / Mediterranean Route",
+        description="Vessel securely underway. Estimated steaming speed: 18.5 knots.",
+    )
+    db.add_all([ev1, ev2])
+
+    # 4. Notifications
+    n1 = Notification(
+        user_id=users[1].id, # buyer.turkey
+        title="SWIFT MT700 L/C Issued",
+        message="Your Letter of Credit #LC-SWIFT-2026-00001 has been successfully transmitted by Garanti BBVA.",
+        type=NotificationType.PUSH,
+        priority=NotificationPriority.HIGH,
+    )
+    n2 = Notification(
+        user_id=users[1].id,
+        title="ML Market Alert — Dates Price Prediction",
+        message="Our AI models predict an 7.2% price surge in Iraqi Medjool dates over the next 30 days due to harvest yield factors.",
+        type=NotificationType.IN_APP,
+        priority=NotificationPriority.MEDIUM,
+    )
+    db.add_all([n1, n2])
+
+    # 5. Subscriptions
+    su1 = Subscription(
+        user_id=users[1].id,
+        stripe_customer_id="cus_turkey_buyer_99",
+        stripe_subscription_id="sub_gold_tier_2026",
+        tier=AccountType.GOLD,
+        status=SubscriptionStatus.ACTIVE,
+        current_period_end=datetime.utcnow() + timedelta(days=28),
+    )
+    db.add(su1)
+
     db.commit()
     db.close()
-    print(f"Seeded {len(users)} users, {len(products)} products, {len(demands)} demands, {len(matches)} pre-deals, {len(kycs)} KYC entries, {len(screenings)} sanctions screenings.")
+    print(f"Seeded {len(users)} users, {len(products)} products, {len(demands)} demands, {len(matches)} pre-deals, {len(kycs)} KYC entries, {len(screenings)} sanctions screenings, 1 Order, 1 L/C, 1 D/P, 1 Shipment, 2 Notifications, 1 Subscription.")
 
 
 if __name__ == "__main__":

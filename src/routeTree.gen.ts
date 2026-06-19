@@ -9,16 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TradeFinanceRouteImport } from './routes/trade-finance'
+import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as SanctionsRouteImport } from './routes/sanctions'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PreDealsRouteImport } from './routes/pre-deals'
 import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as MlAnalyticsRouteImport } from './routes/ml-analytics'
+import { Route as MicroservicesSpecRouteImport } from './routes/microservices-spec'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as KycRouteImport } from './routes/kyc'
 import { Route as HardeningNotesRouteImport } from './routes/hardening-notes'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as BillingRouteImport } from './routes/billing'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TradeFinanceRoute = TradeFinanceRouteImport.update({
+  id: '/trade-finance',
+  path: '/trade-finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShipmentsRoute = ShipmentsRouteImport.update({
+  id: '/shipments',
+  path: '/shipments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SanctionsRoute = SanctionsRouteImport.update({
   id: '/sanctions',
   path: '/sanctions',
@@ -37,6 +53,21 @@ const PreDealsRoute = PreDealsRouteImport.update({
 const OrdersRoute = OrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MlAnalyticsRoute = MlAnalyticsRouteImport.update({
+  id: '/ml-analytics',
+  path: '/ml-analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MicroservicesSpecRoute = MicroservicesSpecRouteImport.update({
+  id: '/microservices-spec',
+  path: '/microservices-spec',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -59,6 +90,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BillingRoute = BillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -67,88 +103,144 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/billing': typeof BillingRoute
   '/dashboard': typeof DashboardRoute
   '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/microservices-spec': typeof MicroservicesSpecRoute
+  '/ml-analytics': typeof MlAnalyticsRoute
+  '/notifications': typeof NotificationsRoute
   '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
   '/sanctions': typeof SanctionsRoute
+  '/shipments': typeof ShipmentsRoute
+  '/trade-finance': typeof TradeFinanceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/billing': typeof BillingRoute
   '/dashboard': typeof DashboardRoute
   '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/microservices-spec': typeof MicroservicesSpecRoute
+  '/ml-analytics': typeof MlAnalyticsRoute
+  '/notifications': typeof NotificationsRoute
   '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
   '/sanctions': typeof SanctionsRoute
+  '/shipments': typeof ShipmentsRoute
+  '/trade-finance': typeof TradeFinanceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/billing': typeof BillingRoute
   '/dashboard': typeof DashboardRoute
   '/hardening-notes': typeof HardeningNotesRoute
   '/kyc': typeof KycRoute
   '/login': typeof LoginRoute
+  '/microservices-spec': typeof MicroservicesSpecRoute
+  '/ml-analytics': typeof MlAnalyticsRoute
+  '/notifications': typeof NotificationsRoute
   '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
   '/sanctions': typeof SanctionsRoute
+  '/shipments': typeof ShipmentsRoute
+  '/trade-finance': typeof TradeFinanceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/billing'
     | '/dashboard'
     | '/hardening-notes'
     | '/kyc'
     | '/login'
+    | '/microservices-spec'
+    | '/ml-analytics'
+    | '/notifications'
     | '/orders'
     | '/pre-deals'
     | '/products'
     | '/sanctions'
+    | '/shipments'
+    | '/trade-finance'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/billing'
     | '/dashboard'
     | '/hardening-notes'
     | '/kyc'
     | '/login'
+    | '/microservices-spec'
+    | '/ml-analytics'
+    | '/notifications'
     | '/orders'
     | '/pre-deals'
     | '/products'
     | '/sanctions'
+    | '/shipments'
+    | '/trade-finance'
   id:
     | '__root__'
     | '/'
+    | '/billing'
     | '/dashboard'
     | '/hardening-notes'
     | '/kyc'
     | '/login'
+    | '/microservices-spec'
+    | '/ml-analytics'
+    | '/notifications'
     | '/orders'
     | '/pre-deals'
     | '/products'
     | '/sanctions'
+    | '/shipments'
+    | '/trade-finance'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BillingRoute: typeof BillingRoute
   DashboardRoute: typeof DashboardRoute
   HardeningNotesRoute: typeof HardeningNotesRoute
   KycRoute: typeof KycRoute
   LoginRoute: typeof LoginRoute
+  MicroservicesSpecRoute: typeof MicroservicesSpecRoute
+  MlAnalyticsRoute: typeof MlAnalyticsRoute
+  NotificationsRoute: typeof NotificationsRoute
   OrdersRoute: typeof OrdersRoute
   PreDealsRoute: typeof PreDealsRoute
   ProductsRoute: typeof ProductsRoute
   SanctionsRoute: typeof SanctionsRoute
+  ShipmentsRoute: typeof ShipmentsRoute
+  TradeFinanceRoute: typeof TradeFinanceRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trade-finance': {
+      id: '/trade-finance'
+      path: '/trade-finance'
+      fullPath: '/trade-finance'
+      preLoaderRoute: typeof TradeFinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shipments': {
+      id: '/shipments'
+      path: '/shipments'
+      fullPath: '/shipments'
+      preLoaderRoute: typeof ShipmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sanctions': {
       id: '/sanctions'
       path: '/sanctions'
@@ -175,6 +267,27 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders'
       preLoaderRoute: typeof OrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ml-analytics': {
+      id: '/ml-analytics'
+      path: '/ml-analytics'
+      fullPath: '/ml-analytics'
+      preLoaderRoute: typeof MlAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/microservices-spec': {
+      id: '/microservices-spec'
+      path: '/microservices-spec'
+      fullPath: '/microservices-spec'
+      preLoaderRoute: typeof MicroservicesSpecRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -205,6 +318,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/billing': {
+      id: '/billing'
+      path: '/billing'
+      fullPath: '/billing'
+      preLoaderRoute: typeof BillingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -217,14 +337,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BillingRoute: BillingRoute,
   DashboardRoute: DashboardRoute,
   HardeningNotesRoute: HardeningNotesRoute,
   KycRoute: KycRoute,
   LoginRoute: LoginRoute,
+  MicroservicesSpecRoute: MicroservicesSpecRoute,
+  MlAnalyticsRoute: MlAnalyticsRoute,
+  NotificationsRoute: NotificationsRoute,
   OrdersRoute: OrdersRoute,
   PreDealsRoute: PreDealsRoute,
   ProductsRoute: ProductsRoute,
   SanctionsRoute: SanctionsRoute,
+  ShipmentsRoute: ShipmentsRoute,
+  TradeFinanceRoute: TradeFinanceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

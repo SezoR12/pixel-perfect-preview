@@ -77,6 +77,59 @@ class PaymentMethod(str, PyEnum):
     BANK_TRANSFER = "Bank Transfer"
 
 
+class NotificationType(str, PyEnum):
+    IN_APP = "in_app"
+    EMAIL = "email"
+    PUSH = "push"
+    SMS = "sms"
+
+
+class NotificationPriority(str, PyEnum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    URGENT = "urgent"
+
+
+class SubscriptionStatus(str, PyEnum):
+    ACTIVE = "active"
+    PAST_DUE = "past_due"
+    CANCELED = "canceled"
+    TRIALING = "trialing"
+
+
+class LCStatus(str, PyEnum):
+    DRAFT = "draft"
+    ISSUED = "issued"
+    ADVISED = "advised"
+    DOCUMENTS_PRESENTED = "documents_presented"
+    DISCREPANCIES = "discrepancies"
+    CLEAN_PRESENTATION = "clean_presentation"
+    SETTLED = "settled"
+    CANCELLED = "cancelled"
+
+
+class DPStatus(str, PyEnum):
+    DRAFT = "draft"
+    SENT_TO_COLLECTING_BANK = "sent_to_collecting_bank"
+    PRESENTED_TO_IMPORTER = "presented_to_importer"
+    PAID = "paid"
+    DOCUMENTS_RELEASED = "documents_released"
+    REJECTED = "rejected"
+
+
+class ShipmentStatus(str, PyEnum):
+    LABEL_CREATED = "label_created"
+    PICKED_UP = "picked_up"
+    CUSTOMS_EXPORT = "customs_export"
+    IN_TRANSIT = "in_transit"
+    CUSTOMS_IMPORT = "customs_import"
+    OUT_FOR_DELIVERY = "out_for_delivery"
+    DELIVERED = "delivered"
+    EXCEPTION = "exception"
+
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -296,3 +349,108 @@ class Payment(Base):
     order = relationship("Order", back_populates="payments")
     payer = relationship("User", foreign_keys=[payer_id])
     payee = relationship("User", foreign_keys=[payee_id])
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    title = Column(String(255), nullable=False)
+    message = Column(Text, nullable=False)
+    type = Column(Enum(NotificationType), default=NotificationType.IN_APP, nullable=False)
+    priority = Column(Enum(NotificationPriority), default=NotificationPriority.MEDIUM, nullable=False)
+    read = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User")
+
+
+class Subscription(Base):
+    __tablename__ = "subscriptions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    stripe_customer_id = Column(String(100), nullable=False)
+    stripe_subscription_id = Column(String(100), nullable=False)
+    tier = Column(Enum(AccountType), nullable=False)
+    status = Column(Enum(SubscriptionStatus), default=SubscriptionStatus.ACTIVE, nullable=False)
+    current_period_end = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User")
+
+
+class LetterOfCredit(Base):
+    __tablename__ = "letters_of_credit"
+
+    id = Column(Integer, primary_key=True, index=True)
+    lc_number = Column(String(100), unique=True, nullable=False, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    applicant_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    beneficiary_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    issuing_bank = Column(String(255), nullable=False)
+    advising_bank = Column(String(255), nullable=False)
+    amount = Column(DECIMAL(15, 2), nullable=False)
+    currency = Column(String(3), nullable=False)
+    expiry_date = Column(DateTime, nullable=False)
+    status = Column(Enum(LCStatus), default=LCStatus.DRAFT, nullable=False)
+    discrepancy_notes = Column(Text)
+    documents_presented_at = Column(DateTime)
+    settled_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    order = relationship("Order")
+    applicant = relationship("User", foreign_keys=[applicant_id])
+    beneficiary = relationship("User", foreign_keys=[beneficiary_id])
+
+
+class DocumentaryCollection(Base):
+    __tablename__ = "documentary_collections"
+
+    id = Column(Integer, primary_key=True, index=True)
+    dp_number = Column(String(100), unique=True, nullable=False, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    exporter_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    importer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    remitting_bank = Column(String(255), nullable=False)
+    collecting_bank = Column(String(255), nullable=False)
+    amount = Column(DECIMAL(15, 2), nullable=False)
+    currency = Column(String(3), nullable=False)
+    status = Column(Enum(DPStatus), default=DPStatus.DRAFT, nullable=False)
+    documents_released_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    order = relationship("Order")
+    exporter = relationship("User", foreign_keys=[exporter_id])
+    importer = relationship("User", foreign_keys=[importer_id])
+
+
+class Shipment(Base):
+    __tablename__ = "shipments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    tracking_number = Column(String(100), unique=True, nullable=False, index=True)
+    carrier = Column(String(100), nullable=False)
+    origin_corridor = Column(String(100), nullable=False)
+    destination_corridor = Column(String(100), nullable=False)
+    status = Column(Enum(ShipmentStatus), default=ShipmentStatus.LABEL_CREATED, nullable=False)
+    estimated_delivery = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    order = relationship("Order")
+    events = relationship("ShipmentEvent", back_populates="shipment", cascade="all, delete-orphan")
+
+
+class ShipmentEvent(Base):
+    __tablename__ = "shipment_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    shipment_id = Column(Integer, ForeignKey("shipments.id"), nullable=False)
+    timestamp = Column(DateTime, default=datetime.utcnow, nullable=False)
+    location = Column(String(255), nullable=False)
+    description = Column(Text, nullable=False)
+
+    shipment = relationship("Shipment", back_populates="events")
+
