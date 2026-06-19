@@ -370,7 +370,19 @@ const DEMO_SANCTIONS: SanctionsScreening[] = [
 // Offline LocalStorage Mock Router Interceptor
 async function runOfflineMock(path: string, options: RequestInit = {}): Promise<any> {
   const method = options.method?.toUpperCase() || "GET";
-  const body = options.body ? JSON.parse(options.body as string) : {};
+  let body: any = {};
+  if (options.body) {
+    if (typeof options.body === "string" && (options.body.trim().startsWith("{") || options.body.trim().startsWith("["))) {
+      try {
+        body = JSON.parse(options.body);
+      } catch (err) {}
+    } else if (options.body instanceof URLSearchParams || typeof options.body === "string") {
+      const rawForm = new URLSearchParams(options.body as string);
+      rawForm.forEach((val, key) => {
+        body[key] = val;
+      });
+    }
+  }
 
   const users = getLocal("tureep_users", DEMO_USERS);
   const products = getLocal("tureep_products", DEMO_PRODUCTS);
