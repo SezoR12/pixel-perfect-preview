@@ -18,7 +18,7 @@ import {
   Menu,
   X,
   Globe,
-  User
+  User as UserIcon
 } from "lucide-react";
 import { getMe, removeToken, type User } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
@@ -107,7 +107,7 @@ function RootLayout() {
         <div className="px-3 py-3 border-b border-surface-100">
           <div className={`flex items-center gap-3 ${collapsed ? "justify-center" : ""}`}>
             <div className="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
-              <User className="w-4 h-4 text-primary-600" />
+              <UserIcon className="w-4 h-4 text-primary-600" />
             </div>
             {!collapsed && user && (
               <div className="min-w-0 animate-slide-in">
