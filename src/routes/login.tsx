@@ -59,17 +59,25 @@ function LoginPage() {
             Manage products, review AI-generated pre-deals, and track deals end-to-end.
           </p>
           <div className="mt-8 grid gap-4 text-sm text-muted-foreground">
-            <p className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-primary"></span>
-              Demo seller: seller.iraq@tureep.ai
+            <p className="flex items-center gap-2 font-mono text-xs">
+              <span className="h-2 w-2 rounded-full bg-primary flex-shrink-0"></span>
+              <span>Seller (Silver): <strong>seller.iraq@tureep.ai</strong></span>
             </p>
-            <p className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-primary"></span>
-              Demo buyer: buyer.turkey@tureep.ai
+            <p className="flex items-center gap-2 font-mono text-xs">
+              <span className="h-2 w-2 rounded-full bg-amber-500 flex-shrink-0"></span>
+              <span>Buyer (Gold): <strong>buyer.turkey@tureep.ai</strong></span>
             </p>
-            <p className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-primary"></span>
-              Password: password123
+            <p className="flex items-center gap-2 font-mono text-xs">
+              <span className="h-2 w-2 rounded-full bg-purple-500 flex-shrink-0"></span>
+              <span>Global Buyer (Platinum): <strong>buyer.global@tureep.ai</strong></span>
+            </p>
+            <p className="flex items-center gap-2 font-mono text-xs">
+              <span className="h-2 w-2 rounded-full bg-slate-900 flex-shrink-0"></span>
+              <span>Compliance Officer (Admin): <strong>admin@tureep.ai</strong></span>
+            </p>
+            <p className="flex items-center gap-2 font-mono text-xs pt-1 border-t border-border">
+              <span className="h-2 w-2 rounded-full bg-green-500 flex-shrink-0"></span>
+              <span>Universal Password: <strong>password123</strong></span>
             </p>
           </div>
         </div>
