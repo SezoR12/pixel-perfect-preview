@@ -13,14 +13,14 @@ interface Translations {
 }
 
 const DICTIONARY: Translations = {
-  // App Title & Core
-  "app.title": { en: "Tureep AI+", ar: "تريب AI+", fa: "توریپ AI+", ku: "توریپ AI+", tr: "Tureep AI+" },
+  // App Core Brand
+  "app.title": { en: "Tureep AI+", ar: "منصة تريب للذكاء الاصطناعي", fa: "پلتفرم توریپ هوش مصنوعی", ku: "پلاتفۆرمی توریپ بۆ ژیری دەستکرد", tr: "Tureep AI+" },
   "Terminal B2B Trade Summary": { en: "Terminal B2B Trade Summary", ar: "ملخص صفقات التداول B2B", fa: "خلاصه معاملات تجاری B2B", ku: "پوختەی بازرگانی پلاتفۆرمی B2B", tr: "B2B Ticaret Terminali Özeti" },
 
   // Landing Page Nav
-  "nav.platform": { en: "Platform", ar: "المنصة التجاري", fa: "پلتفرم تجاری", ku: "پلاتفۆرمی بازرگانی", tr: "Platform" },
+  "nav.platform": { en: "Platform", ar: "المنصة التجارية", fa: "پلتفرم تجاری", ku: "پلاتفۆرمی بازرگانی", tr: "Platform" },
   "nav.membership": { en: "Membership", ar: "نظام العضوية", fa: "عضویت و اشتراک", ku: "سیستەمی ئەندامێتی", tr: "Üyelik Sistemi" },
-  "nav.corridors": { en: "Corridors", ar: "الممرات التجارية", fa: "کریدورهای تجاری", ku: "ڕاڕەوە بازرگانییەکان", tr: "Ticaret Koridorları" },
+  "nav.corridors": { en: "Corridors", ar: "الممرات النشطة", fa: "کریدورهای فعال", ku: "ڕاڕەوە بازرگانییەکان", tr: "Ticaret Koridorları" },
   "nav.signin": { en: "Sign in", ar: "تسجيل الدخول", fa: "ورود به حساب", ku: "چوونە ژوورەوە", tr: "Giriş Yap" },
   "nav.access": { en: "Access Terminal", ar: "دخول المنصة التجاري", fa: "ورود به ترمینال", ku: "چوونە ناو پلاتفۆرم", tr: "Terminale Eriş" },
 
@@ -29,13 +29,13 @@ const DICTIONARY: Translations = {
   "hero.title": { en: "Trade at the speed of intelligence", ar: "تداول بسرعة الذكاء الاصطناعي", fa: "تجارت با سرعت هوش مصنوعی", ku: "بازرگانی بە خێرایی ژیری دەستکرد", tr: "Zeka hızında ticaret yapın" },
   "hero.subtitle": { 
     en: "Tureep AI+ connects verified sellers and buyers across the Middle East and beyond. Our AI pre-generates institutional deals, clears compliance, and orchestrates logistics — before the first message is sent.", 
-    ar: "تربط منصة تريب AI+ بين البائعين والمشترين الموثوقين في العراق وإيران وتركيا والأسواق العالمية. يقوم الذكاء الاصطناعي بتوليد الصفقات، وتخليص الامتثال، وتنظيم اللوجستيات — قبل إرسال الرسالة الأولى.", 
-    fa: "توریپ AI+ فروشندگان و خریداران تاییدشده در عراق، ایران، ترکیه و بازارهای جهانی را متصل می‌کند. هوش مصنوعی ما قراردادها، انطباق و لجستیک را پیش از ارسال اولین پیام آماده می‌کند.", 
-    ku: "توریپ AI+ فرۆشیاران و کڕیارانی باوەڕپێکراو لە عێراق، ئێران، تورکیا و جیهان دەبەستێتەوە. ژیری دەستکرد ڕێککەوتنەکان و لۆجستیك و یاساکان ئامادە دەکات پێش ناردنی یەکەم پەیام.", 
+    ar: "تربط منصة تريب للذكاء الاصطناعي بين الشركات الموثوقة في العراق وإيران وتركيا والأسواق العالمية. يقوم الذكاء الاصطناعي بتوليد الصفقات المؤسسية وتخليص الامتثال وتنظيم الشحن قبل إرسال الرسالة الأولى.", 
+    fa: "توریپ هوش مصنوعی فروشندگان و خریداران تاییدشده در عراق، ایران، ترکیه و بازارهای جهانی را متصل می‌کند. سیستم ما قراردادها، انطباق و لجستیک را پیش از ارسال اولین پیام آماده می‌کند.", 
+    ku: "پلاتفۆرمی توریپ فرۆشیاران و کڕیارانی باوەڕپێکراو لە عێراق، ئێران، تورکیا و جیهان دەبەستێتەوە. ژیری دەستکرد ڕێککەوتنەکان و لۆجستیك و یاساکان ئامادە دەکات پێش ناردنی یەکەم پەیام.", 
     tr: "Tureep AI+, Irak, İran, Türkiye ve ötesindeki doğrulanmış alıcı ve satıcıları birbirine bağlar. Yapay zekamız ilk mesaj gönderilmeden önce kurumsal anlaşmaları oluşturur ve lojistiği düzenler." 
   },
-  "hero.input": { en: "Business email address", ar: "البريد الإلكتروني للعمل", fa: "ایمیل سازمانی یا کاری", ku: "ئیمەیڵی بازرگانی (کار)", tr: "İş e-posta adresi" },
-  "hero.req": { en: "Request access", ar: "طلب انضمام الآن", fa: "درخواست دسترسی", ku: "داواکردنی دەستپێگەیشتن", tr: "Erişim talep et" },
+  "hero.input": { en: "Business email address", ar: "البريد الإلكتروني المؤسسي", fa: "ایمیل سازمانی یا کاری", ku: "ئیمەیڵی بازرگانی (کار)", tr: "İş e-posta adresi" },
+  "hero.req": { en: "Request access", ar: "طلب انضمام فوري", fa: "درخواست دسترسی فوری", ku: "داواکردنی دەستپێگەیشتن", tr: "Erişim talep et" },
   "hero.disclaimer": { 
     en: "Membership is reviewed. Priority given to commodity traders, manufacturers, and logistics operators.", 
     ar: "تخضع العضوية للمراجعة الدقيقة. تُعطى الأولوية لتجار السلع والمصنعين وشركات الخدمات اللوجستية.", 
@@ -44,8 +44,8 @@ const DICTIONARY: Translations = {
     tr: "Üyelik incelenir. Öncelik emtia tüccarlarına, üreticilere ve lojistik operatörlerine verilir." 
   },
 
-  // Terminal Preview Mockup
-  "mock.head": { en: "Tureep AI+ Terminal", ar: "منصة تريب AI+ التجاري", fa: "ترمینال تجاری توریپ AI+", ku: "پلاتفۆرمی توریپ AI+", tr: "Tureep AI+ Terminali" },
+  // Terminal Preview Mockup in Hero
+  "mock.head": { en: "Tureep AI+ Terminal", ar: "منصة تريب التجارية", fa: "ترمینال تجاری توریپ", ku: "پلاتفۆرمی توریپ", tr: "Tureep AI+ Terminali" },
   "mock.dash": { en: "Dashboard", ar: "لوحة التحكم", fa: "داشبورد", ku: "پێشبین (داشبۆرد)", tr: "Gösterge Paneli" },
   "mock.role": { en: "Gold Member", ar: "عضو ذهبي معتمد", fa: "عضو طلایی تاییدشده", ku: "ئەندامی زێڕین", tr: "Altın Üye" },
   "mock.deals": { en: "Active Pre-Deals", ar: "الصفقات المبدئية النشطة", fa: "پیش‌قراردادهای فعال", ku: "پێش-ڕێککەوتنە چالاکەکان", tr: "Aktif Ön Anlaşmalar" },
@@ -53,20 +53,20 @@ const DICTIONARY: Translations = {
   "mock.score": { en: "Match Score", ar: "درجة التوافق", fa: "امتیاز تطابق هوش مصنوعی", ku: "خاڵی گونجان", tr: "Eşleşme Puanı" },
   "mock.prod": { en: "Premium Iraqi Dates", ar: "تمور بصرة فاخرة (عراقية)", fa: "خرمای ممتاز بصره (عراق)", ku: "خورمای نایابی بەسرە (عێراق)", tr: "Premium Basra Hurması" },
   "mock.rec": { en: "Recommended", ar: "موصى به بالذكاء الاصطناعي", fa: "پیشنهاد ویژه هوش مصنوعی", ku: "پێشنیارکراو بە ژیری دەستکرد", tr: "Yapay Zeka Önerisi" },
-  "mock.terms": { en: "300 ton • $2.65 / ton • Escrow", ar: "300 طن • $2.65 / طن • دفع عبر حساب ضمان", fa: "300 تن • 2.65 دلار / تن • پرداخت امانی", ku: "300 تەن • $2.65 / تەن • پارەی ئەمانی", tr: "300 ton • $2.65 / ton • Kurumsal Escrow" },
+  "mock.terms": { en: "300 ton • $2.65 / ton • Escrow", ar: "الكمية: 300 طن | السعر: 2.65 دولار/طن | الدفع: عبر حساب ضمان", fa: "مقدار: 300 تن | قیمت: 2.65 دلار/تن | پرداخت: امانی", ku: "بڕ: 300 تەن | نرخ: 2.65 دۆلار/تەن | پارەدان: ئەمانی", tr: "300 ton | $2.65 / ton | Kurumsal Escrow" },
 
-  // Stats
+  // Stats Section
   "Trade value screened": { en: "Trade value screened", ar: "قيمة الصفقات المفحوصة", fa: "ارزش معاملات بررسی‌شده", ku: "بڕی بازرگانی پشکنراو", tr: "Taranan ticaret değeri" },
   "Pre-deals generated": { en: "Pre-deals generated", ar: "الصفقات المبدئية المولدة", fa: "پیش‌قراردادهای ایجادشده", ku: "پێش-ڕێککەوتنە دروستکراوەکان", tr: "Oluşturulan ön anlaşmalar" },
   "Verified members": { en: "Verified members", ar: "الشركات والأعضاء الموثوقون", fa: "شرکت‌ها و اعضای تاییدشده", ku: "کۆمپانیا و ئەندامە باوەڕپێکراوەکان", tr: "Doğrulanmış şirketler" },
   "Active corridors": { en: "Active corridors", ar: "الممرات التجارية النشطة", fa: "کریدورهای تجاری فعال", ku: "ڕاڕەوە بازرگانییە چالاکەکان", tr: "Aktif ticaret koridorları" },
 
   // Features Section
-  "The Platform": { en: "The Platform", ar: "المنصة التجاري", fa: "پلتفرم تجاری", ku: "پلاتفۆرمی بازرگانی", tr: "Platform" },
-  "Built for the full deal cycle": { en: "Built for the full deal cycle", ar: "مصممة لدورة الصفقة الكاملة من الألف إلى الياء", fa: "طراحی‌شده برای چرخه کامل معامله از ابتدا تا انتها", ku: "دروستکراو بۆ تەواوی سووڕی ڕێککەوتن لە سەرەتاوە تا کۆتایی", tr: "Tam anlaşma döngüsü için tasarlandı" },
+  "The Platform": { en: "The Platform", ar: "المنصة التجارية", fa: "پلتفرم تجاری", ku: "پلاتفۆرمی بازرگانی", tr: "Platform" },
+  "Built for the full deal cycle": { en: "Built for the full deal cycle", ar: "مصممة لدورة الصفقة الكاملة من البداية حتى النهاية", fa: "طراحی‌شده برای چرخه کامل معامله از ابتدا تا انتها", ku: "دروستکراو بۆ تەواوی سووڕی ڕێککەوتن لە سەرەتاوە تا کۆتایی", tr: "Tam anlaşma döngüsü için tasarlandı" },
   "From discovery to settlement, every step is engineered for institutional trust and velocity.": { 
     en: "From discovery to settlement, every step is engineered for institutional trust and velocity.", 
-    ar: "من الاستكشاف إلى التسوية البنكية، تمت هندسة كل خطوة لضمان الثقة المؤسسية والسرعة الفائقة.", 
+    ar: "من الاستكشاف حتى التسوية البنكية، تمت هندسة كل خطوة لضمان الثقة المؤسسية والسرعة الفائقة.", 
     fa: "از کشف تا تسویه بانکی، هر گام برای اعتماد نهادی و سرعت فوق‌العاده مهندسی شده است.", 
     ku: "لە دۆزینەوە تا یەکلاییکردنەوەی بانکی، هەموو هەنگاوێك بۆ متمانە و خێرایی داڕێژراوە.", 
     tr: "Keşiften banka uzlaşmasına kadar her adım, kurumsal güven ve hız için tasarlandı." 
@@ -74,7 +74,7 @@ const DICTIONARY: Translations = {
   "AI Matchmaking": { en: "AI Matchmaking", ar: "التوفيق الذكي بالذكاء الاصطناعي", fa: "تطابق هوشمند با هوش مصنوعی", ku: "گونجاندن بە ژیری دەستکرد", tr: "Yapay Zeka Eşleştirme" },
   "Proprietary scoring across price, reputation, urgency, and logistics to surface the best counterparties.": { 
     en: "Proprietary scoring across price, reputation, urgency, and logistics to surface the best counterparties.", 
-    ar: "نظام تسجيل حصري يشمل السعر والسمعة والأهمية والخدمات اللوجستية لإظهار أفضل الشركاء التجاريين.", 
+    ar: "نظام تسجيل تقييمي يشمل السعر والسمعة والأهمية والخدمات اللوجستية لإظهار أفضل الشركاء التجاريين.", 
     fa: "امتیازدهی اختصاصی در قیمت، شهرت، فوریت و لجستیک برای یافتن بهترین طرف‌های معامله.", 
     ku: "شیکاری تایبەت بۆ نرخ و ناوبانگ و پەلەیی و لۆجستیك بۆ دۆزینەوەی باشترین هاوبەشەکان.", 
     tr: "En iyi karşı tarafları yüzeye çıkarmak için fiyat, itibar, aciliyet ve lojistik genelinde tescilli puanlama." 
@@ -82,15 +82,15 @@ const DICTIONARY: Translations = {
   "Institutional Trust": { en: "Institutional Trust", ar: "الثقة المؤسسية والأمان", fa: "اعتماد نهادی و امنیت", ku: "متمانەی دامەزراوەیی و ئاسایش", tr: "Kurumsal Güven ve Güvenlik" },
   "Verified companies, sanctions screening, and structured payment workflows on every deal.": { 
     en: "Verified companies, sanctions screening, and structured payment workflows on every deal.", 
-    ar: "شركات معتمدة، وفحص فوري للعقوبات الدولية، ومسارات عمل الدفع المنظمة (ضمان واعتمادات) في كل صفقة.", 
+    ar: "شركات معتمدة وفحص فوري للعقوبات الدولية ومسارات عمل الدفع المنظمة في كل صفقة.", 
     fa: "شرکت‌های تاییدشده، بررسی تحریم‌های بین‌المللی و جریان‌های پرداخت ساختاریافته در هر معامله.", 
-    ku: "کۆمپانیا باوەڕپێکراوەکان، پشکنینی سزاکان، و شێوازی پارەدان (ئەمانەت و بانکی) لە هەموو ڕێککەوتنێك.", 
+    ku: "کۆمپانیا باوەڕپێکراوەکان، پشکنینی سزاکان، و شێوازی پارەدان لە هەموو ڕێککەوتنێك.", 
     tr: "Her anlaşmada doğrulanmış şirketler, yaptırım taraması ve yapılandırılmış ödeme iş akışları." 
   },
   "Logistics Clearing": { en: "Logistics Clearing", ar: "التخليص اللوجستي المدمج", fa: "ترخیص و رهگیری لجستیک", ku: "پاکسازی و بەدواداچوونی لۆجستیك", tr: "Entegre Lojistik Takas" },
   "Shipping quotes, customs-aware routing, and tracking consolidated inside the deal timeline.": { 
     en: "Shipping quotes, customs-aware routing, and tracking consolidated inside the deal timeline.", 
-    ar: "عروض أسعار الشحن، وتوجيه مراعٍ لاتفاقيات الجمارك، وتتبع حي مدمج داخل المخطط الزمني للصفقة.", 
+    ar: "عروض أسعار الشحن وتوجيه مراعٍ للجمارك وتتبع حي مدمج داخل المخطط الزمني للصفقة.", 
     fa: "نرخ حمل و نقل، مسیریابی آگاه از گمرک و رهگیری زنده ادغام‌شده در تایم‌لاین معامله.", 
     ku: "نرخەکانی شحن، ڕێڕەوی گومرکی، و بەدواداچوونی ڕاستەوخۆ لە ناو کاترمەی ڕێککەوتنەکە.", 
     tr: "Nakliye teklifleri, gümrük duyarlı rotalama ve anlaşma zaman çizelgesi içinde birleştirilmiş canlı takip." 
@@ -98,7 +98,7 @@ const DICTIONARY: Translations = {
   "Market Intelligence": { en: "Market Intelligence", ar: "استخبارات وتنبؤات السوق", fa: "هوش بازار و پیش‌بینی‌ها", ku: "زانیاری بازاڕ و پێشبینییەکان", tr: "Piyasa İstihbaratı" },
   "Price signals, demand forecasting, and corridor analytics reserved for Master Account holders.": { 
     en: "Price signals, demand forecasting, and corridor analytics reserved for Master Account holders.", 
-    ar: "إشارات الأسعار الحية، والتنبؤ بالطلب، وتحليلات الممرات مخصصة حصرياً لأصحاب الحسابات الرئيسية.", 
+    ar: "إشارات الأسعار الحية والتنبؤ بالطلب وتحليلات الممرات مخصصة حصرياً لأصحاب الحسابات الرئيسية.", 
     fa: "سیگنال‌های قیمت، پیش‌بینی تقاضا و تحلیل‌های کریدور مختص دارندگان حساب مستر.", 
     ku: "ئاماژەکانی نرخ، پێشبینیکردنی داواکاری، و شیکاری ڕاڕەوەکان بۆ هەژمارە سەرەکییەکان.", 
     tr: "Fiyat sinyaller, talep tahmini ve Master Hesap sahiplerine ayrılmış koridor analitiği." 
@@ -128,7 +128,7 @@ const DICTIONARY: Translations = {
   "Iran": { en: "Iran", ar: "إيران", fa: "ایران", ku: "ئێران", tr: "İran" },
   "Turkey / EU": { en: "Turkey / EU", ar: "تركيا / الاتحاد الأوروبي", fa: "ترکیه / اتحادیه اروپا", ku: "تورکیا / یەکێتی ئەوروپا", tr: "Türkiye / AB" },
   "Steel Scrap, Petrochemicals": { en: "Steel Scrap, Petrochemicals", ar: "خردة الصلب، البتروكيماويات", fa: "ضایعات فولاد، محصولات پتروشیمی", ku: "پاشماوەی پۆڵا، پێترۆکیمیایی", tr: "Çelik Hurdası, Petrokimyasallar" },
-  "Global": { en: "Global Markets", ar: "الأسواق العالمية", fa: "بازارهای جهانی", ku: "بازاڕە جیهانییەکان", tr: "Küresel Piyasalar" },
+  "Global Markets": { en: "Global Markets", ar: "الأسواق العالمية", fa: "بازارهای جهانی", ku: "بازاڕە جیهانییەکان", tr: "Küresel Piyasalar" },
   "Processed commodities, Textiles": { en: "Processed commodities, Textiles", ar: "السلع المصنعة، المنسوجات والملابس", fa: "کالاهای فرآوری‌شده، منسوجات و پوشاک", ku: "کاڵا پیشەسازییەکان، قوماش و جلوبەرگ", tr: "İşlenmiş emtialar, Tekstiller" },
 
   // CTA & Footer
@@ -140,10 +140,10 @@ const DICTIONARY: Translations = {
     ku: "دەستپێگەیشتنی لەپێشینە سنووردارە. ئەمڕۆ داواکاری بنێرە بۆ پێداچوونەوە و توثیقی کۆمپانیاکەت.", 
     tr: "Öncelikli erişim sınırlıdır. Bugün başvurun ve ekibimiz kurumsal hesabınızı incelesin." 
   },
-  "Access Terminal": { en: "Access Terminal", ar: "دخول المنصة التجاري", fa: "ورود به ترمینال", ku: "چوونە ناو پلاتفۆرم", tr: "Terminale Eriş" },
+  "Access Terminal": { en: "Access Terminal", ar: "دخول المنصة التجارية", fa: "ورود به ترمینال", ku: "چوونە ناو پلاتفۆرم", tr: "Terminale Eriş" },
   "Applying...": { en: "Applying...", ar: "جاري التقديم...", fa: "در حال ثبت...", ku: "لە ناردندایە...", tr: "Başvuruluyor..." },
   "Your application has been received. Our team will review it shortly.": { en: "Your application has been received. Our team will review it shortly.", ar: "تم استلام طلبك. سيقوم فريقنا بمراجعته قريباً.", fa: "درخواست شما دریافت شد. تیم ما به زودی آن را بررسی خواهد کرد.", ku: "داواکارییەکەت وەرگیرا. تیمەکەمان بە زووترين کات پێداچوونەوەی بۆ دەکات.", tr: "Başvurunuz alındı. Ekibimiz en kısa sürede inceleyecektir." },
-  "foot.copy": { en: "© 2026 Tureep Trade Systems. All rights reserved.", ar: "© 2026 أنظمة تريب التجارية. جميع الحقوق محفوظة.", fa: "© 2026 سیستم‌های تجاری توریپ. کلیه حقوق محفوظ است.", ku: "© 2026 سیستەمەکانی بازرگانی توریپ. هەموو مافەکان پارێزراوان.", tr: "© 2026 Tureep Ticaret Sistemleri. Tüm hakları saklıdır." },
+  "Something went wrong. Please try again.": { en: "Something went wrong. Please try again.", ar: "حدث خطأ ما. يرجى المحاولة مرة أخرى.", fa: "خطایی رخ داد. لطفا دوباره تلاش کنید.", ku: "هەڵەیەك ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.", tr: "Bir şeyler ters gitti. Lütfen tekrar deneyin." },
   "© 2026 Tureep Trade Systems. All rights reserved.": { en: "© 2026 Tureep Trade Systems. All rights reserved.", ar: "© 2026 أنظمة تريب التجارية. جميع الحقوق محفوظة.", fa: "© 2026 سیستم‌های تجاری توریپ. کلیه حقوق محفوظ است.", ku: "© 2026 سیستەمەکانی بازرگانی توریپ. هەموو مافەکان پارێزراوان.", tr: "© 2026 Tureep Ticaret Sistemleri. Tüm hakları saklıdır." },
 
   // Dashboard Nav & Buttons
@@ -186,6 +186,52 @@ const DICTIONARY: Translations = {
   "btn.verify": { en: "Verify Proof", ar: "توثيق الهوية الآن", fa: "تایید مدارک", ku: "سەلماندنی بەڵگەنامە", tr: "Doğrula" },
   "btn.screen": { en: "Execute Sweep", ar: "إجراء فحص فوري", fa: "اجرای غربالگری", ku: "ئەنجامدانی پشکنین", tr: "Tara" },
 };
+
+// --------------------------------------------------------------------
+// 🌟 CUSTOM FLOATING MULTI-LANGUAGE SWITCHER COMPONENT
+// Embeds permanently at the bottom/top center of any screen
+// --------------------------------------------------------------------
+function UniversalLanguageBar() {
+  const { language, setLanguage } = useI18n();
+
+  const chips: Array<{ id: Language; label: string; flag: string }> = [
+    { id: "ar", label: "العربية", flag: "🇸🇦" },
+    { id: "tr", label: "Türkçe", flag: "🇹🇷" },
+    { id: "ku", label: "کوردی", flag: "☀️" },
+    { id: "fa", label: "فارسی", flag: "🇮🇷" },
+    { id: "en", label: "English", flag: "🇬🇧" },
+  ];
+
+  return (
+    <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-[9999] bg-slate-950/90 border-2 border-yellow-500/80 p-1.5 rounded-full flex items-center gap-1 shadow-2xl backdrop-blur-md select-none font-mono text-xs">
+      <span className="text-yellow-400 font-extrabold px-2.5 hidden sm:inline select-none">🌐 Locale:</span>
+      {chips.map((c) => {
+        const isSel = language === c.id;
+        return (
+          <button
+            key={c.id}
+            onClick={() => setLanguage(c.id)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold transition-all ${
+              isSel
+                ? "bg-yellow-500 text-black shadow-md scale-105"
+                : "text-white hover:bg-white/10 hover:text-yellow-300"
+            }`}
+          >
+            <span className="text-sm select-none">{c.flag}</span>
+            <span>{c.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+interface I18nContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  dir: "ltr" | "rtl";
+  t: (key: string, fallback?: string) => string;
+}
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
@@ -232,6 +278,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       <div dir={dir} className={`min-h-screen transition-all ${dir === "rtl" ? "font-sans text-right" : "font-sans text-left"}`}>
         {children}
       </div>
+      <UniversalLanguageBar />
     </I18nContext.Provider>
   );
 }

@@ -37,10 +37,10 @@ export default function Index() {
   const [message, setMessage] = useState("");
 
   const stats = [
-    { value: "$4.2B+", label: t("Trade value screened", "Trade value screened") },
-    { value: "12,800+", label: t("Pre-deals generated", "Pre-deals generated") },
-    { value: "1,400+", label: t("Verified members", "Verified members") },
-    { value: "24", label: t("Active corridors", "Active corridors") },
+    { value: <span dir="ltr">$4.2B+</span>, label: t("Trade value screened", "Trade value screened") },
+    { value: <span dir="ltr">12,800+</span>, label: t("Pre-deals generated", "Pre-deals generated") },
+    { value: <span dir="ltr">1,400+</span>, label: t("Verified members", "Verified members") },
+    { value: <span dir="ltr">24</span>, label: t("Active corridors", "Active corridors") },
   ];
 
   const features = [
