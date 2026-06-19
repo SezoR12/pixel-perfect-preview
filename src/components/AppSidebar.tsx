@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { removeToken } from "@/lib/api";
+import { logoutWithSupabase } from "@/lib/supabase";
 import { useI18n, Language } from "@/lib/i18n";
 import {
   LayoutDashboard,
@@ -16,6 +16,7 @@ import {
   Bell,
   Network,
   Globe,
+  Database,
 } from "lucide-react";
 
 interface AppSidebarProps {
@@ -26,8 +27,8 @@ export function AppSidebar({ activeRoute }: AppSidebarProps) {
   const navigate = useNavigate();
   const { language, setLanguage, t } = useI18n();
 
-  function logout() {
-    removeToken();
+  async function logout() {
+    await logoutWithSupabase();
     navigate({ to: "/login" });
   }
 
@@ -43,6 +44,7 @@ export function AppSidebar({ activeRoute }: AppSidebarProps) {
     { id: "kyc", label: t("nav.kyc", "KYC / AML"), path: "/kyc", icon: FileCheck },
     { id: "sanctions", label: t("nav.sanctions", "Sanctions Screening"), path: "/sanctions", icon: Shield },
     { id: "notifications", label: t("nav.notifications", "Notifications"), path: "/notifications", icon: Bell },
+    { id: "supabase-portal", label: t("nav.supabase", "Supabase Core & RLS"), path: "/supabase-portal", icon: Database },
     { id: "microservices-spec", label: t("nav.microservices", "Microservices Architecture"), path: "/microservices-spec", icon: Network },
     { id: "hardening-notes", label: t("nav.hardening", "HTTPS / Hardening"), path: "/hardening-notes", icon: Lock },
   ];

@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { login, setToken } from "@/lib/api";
+import { loginWithSupabase } from "@/lib/supabase";
+import { setToken } from "@/lib/api";
 import { ArrowRight, Globe } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
@@ -23,8 +24,8 @@ function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const res = await login(email, password);
-      setToken(res.access_token);
+      const { session } = await loginWithSupabase(email, password);
+      setToken(session?.access_token || `jwt_mock_${email}`);
       navigate({ to: "/dashboard" });
     } catch (err: any) {
       setError(err.message || "Login failed");

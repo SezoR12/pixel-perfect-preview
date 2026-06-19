@@ -1,9 +1,10 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AppSidebar } from "@/components/AppSidebar";
+import { getSupabaseSession } from "@/lib/supabase";
 import {
   Order,
   actOnPayment,
@@ -23,6 +24,15 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/orders")({
+  beforeLoad: async ({ location }) => {
+    const { session } = await getSupabaseSession();
+    if (!session) {
+      throw redirect({
+        to: "/login",
+        search: { redirect: location.href },
+      });
+    }
+  },
   component: OrdersPage,
 });
 

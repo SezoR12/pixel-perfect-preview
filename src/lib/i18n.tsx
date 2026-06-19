@@ -96,6 +96,12 @@ const DICTIONARY: Translations = {
     fa: "اعلان‌ها",
     tr: "Bildirimler",
   },
+  "nav.supabase": {
+    en: "Supabase Core & RLS",
+    ar: "قاعدة بيانات Supabase والأمان",
+    fa: "پایگاه داده Supabase و RLS",
+    tr: "Supabase ve RLS",
+  },
   "btn.logout": {
     en: "Log out",
     ar: "تسجيل الخروج",

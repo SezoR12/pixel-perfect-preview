@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TradeFinanceRouteImport } from './routes/trade-finance'
+import { Route as SupabasePortalRouteImport } from './routes/supabase-portal'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as SanctionsRouteImport } from './routes/sanctions'
 import { Route as ProductsRouteImport } from './routes/products'
@@ -28,6 +29,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const TradeFinanceRoute = TradeFinanceRouteImport.update({
   id: '/trade-finance',
   path: '/trade-finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupabasePortalRoute = SupabasePortalRouteImport.update({
+  id: '/supabase-portal',
+  path: '/supabase-portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShipmentsRoute = ShipmentsRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof ProductsRoute
   '/sanctions': typeof SanctionsRoute
   '/shipments': typeof ShipmentsRoute
+  '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
 }
 export interface FileRoutesByTo {
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsRoute
   '/sanctions': typeof SanctionsRoute
   '/shipments': typeof ShipmentsRoute
+  '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
 }
 export interface FileRoutesById {
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/products': typeof ProductsRoute
   '/sanctions': typeof SanctionsRoute
   '/shipments': typeof ShipmentsRoute
+  '/supabase-portal': typeof SupabasePortalRoute
   '/trade-finance': typeof TradeFinanceRoute
 }
 export interface FileRouteTypes {
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/sanctions'
     | '/shipments'
+    | '/supabase-portal'
     | '/trade-finance'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/sanctions'
     | '/shipments'
+    | '/supabase-portal'
     | '/trade-finance'
   id:
     | '__root__'
@@ -204,6 +215,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/sanctions'
     | '/shipments'
+    | '/supabase-portal'
     | '/trade-finance'
   fileRoutesById: FileRoutesById
 }
@@ -222,6 +234,7 @@ export interface RootRouteChildren {
   ProductsRoute: typeof ProductsRoute
   SanctionsRoute: typeof SanctionsRoute
   ShipmentsRoute: typeof ShipmentsRoute
+  SupabasePortalRoute: typeof SupabasePortalRoute
   TradeFinanceRoute: typeof TradeFinanceRoute
 }
 
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       path: '/trade-finance'
       fullPath: '/trade-finance'
       preLoaderRoute: typeof TradeFinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/supabase-portal': {
+      id: '/supabase-portal'
+      path: '/supabase-portal'
+      fullPath: '/supabase-portal'
+      preLoaderRoute: typeof SupabasePortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shipments': {
@@ -350,6 +370,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsRoute: ProductsRoute,
   SanctionsRoute: SanctionsRoute,
   ShipmentsRoute: ShipmentsRoute,
+  SupabasePortalRoute: SupabasePortalRoute,
   TradeFinanceRoute: TradeFinanceRoute,
 }
 export const routeTree = rootRouteImport
