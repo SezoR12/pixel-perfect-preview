@@ -1,0 +1,76 @@
+name: Enterprise Security & Secret Scanning Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 4 * * 1' # Run weekly security audit every Monday at 04:00 UTC
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  secret-scanning:
+    name: GitHub Secret Scanning & Gitleaks Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history required to detect historical leaked secrets
+
+      - name: Run Gitleaks Automated Secret Scanner
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          report_format: sarif
+          report_path: gitleaks-results.sarif
+          fail: true
+
+      - name: Upload Gitleaks SARIF Report to GitHub Security Tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: gitleaks-results.sarif
+          category: gitleaks-secret-audit
+
+  python-backend-sast:
+    name: FastAPI Backend Security Audit (Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Bandit Security Scanner
+        run: pip install bandit
+
+      - name: Execute Bandit SAST Scan
+        run: |
+          bandit -r backend/app/ -ll -ii -f json -o bandit-results.json || true
+          bandit -r backend/app/ -c backend/bandit.yaml || true
+
+  frontend-dependency-audit:
+    name: TanStack Frontend Dependency Vulnerability Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun Runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Execute Bun Automated Audit
+        run: bun pm trust --all && bun install && bun pm audit

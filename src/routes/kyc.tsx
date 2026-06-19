@@ -241,7 +241,7 @@ function KYCPage() {
                       <AlertCircle className="mx-auto h-10 w-10 text-yellow-600 mb-2" />
                       <h4 className="text-sm font-bold text-yellow-900">Compliance Officer Role Required</h4>
                       <p className="text-xs text-yellow-800 mt-1 max-w-md mx-auto leading-relaxed">
-                        To access the live review queue, you must be logged in as an accredited Compliance Officer. For demo purposes, log in with `admin@tureep.ai` (password: `password123`).
+                        To access the live review queue, you must be logged in as an accredited Compliance Officer. For demo purposes, log in with `admin@tureep.ai` (password: `Tureep*Auth#2026!xKey`).
                       </p>
                       <Button className="mt-4 bg-yellow-600 hover:bg-yellow-700 text-white" onClick={() => navigate({ to: "/login" })}>
                         Switch to Admin Demo Account

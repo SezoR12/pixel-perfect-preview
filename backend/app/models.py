@@ -13,6 +13,7 @@ from sqlalchemy import (
     Text,
     Enum,
     CheckConstraint,
+    Index,
 )
 from sqlalchemy.orm import relationship
 
@@ -33,9 +34,6 @@ class DealStatus(str, PyEnum):
     ACCEPTED = "accepted"
     REJECTED = "rejected"
     EXPIRED = "expired"
-
-
-
 
 
 class KYCStatus(str, PyEnum):
@@ -129,7 +127,6 @@ class ShipmentStatus(str, PyEnum):
     EXCEPTION = "exception"
 
 
-
 class User(Base):
     __tablename__ = "users"
 
@@ -188,7 +185,14 @@ class Product(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     seller = relationship("User", back_populates="products")
-    __table_args__ = (CheckConstraint("quantity >= 0", name="check_quantity"),)
+    
+    __table_args__ = (
+        CheckConstraint("quantity >= 0", name="check_quantity"),
+        Index("idx_product_category", "category"),
+        Index("idx_product_user_id", "user_id"),
+        Index("idx_product_available", "is_available"),
+        Index("idx_product_created", "created_at"),
+    )
 
 
 class Demand(Base):
@@ -308,6 +312,13 @@ class Order(Base):
     seller = relationship("User", foreign_keys=[seller_id])
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
     payments = relationship("Payment", back_populates="order")
+    
+    __table_args__ = (
+        Index("idx_order_buyer", "buyer_id"),
+        Index("idx_order_seller", "seller_id"),
+        Index("idx_order_status", "status"),
+        Index("idx_order_created", "created_at"),
+    )
 
 
 class OrderItem(Base):
@@ -453,4 +464,3 @@ class ShipmentEvent(Base):
     description = Column(Text, nullable=False)
 
     shipment = relationship("Shipment", back_populates="events")
-

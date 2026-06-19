@@ -1,14 +1,16 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import Order, OrderItem, PreDeal, DealStatus, Payment, PaymentStatus, PaymentMethod, User
 from app.schemas import OrderCreate, OrderRead, PaymentCreate, PaymentRead, PaymentAction
-from app.security import get_current_user
+from app.security import get_current_user, require_ownership
+from app.audit import log_audit_event
+from app.pagination import PaginatedResponse, paginate
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
@@ -19,7 +21,8 @@ def _generate_order_number(db: Session) -> str:
 
 
 @router.post("/", response_model=OrderRead, status_code=status.HTTP_201_CREATED)
-def create_order(
+async def create_order(
+    request: Request,
     order_in: OrderCreate,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -28,9 +31,9 @@ def create_order(
     if not pre_deal:
         raise HTTPException(status_code=404, detail="Pre-deal not found")
     if pre_deal.seller_id != current_user.id and pre_deal.buyer_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
+        raise HTTPException(status_code=403, detail="Not authorized to settle this deal")
     if pre_deal.status != DealStatus.ACCEPTED:
-        raise HTTPException(status_code=400, detail="Pre-deal must be accepted by both parties")
+        raise HTTPException(status_code=400, detail="Pre-deal must be accepted by both counterparty entities")
 
     # Commission based on seller tier
     commission_rates = {
@@ -51,8 +54,8 @@ def create_order(
         pre_deal_id=pre_deal.id,
         buyer_id=pre_deal.buyer_id,
         seller_id=pre_deal.seller_id,
-        status="pending",
-        payment_status="pending",
+        status="confirmed",
+        payment_status="held" if pre_deal.payment_terms == "Escrow" else "pending",
         payment_method=pre_deal.payment_terms or "Escrow",
         total_value=total,
         platform_fee=platform_fee,
@@ -77,25 +80,46 @@ def create_order(
     db.add(item)
     db.commit()
     db.refresh(order)
+    
+    log_audit_event(
+        event_type="ORDER_CREATE",
+        user_id=current_user.id,
+        resource_type="order",
+        resource_id=order.id,
+        action="create",
+        details={"order_number": order.order_number, "total_value": str(order.total_value)},
+        ip_address=request.client.host if request.client else None,
+    )
     return order
 
 
-@router.get("/", response_model=List[OrderRead])
-def list_orders(
+@router.get("/", response_model=PaginatedResponse[OrderRead])
+async def list_orders(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    orders = (
+    query = (
         db.query(Order)
         .filter((Order.buyer_id == current_user.id) | (Order.seller_id == current_user.id))
         .order_by(Order.created_at.desc())
-        .all()
     )
-    return orders
+    items, total = paginate(query, page, page_size)
+    
+    return PaginatedResponse[OrderRead](
+        items=[OrderRead.model_validate(item) for item in items],
+        total=total,
+        page=page,
+        page_size=page_size,
+        total_pages=(total + page_size - 1) // page_size,
+        has_next=page * page_size < total,
+        has_prev=page > 1,
+    )
 
 
 @router.get("/{order_id}", response_model=OrderRead)
-def get_order(
+async def get_order(
     order_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -103,13 +127,15 @@ def get_order(
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    if order.buyer_id != current_user.id and order.seller_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    if order.buyer_id != current_user.id and order.seller_id != current_user.id and current_user.account_type.value != "black":
+        raise HTTPException(status_code=403, detail="Not authorized to access this counterparty resource ledger")
     return order
 
 
 @router.post("/{order_id}/payments", response_model=PaymentRead)
-def create_payment(
+async def create_payment(
+    request: Request,
     order_id: int,
     payment_in: PaymentCreate,
     current_user: User = Depends(get_current_user),
@@ -118,8 +144,8 @@ def create_payment(
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    if order.buyer_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Only buyer can initiate payment")
+        
+    require_ownership(order.buyer_id, current_user)
 
     payment = Payment(
         order_id=order.id,
@@ -137,11 +163,22 @@ def create_payment(
     order.status = "confirmed" if payment_in.method == "Escrow" else "payment_pending"
     db.commit()
     db.refresh(payment)
+    
+    log_audit_event(
+        event_type="PAYMENT_INITIATE",
+        user_id=current_user.id,
+        resource_type="payment",
+        resource_id=payment.id,
+        action="create",
+        details={"order_id": order.id, "amount": str(payment.amount), "method": payment.method},
+        ip_address=request.client.host if request.client else None,
+    )
     return payment
 
 
 @router.post("/{order_id}/payments/{payment_id}/action")
-def act_on_payment(
+async def act_on_payment(
+    request: Request,
     order_id: int,
     payment_id: int,
     action: PaymentAction,
@@ -156,23 +193,36 @@ def act_on_payment(
         raise HTTPException(status_code=404, detail="Payment not found")
 
     if action.action == "pay":
-        if order.buyer_id != current_user.id:
-            raise HTTPException(status_code=403, detail="Only buyer can pay")
+        require_ownership(order.buyer_id, current_user)
         payment.status = PaymentStatus.HELD
         order.payment_status = PaymentStatus.HELD
         order.status = "confirmed"
     elif action.action == "release":
-        # In real app, would require delivery confirmation or admin
+        # Can be executed by seller or compliance admin upon delivery settlement
+        if order.seller_id != current_user.id and order.buyer_id != current_user.id and current_user.account_type.value != "black":
+            raise HTTPException(status_code=403, detail="Not authorized to execute escrow custody release")
         payment.status = PaymentStatus.RELEASED
         payment.escrow_released_at = datetime.utcnow()
         order.payment_status = PaymentStatus.RELEASED
         order.status = "completed"
         order.completed_at = datetime.utcnow()
     elif action.action == "refund":
+        if order.seller_id != current_user.id and current_user.account_type.value != "black":
+            raise HTTPException(status_code=403, detail="Not authorized to refund custody escrow")
         payment.status = PaymentStatus.REFUNDED
         order.payment_status = PaymentStatus.REFUNDED
         order.status = "cancelled"
 
     db.commit()
     db.refresh(payment)
+    
+    log_audit_event(
+        event_type="PAYMENT_ACTION",
+        user_id=current_user.id,
+        resource_type="payment",
+        resource_id=payment.id,
+        action=action.action,
+        details={"order_id": order_id, "new_status": payment.status.value},
+        ip_address=request.client.host if request.client else None,
+    )
     return {"status": payment.status.value, "payment_id": payment.id}

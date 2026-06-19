@@ -55,7 +55,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 The `backend/.env` file is already configured with the Supabase connection string:
 
 ```env
-DATABASE_URL=postgresql://postgres:Syriatel%4075%40@db.nfzowljlswwbfdzitkrc.supabase.co:5432/postgres?sslmode=require
+DATABASE_URL=postgresql://postgres.bkwajecszulriwqivqnd:Tureep%23Enterprise2026%21Secured%2399xL@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require
 ```
 
 The password is URL-encoded (`@` → `%40`).
@@ -128,10 +128,10 @@ Seeded by `backend/app/seed.py`:
 
 | Email | Password | Role | Tier |
 |---|---|---|---|
-| seller.iraq@tureep.ai | password123 | Seller (Iraq) | Silver |
-| buyer.turkey@tureep.ai | password123 | Buyer (Turkey) | Gold |
-| seller.iran@tureep.ai | password123 | Seller (Iran) | Bronze |
-| buyer.global@tureep.ai | password123 | Buyer (Turkey) | Platinum |
+| seller.iraq@tureep.ai | Tureep*Auth#2026!xKey | Seller (Iraq) | Silver |
+| buyer.turkey@tureep.ai | Tureep*Auth#2026!xKey | Buyer (Turkey) | Gold |
+| seller.iran@tureep.ai | Tureep*Auth#2026!xKey | Seller (Iran) | Bronze |
+| buyer.global@tureep.ai | Tureep*Auth#2026!xKey | Buyer (Global) | Platinum |
 
 ## Implemented MVP Features
 

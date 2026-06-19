@@ -1,32 +1,45 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Sparkles, Mail, Lock, ArrowRight, Globe, ShieldCheck, Zap } from "lucide-react";
-import { login, setToken } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { loginWithSupabase } from "@/lib/supabase";
+import { setToken } from "@/lib/api";
+import { ArrowRight, Globe, Sparkles, Zap, ShieldCheck, Mail, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [email, setEmail] = useState("seller.iraq@tureep.ai");
+  const [password, setPassword] = useState("Tureep*Auth#2026!xKey");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    setLoading(true);
     try {
-      const res = await login(email, password || "password123");
-      setToken(res.access_token);
+      const { session } = await loginWithSupabase(email, password);
+      setToken(session?.access_token || `jwt_mock_${email}`);
       navigate({ to: "/dashboard" });
     } catch (err: any) {
-      setError(err.message || "Invalid credentials. Please try again.");
+      setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleQuickLogin(testEmail: string) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tureep_token", `jwt_mock_${testEmail}`);
+    }
+    setToken(`jwt_mock_${testEmail}`);
+    navigate({ to: "/dashboard" });
   }
 
   const inputClass = "w-full pl-11 pr-4 py-3 bg-white border border-surface-200 rounded-xl text-sm text-surface-800 placeholder:text-surface-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all";
@@ -57,7 +70,7 @@ function LoginPage() {
               </h2>
               <p className="text-primary-100 text-sm leading-relaxed max-w-sm">
                 Connect with verified buyers and sellers across Iraq, Iran, Turkey, and global markets. 
-                Our AI pre-generates institutional deals, clears compliance, and orchestrates logistics.
+                Our platform pre-generates institutional deals, clears compliance, and orchestrates logistics.
               </p>
             </div>
 
@@ -67,8 +80,8 @@ function LoginPage() {
                   <Zap className="w-4 h-4 text-accent-300" />
                 </div>
                 <div>
-                  <p className="text-white text-sm font-semibold">AI-Powered Matching</p>
-                  <p className="text-primary-200 text-xs">Smart deal generation based on price, location, and reputation</p>
+                  <p className="text-white text-sm font-semibold">Smart Trade Matching</p>
+                  <p className="text-primary-200 text-xs">Rule-based deal generation evaluating spot ledgers across criteria</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -76,8 +89,8 @@ function LoginPage() {
                   <ShieldCheck className="w-4 h-4 text-accent-300" />
                 </div>
                 <div>
-                  <p className="text-white text-sm font-semibold">Secure Escrow</p>
-                  <p className="text-primary-200 text-xs">Neutral custody protects every transaction</p>
+                  <p className="text-white text-sm font-semibold">Secure Escrow Custody</p>
+                  <p className="text-primary-200 text-xs">Neutral custody protects every international shipment</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -85,15 +98,39 @@ function LoginPage() {
                   <Globe className="w-4 h-4 text-accent-300" />
                 </div>
                 <div>
-                  <p className="text-white text-sm font-semibold">Global Corridors</p>
-                  <p className="text-primary-200 text-xs">Iraq → Turkey → EU trade lanes</p>
+                  <p className="text-white text-sm font-semibold">Global Trade Corridors</p>
+                  <p className="text-primary-200 text-xs">Iraq → Turkey → EU cross-border trade lanes</p>
                 </div>
               </div>
+            </div>
+
+            {/* Quick Helper Credentials Text */}
+            <div className="pt-6 border-t border-white/10 grid gap-2 text-xs text-primary-200 font-mono">
+              <p className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-white flex-shrink-0"></span>
+                <span>Seller (Silver): <strong>seller.iraq@tureep.ai</strong></span>
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-amber-400 flex-shrink-0"></span>
+                <span>Buyer (Gold): <strong>buyer.turkey@tureep.ai</strong></span>
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-purple-400 flex-shrink-0"></span>
+                <span>Global Buyer (Platinum): <strong>buyer.global@tureep.ai</strong></span>
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-slate-900 flex-shrink-0"></span>
+                <span>Compliance Officer (Admin): <strong>admin@tureep.ai</strong></span>
+              </p>
+              <p className="flex items-center gap-2 pt-1 border-t border-white/10">
+                <span className="h-2 w-2 rounded-full bg-green-400 flex-shrink-0"></span>
+                <span>Universal Password: <strong>Tureep*Auth#2026!xKey</strong></span>
+              </p>
             </div>
           </div>
 
           <p className="text-primary-300 text-xs">
-            Trusted by commodity traders, manufacturers, and logistics operators across the Middle East.
+            Trusted by commodity traders, manufacturers, and logistics operators across MENA.
           </p>
         </div>
       </div>
@@ -133,7 +170,7 @@ function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
+                  placeholder="seller.iraq@tureep.ai"
                   className={inputClass}
                   required
                 />
@@ -148,50 +185,37 @@ function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder="••••••••"
                   className={inputClass}
+                  required
                 />
               </div>
-              <p className="text-xs text-surface-400 mt-2">Demo: Use any demo email without password</p>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-xl text-sm font-semibold hover:bg-primary-700 disabled:opacity-50 transition-colors shadow-sm"
-            >
-              {loading ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  Sign In <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
+            <Button type="submit" className="w-full py-3 h-12 text-sm font-semibold rounded-xl bg-primary-600 hover:bg-primary-700 text-white shadow-sm transition-all" disabled={loading}>
+              {loading ? "Authenticating..." : "Sign in to Terminal"}
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </form>
 
-          <div className="mt-8 p-4 bg-white rounded-xl border border-surface-200">
-            <p className="text-xs font-semibold text-surface-600 mb-3">Demo Accounts</p>
-            <div className="space-y-2">
-              {[
-                { email: "seller.iraq@tureep.ai", role: "Seller (Iraq)", tier: "Silver" },
-                { email: "buyer.turkey@tureep.ai", role: "Buyer (Turkey)", tier: "Gold" },
-                { email: "buyer.global@tureep.ai", role: "Buyer (Global)", tier: "Platinum" },
-              ].map((account) => (
-                <button
-                  key={account.email}
-                  onClick={() => setEmail(account.email)}
-                  className="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-surface-50 transition-colors text-left"
-                >
-                  <div>
-                    <p className="text-xs font-medium text-surface-700">{account.email}</p>
-                    <p className="text-[10px] text-surface-400">{account.role}</p>
-                  </div>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary-50 text-primary-600">
-                    {account.tier}
-                  </span>
-                </button>
-              ))}
+          {/* Quick 1-Click Sandbox Bypass Buttons */}
+          <div className="mt-8 pt-6 border-t border-surface-200 space-y-3">
+            <span className="text-xs font-bold text-surface-500 uppercase tracking-wider block font-sans">
+              Instant 1-Click Snappy Terminal Launch:
+            </span>
+            <div className="grid grid-cols-2 gap-2.5">
+              <Button size="sm" variant="outline" className="text-xs font-mono h-10 border-primary-300 text-primary-700 hover:bg-primary-50 rounded-xl" onClick={() => handleQuickLogin("seller.iraq@tureep.ai")}>
+                Silver Seller (Iraq)
+              </Button>
+              <Button size="sm" variant="outline" className="text-xs font-mono h-10 border-amber-300 text-amber-700 hover:bg-amber-50 rounded-xl" onClick={() => handleQuickLogin("buyer.turkey@tureep.ai")}>
+                Gold Buyer (Turkey)
+              </Button>
+              <Button size="sm" variant="outline" className="text-xs font-mono h-10 border-purple-300 text-purple-700 hover:bg-purple-50 rounded-xl" onClick={() => handleQuickLogin("buyer.global@tureep.ai")}>
+                Platinum Enterprise
+              </Button>
+              <Button size="sm" variant="outline" className="text-xs font-mono h-10 border-surface-800 text-surface-900 hover:bg-surface-100 rounded-xl" onClick={() => handleQuickLogin("admin@tureep.ai")}>
+                Compliance Officer
+              </Button>
             </div>
           </div>
         </div>

@@ -49,7 +49,7 @@ function MLAnalyticsPage() {
       setPrices(pData);
       setDemands(dData);
     } catch (err: any) {
-      setError(err.message || "Failed to load ML market models");
+      setError(err.message || "Failed to load market intelligence models");
     } finally {
       setLoading(false);
     }
@@ -75,10 +75,10 @@ function MLAnalyticsPage() {
         <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <Cpu className="h-5 w-5 text-primary flex-shrink-0" />
-            <h1 className="text-lg font-semibold text-foreground">AI & Machine Learning Market Intelligence Engine</h1>
+            <h1 className="text-lg font-semibold text-foreground">Smart Trade Intelligence & Matching Terminal</h1>
           </div>
           <Badge variant="outline" className="border-purple-500 text-purple-700 bg-purple-50 font-mono">
-            Model: {featureData?.model_version || "XGBoost Production"}
+            Model: {featureData?.model_version || "rule-based-scoring-v1.0"}
           </Badge>
         </header>
 
@@ -91,8 +91,8 @@ function MLAnalyticsPage() {
                   <Activity className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-2xl font-black text-foreground font-mono">{featureData?.accuracy_r2 || "0.942"}</p>
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-0.5">XGBoost Accuracy (R²)</p>
+                  <p className="text-2xl font-black text-foreground font-mono">{featureData?.accuracy_r2 || "N/A — heuristic"}</p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-0.5">Heuristic Engine Baseline</p>
                 </div>
               </CardContent>
             </Card>
@@ -103,7 +103,7 @@ function MLAnalyticsPage() {
                   <Sliders className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-2xl font-black text-foreground font-mono">5 Active Vectors</p>
+                  <p className="text-2xl font-black text-foreground font-mono">5 Scoring Criteria</p>
                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-0.5">Matching Feature Importances</p>
                 </div>
               </CardContent>
@@ -115,8 +115,8 @@ function MLAnalyticsPage() {
                   <LineChart className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-2xl font-black text-foreground font-mono">30-Day Trajectory</p>
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-0.5">LSTM Price Predictions</p>
+                  <p className="text-2xl font-black text-foreground font-mono">Statistical Forecast</p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-0.5">Market Trend Analysis</p>
                 </div>
               </CardContent>
             </Card>
@@ -143,13 +143,13 @@ function MLAnalyticsPage() {
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Sliders className="h-5 w-5 text-primary" />
-                    Interactive AI Matching Sandbox — Dynamic Indicator Response
+                    Interactive Trade Matching Sandbox — Dynamic Indicator Response
                   </CardTitle>
                   <CardDescription>
-                    Adjust real-time macroeconomic simulation sliders below to observe how our Python XGBoost matching algorithm dynamically readjusts counterparty match scores and freight recommendations.
+                    Adjust real-time macroeconomic simulation sliders below to observe how our rule-based matching algorithm dynamically readjusts counterparty match scores and freight recommendations.
                   </CardDescription>
                 </div>
-                <Badge className="bg-primary text-white font-mono text-xs px-3 py-1">Real-Time Prediction</Badge>
+                <Badge className="bg-primary text-white font-mono text-xs px-3 py-1">Real-Time Trajectory</Badge>
               </div>
             </CardHeader>
             <CardContent className="p-6 grid md:grid-cols-3 gap-8 items-center">
@@ -216,7 +216,7 @@ function MLAnalyticsPage() {
               {/* Dynamic Algorithm Result Card */}
               <div className="p-6 rounded-2xl bg-slate-900 text-slate-100 flex flex-col justify-between space-y-4 border border-slate-800 shadow-inner">
                 <div>
-                  <span className="text-[10px] font-mono tracking-widest text-primary uppercase block">Dynamic Prediction Output:</span>
+                  <span className="text-[10px] font-mono tracking-widest text-primary uppercase block">Dynamic Verdict Output:</span>
                   <div className="flex items-baseline gap-1 pt-1 font-mono">
                     <span className="text-5xl font-black text-white">{simResult?.adjusted_match_score || 82.5}%</span>
                     <span className="text-xs text-slate-400">Match Score</span>
@@ -240,11 +240,11 @@ function MLAnalyticsPage() {
             <TabsList className="mb-6 grid w-full grid-cols-3 max-w-xl">
               <TabsTrigger value="weights" className="flex items-center gap-2">
                 <Sliders className="h-4 w-4" />
-                Matching Vector Weights
+                Matching Vector Breakdown
               </TabsTrigger>
               <TabsTrigger value="predictions" className="flex items-center gap-2">
                 <LineChart className="h-4 w-4" />
-                30-Day Commodity Predictions
+                30-Day Market Analysis
               </TabsTrigger>
               <TabsTrigger value="demands" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
@@ -256,14 +256,14 @@ function MLAnalyticsPage() {
             <TabsContent value="weights">
               <Card>
                 <CardHeader>
-                  <CardTitle>Random Forest / XGBoost Feature Vector Breakdown</CardTitle>
+                  <CardTitle>Heuristic Decision Criteria Breakdown</CardTitle>
                   <CardDescription>
-                    Our rule-based engine and machine learning pipelines evaluate counterparties across five primary decision vectors.
+                    Our smart matching engine evaluates cross-border trading opportunities across five weighted operational criteria.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {loading ? (
-                    <p className="text-muted-foreground text-sm">Querying model weights...</p>
+                    <p className="text-muted-foreground text-sm">Querying criteria weights...</p>
                   ) : (
                     <div className="space-y-4">
                       {featureData?.weights?.map((w, idx) => (
@@ -297,14 +297,14 @@ function MLAnalyticsPage() {
             <TabsContent value="predictions">
               <Card>
                 <CardHeader>
-                  <CardTitle>LSTM Commodity Forecasting Trajectories</CardTitle>
+                  <CardTitle>Market Trend Commodity Forecasting</CardTitle>
                   <CardDescription>
-                    Real-time 30-day commodity price forecasts derived from regional historical trading ledgers and maritime spot quotes.
+                    Real-time 30-day commodity price trajectories derived from regional historical trading ledgers and maritime spot quotes.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <p className="text-muted-foreground text-sm">Synthesizing LSTM trajectories...</p>
+                    <p className="text-muted-foreground text-sm">Synthesizing statistical trajectories...</p>
                   ) : (
                     <div className="grid gap-6 md:grid-cols-3">
                       {prices.map((p, idx) => (
@@ -385,7 +385,7 @@ function MLAnalyticsPage() {
                           </div>
 
                           <div className="p-4 rounded-xl bg-secondary/60 border border-border max-w-md text-xs leading-relaxed">
-                            <span className="font-bold text-foreground block mb-0.5">Automated AI Market Advice:</span>
+                            <span className="font-bold text-foreground block mb-0.5">Automated Smart Advice:</span>
                             <span className="text-muted-foreground">{d.recommended_action}</span>
                           </div>
                         </Card>

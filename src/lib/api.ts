@@ -354,7 +354,7 @@ const DEMO_SHIPMENTS: Shipment[] = [
 
 const DEMO_NOTIFICATIONS: Notification[] = [
   { id: 6001, user_id: 2, title: "SWIFT MT700 L/C Issued & Advised", message: "Your Letter of Credit #LC-SWIFT-2026-00001 has been authenticated by Garanti BBVA and Trade Bank of Iraq.", type: "push", priority: "high", read: false, created_at: "2026-06-02T12:00:00Z" },
-  { id: 6002, user_id: 2, title: "ML Market Trajectory Alert", message: "Our PyTorch LSTM models predict an 7.2% surge in Iraqi Basra Medjool dates over the next 30 days due to harvest supply variables.", type: "in_app", priority: "medium", read: false, created_at: "2026-06-18T08:00:00Z" },
+  { id: 6002, user_id: 2, title: "Market Trend Alert", message: "Our statistical market trajectory engines predict a 7.2% surge in Iraqi Basra Medjool dates over the next 30 days due to harvest supply variables.", type: "in_app", priority: "medium", read: false, created_at: "2026-06-18T08:00:00Z" },
 ];
 
 const DEMO_KYCS: KYCRecord[] = [
@@ -793,7 +793,7 @@ export async function login(email: string, password?: string): Promise<{ access_
   return api<{ access_token: string }>("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ username: email, password: password || "password123" }),
+    body: new URLSearchParams({ username: email, password: password || "Tureep*Auth#2026!xKey" }),
   });
 }
 

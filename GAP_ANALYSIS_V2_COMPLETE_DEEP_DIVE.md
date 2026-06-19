@@ -37,7 +37,7 @@ While the repository perfectly demonstrates the platform's user experience and a
 | Epic / Feature Capability | Shipped Hybrid State (`pixel-perfect-preview`) | Live Production Enterprise Mandate | Severity Gap | Engineering Remediation |
 | :--- | :--- | :--- | :--- | :--- |
 | **Supabase Gotrue Auth** | Built with `persistSession: true` & fallback multi-protocol form intercepts. | Requires custom SMTP verification webhooks and OAuth institutional SSO (Google/Azure). | **P1 (High)** | Inject custom GoTrue triggers; map enterprise SSO Azure SAML keys in Lovable hosting. |
-| **MFA / 2FA Hardening** | Universal password demo access (`password123`). | Mandatory Level 2 Authentication (SMS OTP or Authenticator TOTP) for Escrow releases. | **P0 (Critical)** | Implement Supabase MFA Enrollment dialog and enforce API Route multi-factor claims. |
+| **MFA / 2FA Hardening** | Universal password demo access (`Tureep*Auth#2026!xKey`). | Mandatory Level 2 Authentication (SMS OTP or Authenticator TOTP) for Escrow releases. | **P0 (Critical)** | Implement Supabase MFA Enrollment dialog and enforce API Route multi-factor claims. |
 | **Row Level Security (RLS)** | Fully complete PostgreSQL migration securing all 16 relations via `auth.uid()`. | Live Supabase cloud instances must have connection poolers locked to SSL/TLS 1.3 only. | **P2 (Medium)** | Bind database poolers directly to AWS Application Load Balancer inside Terraform configurations. |
 | **Cross-Border GDPR/KVKK** | Universal compliance headers implemented. | strict MENA/EU data sovereignty (e.g. keeping Turkish citizen metadata physically in Istanbul nodes). | **P1 (High)** | Spin up regional Supabase read-replicas in Turkey and Germany via AWS RDS Multi-AZ. |
 

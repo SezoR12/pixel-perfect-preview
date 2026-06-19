@@ -1,9 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import Optional, List
+from typing import Optional, List, Any
 
-from pydantic import BaseModel, EmailStr, Field, ConfigDict
+from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
+from app.validators import sanitize_string
 
 
 class AccountType(str, Enum):
@@ -20,6 +21,13 @@ class UserBase(BaseModel):
     name: str
     phone: Optional[str] = None
     country: str
+
+    @field_validator("name", "phone", "country", mode="before")
+    @classmethod
+    def sanitize_user_fields(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            return sanitize_string(v, max_length=255)
+        return v
 
 
 class UserCreate(UserBase):
@@ -67,6 +75,13 @@ class ProductBase(BaseModel):
     origin: str
     location: str
 
+    @field_validator("name", "description", "category", "unit", "origin", "location", mode="before")
+    @classmethod
+    def sanitize_product_fields(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            return sanitize_string(v, max_length=500)
+        return v
+
 
 class ProductCreate(ProductBase):
     pass
@@ -90,6 +105,13 @@ class DemandBase(BaseModel):
     budget: Decimal
     location: str
     urgency: int = Field(default=1, ge=1, le=3)
+
+    @field_validator("product_name", "category", "unit", "location", mode="before")
+    @classmethod
+    def sanitize_demand_fields(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            return sanitize_string(v, max_length=500)
+        return v
 
 
 class DemandCreate(DemandBase):
@@ -210,6 +232,13 @@ class KYCReview(BaseModel):
 class SanctionsScreenRequest(BaseModel):
     entity_name: str
     entity_type: str = "user"
+
+    @field_validator("entity_name", "entity_type", mode="before")
+    @classmethod
+    def sanitize_sanction_fields(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            return sanitize_string(v, max_length=255)
+        return v
 
 
 class SanctionsScreenResult(BaseModel):
@@ -395,6 +424,13 @@ class ShipmentEventCreate(BaseModel):
     location: str
     description: str
 
+    @field_validator("location", "description", mode="before")
+    @classmethod
+    def sanitize_shipment_fields(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            return sanitize_string(v, max_length=500)
+        return v
+
 
 class ShipmentEventRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -443,4 +479,3 @@ class DemandAnalytics(BaseModel):
     total_supply_tonnage: int
     imbalance_ratio: Decimal
     recommended_action: str
-

@@ -7,7 +7,7 @@ def verify_supabase_connection():
     # Consume saved DATABASE_URL from environment or fallback to known Supabase string
     url = os.getenv(
         "DATABASE_URL", 
-        "postgresql://postgres:Syriatel%4075%40@db.nfzowljlswwbfdzitkrc.supabase.co:5432/postgres?sslmode=require"
+        "postgresql://postgres.bkwajecszulriwqivqnd:Tureep%23Enterprise2026%21Secured%2399xL@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require"
     )
     
     print(f"[Verification Node] Initializing PostgreSQL connection pool to: {url.split('@')[-1]} ...")

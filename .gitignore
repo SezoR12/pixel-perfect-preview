@@ -16,20 +16,25 @@ dist-ssr
 .nitro
 *.local
 
+# Secrets and Environment Variables
+.env
+.env.*.local
+.env.production
+.env.development
+backend/.env
+.dev.vars
+
 # Wrangler / Cloudflare
 .wrangler/
-.dev.vars
 
 # Backend
 backend/.venv
 backend/__pycache__
 backend/**/*.pyc
 backend/*.db
-backend/.env
 
 # Package managers
 package-lock.json
-npm-debug.log*
 
 # Editor directories and files
 .vscode/*

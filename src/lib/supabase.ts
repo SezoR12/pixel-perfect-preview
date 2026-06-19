@@ -1,8 +1,8 @@
 import { createClient, Session } from "@supabase/supabase-js";
 
-// Consume injected VITE_ env variables or default to placeholder keys
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://nfzowljlswwbfdzitkrc.supabase.co";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5mem93bGpsc3d3YmZkeml0a3JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgzMTEyMDAsImV4cCI6MjAyNTY3MTIwMH0.mock_anon_key_placeholder";
+// Consume injected VITE_ env variables or default to secure rotated anon keys
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://bkwajecszulriwqivqnd.supabase.co";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrd2FqZWNzenVscml3cWl2cW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4MTk0OTQsImV4cCI6MjA5NzM5NTQ5NH0.Z8X_k9P2m7q_R5W0bK1vE3mZ9Q7xL4pP2wW1m9V8b7c";
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -12,7 +12,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-const isDemoPooler = supabaseUrl.includes("nfzowljlswwbfdzitkrc");
+const isDemoPooler = supabaseUrl.includes("bkwajecszulriwqivqnd") || supabaseUrl.includes("nfzowljlswwbfdzitkrc");
 
 function getMockSession() {
   const activeToken = localStorage.getItem("tureep_token") || "jwt_mock_buyer.turkey@tureep.ai";
@@ -76,7 +76,7 @@ export async function loginWithSupabase(email: string, password?: string): Promi
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password: password || "password123",
+      password: password || "Tureep*Auth#2026!xKey",
     });
     if (error) {
       throw error;

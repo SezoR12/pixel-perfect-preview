@@ -24,7 +24,7 @@ def seed():
     users = [
         User(
             email="seller.iraq@tureep.ai",
-            password_hash=hash_password("password123"),
+            password_hash=hash_password("Tureep*Auth#2026!xKey"),
             name="Basra Dates Co.",
             phone="+9647801234567",
             country="Iraq",
@@ -34,7 +34,7 @@ def seed():
         ),
         User(
             email="buyer.turkey@tureep.ai",
-            password_hash=hash_password("password123"),
+            password_hash=hash_password("Tureep*Auth#2026!xKey"),
             name="Istanbul Imports Ltd.",
             phone="+905301234567",
             country="Turkey",
@@ -44,7 +44,7 @@ def seed():
         ),
         User(
             email="seller.iran@tureep.ai",
-            password_hash=hash_password("password123"),
+            password_hash=hash_password("Tureep*Auth#2026!xKey"),
             name="Iran Steel Group",
             phone="+989123456789",
             country="Iran",
@@ -54,7 +54,7 @@ def seed():
         ),
         User(
             email="buyer.global@tureep.ai",
-            password_hash=hash_password("password123"),
+            password_hash=hash_password("Tureep*Auth#2026!xKey"),
             name="Global Phosphate Buyers",
             phone="+905309876543",
             country="Turkey",
@@ -64,7 +64,7 @@ def seed():
         ),
         User(
             email="admin@tureep.ai",
-            password_hash=hash_password("password123"),
+            password_hash=hash_password("Tureep*Auth#2026!xKey"),
             name="Tureep Compliance Admin",
             phone="+905300000000",
             country="Turkey",
