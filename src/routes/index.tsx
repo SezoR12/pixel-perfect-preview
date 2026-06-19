@@ -9,8 +9,6 @@ import {
   Shield,
   Sparkles,
   TrendingUp,
-  LayoutDashboard,
-  Handshake,
   ChevronRight,
 } from "lucide-react";
 
@@ -18,7 +16,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-export default function Index() {
+function Index() {
   const { language, setLanguage, t, dir } = useI18n();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -405,9 +403,9 @@ export default function Index() {
 
           <div className="mt-16 grid gap-8 md:grid-cols-3 items-stretch">
             {[
-              { from: t("corr.c1.from", "Iraq"), to: t("corr.c1.to", "Turkey"), goods: t("corr.c1.goods", "Dates, Phosphate, Marble"), icon: LayoutDashboard },
-              { from: t("corr.c2.from", "Iran"), to: t("corr.c2.to", "Turkey / EU"), goods: t("corr.c2.goods", "Steel Scrap, Petrochemicals"), icon: Handshake },
-              { from: t("corr.c3.from", "Turkey"), to: t("corr.c3.to", "Global Markets"), goods: t("corr.c3.goods", "Processed commodities, Textiles"), icon: Globe },
+              { from: t("corr.c1.from", "Iraq"), to: t("corr.c1.to", "Turkey"), goods: t("corr.c1.goods", "Dates, Phosphate, Marble") },
+              { from: t("corr.c2.from", "Iran"), to: t("corr.c2.to", "Turkey / EU"), goods: t("corr.c2.goods", "Steel Scrap, Petrochemicals") },
+              { from: t("corr.c3.from", "Turkey"), to: t("corr.c3.to", "Global Markets"), goods: t("corr.c3.goods", "Processed commodities, Textiles") },
             ].map((c, cIdx) => (
               <div key={cIdx} className="rounded-3xl border border-white/10 bg-neutral-950 p-8 space-y-6 hover:border-yellow-500/50 transition-all shadow-xl hover:scale-[1.02]">
                 <div className="flex items-center justify-between">

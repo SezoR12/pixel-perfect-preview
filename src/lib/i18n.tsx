@@ -267,11 +267,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }
 
   function t(key: string, fallback?: string): string {
+    if (!key) return fallback || "";
     let entry = DICTIONARY[key];
     if (!entry) {
       // Reverse lookup by exact English text or fallback match
       const foundKey = Object.keys(DICTIONARY).find(
-        (k) => (DICTIONARY[k].en?.toLowerCase() === key.toLowerCase()) || (DICTIONARY[k].en?.toLowerCase() === fallback?.toLowerCase())
+        (k) => (DICTIONARY[k]?.en?.toLowerCase() === key.toLowerCase()) || (fallback && DICTIONARY[k]?.en?.toLowerCase() === fallback.toLowerCase())
       );
       if (foundKey) {
         entry = DICTIONARY[foundKey];
