@@ -111,7 +111,7 @@ export function DeveloperTerminal() {
             output: (
               <div className="space-y-1 text-xs font-mono bg-slate-900 p-3 rounded border border-slate-800">
                 <p className={res.success ? "text-emerald-400 font-black" : "text-red-400 font-black"}>
-                  {res.success ? "🟢 SMOKE SUITE VERIFIED (11/11 ROUTES HTTP 200 OK)" : `🔴 SMOKE SUITE DROPPED (${res.failures} FAILURES)`}
+                  {res.success ? "🟢 SMOKE SUITE VERIFIED (17/17 ROUTES HTTP 200 OK)" : `🔴 SMOKE SUITE DROPPED (${res.failures} FAILURES)`}
                 </p>
                 {res.logs.map((logStr, lIdx) => (
                   <p key={lIdx} className="text-[10px] text-slate-300 leading-relaxed">{logStr}</p>

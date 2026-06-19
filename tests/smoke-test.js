@@ -13,7 +13,9 @@ const TARGET_PORT = Number(process.env.TARGET_PORT) || 8080;
 const ROUTES_TO_SMOKE_TEST = [
   "/",
   "/dashboard",
+  "/profile",
   "/products",
+  "/demands",
   "/pre-deals",
   "/orders",
   "/trade-finance",
@@ -101,7 +103,7 @@ async function executeCompleteSmokeSuite() {
   
   console.log("\n====================================================================");
   if (failureCount === 0) {
-    console.log("🟢 COMPLETE SMOKE SUITE PASSED SUCCESSFULLY (15/15 ROUTES LOADED)");
+    console.log("🟢 COMPLETE SMOKE SUITE PASSED SUCCESSFULLY (17/17 ROUTES LOADED)");
     console.log("Zero non-200 responses or 'building' lockups identified.");
     console.log("====================================================================\n");
     process.exit(0);

@@ -15,7 +15,9 @@ export async function executeFrontendSmokeTest(): Promise<SmokeTestResult> {
   const routes = [
     "/",
     "/dashboard",
+    "/profile",
     "/products",
+    "/demands",
     "/pre-deals",
     "/orders",
     "/trade-finance",
@@ -24,6 +26,10 @@ export async function executeFrontendSmokeTest(): Promise<SmokeTestResult> {
     "/ml-analytics",
     "/kyc",
     "/sanctions",
+    "/notifications",
+    "/supabase-portal",
+    "/microservices-spec",
+    "/hardening-notes",
   ];
 
   const logs: string[] = [

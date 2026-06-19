@@ -3,6 +3,7 @@ import { logoutWithSupabase } from "@/lib/supabase";
 import { useI18n, Language } from "@/lib/i18n";
 import {
   LayoutDashboard,
+  Building2,
   Package,
   ClipboardList,
   Handshake,
@@ -35,6 +36,7 @@ export function AppSidebar({ activeRoute }: AppSidebarProps) {
 
   const items = [
     { id: "dashboard", label: t("nav.dashboard", "Dashboard"), path: "/dashboard", icon: LayoutDashboard },
+    { id: "profile", label: t("nav.profile", "Company Profile"), path: "/profile", icon: Building2 },
     { id: "products", label: t("nav.products", "Products"), path: "/products", icon: Package },
     { id: "demands", label: t("nav.demands", "Demands"), path: "/demands", icon: ClipboardList },
     { id: "pre-deals", label: t("nav.pre_deals", "Pre-Deals"), path: "/pre-deals", icon: Handshake },

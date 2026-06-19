@@ -13,6 +13,7 @@ import { Route as TradeFinanceRouteImport } from './routes/trade-finance'
 import { Route as SupabasePortalRouteImport } from './routes/supabase-portal'
 import { Route as ShipmentsRouteImport } from './routes/shipments'
 import { Route as SanctionsRouteImport } from './routes/sanctions'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PreDealsRouteImport } from './routes/pre-deals'
 import { Route as OrdersRouteImport } from './routes/orders'
@@ -45,6 +46,11 @@ const ShipmentsRoute = ShipmentsRouteImport.update({
 const SanctionsRoute = SanctionsRouteImport.update({
   id: '/sanctions',
   path: '/sanctions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsRoute = ProductsRouteImport.update({
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
   '/sanctions': typeof SanctionsRoute
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
   '/sanctions': typeof SanctionsRoute
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/orders': typeof OrdersRoute
   '/pre-deals': typeof PreDealsRoute
   '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
   '/sanctions': typeof SanctionsRoute
   '/shipments': typeof ShipmentsRoute
   '/supabase-portal': typeof SupabasePortalRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/pre-deals'
     | '/products'
+    | '/profile'
     | '/sanctions'
     | '/shipments'
     | '/supabase-portal'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/pre-deals'
     | '/products'
+    | '/profile'
     | '/sanctions'
     | '/shipments'
     | '/supabase-portal'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/pre-deals'
     | '/products'
+    | '/profile'
     | '/sanctions'
     | '/shipments'
     | '/supabase-portal'
@@ -245,6 +257,7 @@ export interface RootRouteChildren {
   OrdersRoute: typeof OrdersRoute
   PreDealsRoute: typeof PreDealsRoute
   ProductsRoute: typeof ProductsRoute
+  ProfileRoute: typeof ProfileRoute
   SanctionsRoute: typeof SanctionsRoute
   ShipmentsRoute: typeof ShipmentsRoute
   SupabasePortalRoute: typeof SupabasePortalRoute
@@ -279,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/sanctions'
       fullPath: '/sanctions'
       preLoaderRoute: typeof SanctionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products': {
@@ -389,6 +409,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrdersRoute: OrdersRoute,
   PreDealsRoute: PreDealsRoute,
   ProductsRoute: ProductsRoute,
+  ProfileRoute: ProfileRoute,
   SanctionsRoute: SanctionsRoute,
   ShipmentsRoute: ShipmentsRoute,
   SupabasePortalRoute: SupabasePortalRoute,
