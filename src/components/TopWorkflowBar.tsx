@@ -22,7 +22,7 @@ export function TopWorkflowBar() {
     {
       id: "discovery",
       step: "01",
-      label: "Discovery & AI Node",
+      label: "Discovery Desk",
       icon: Cpu,
       routes: ["/products", "/demands", "/ml-analytics"],
       defaultPath: "/ml-analytics",

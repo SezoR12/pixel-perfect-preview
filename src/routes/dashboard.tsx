@@ -35,10 +35,10 @@ const quickActions = [
 
 const workflowSteps = [
   { id: 1, title: "List or Browse", desc: "Add products or explore demands", icon: Package, status: "active" },
-  { id: 2, title: "AI Matching", desc: "Get matched with best partners", icon: Sparkles, status: "active" },
+  { id: 2, title: "Smart Matching", desc: "Get matched with best partners", icon: Sparkles, status: "active" },
   { id: 3, title: "Review Deals", desc: "Evaluate pre-deal proposals", icon: Handshake, status: "pending" },
   { id: 4, title: "Confirm Order", desc: "Lock in with escrow protection", icon: ClipboardCheck, status: "pending" },
-  { id: 5, title: "Ship & Track", desc: "Monitor logistics in real-time", icon: Truck, status: "pending" },
+  { id: 5, title: "Ship & Track", desc: "Monitor haulage in real-time", icon: Truck, status: "pending" },
 ];
 
 function StatCard({ title, value, change, changeType, icon: Icon, subtitle }: any) {
@@ -196,17 +196,17 @@ function DashboardPage() {
   return (
     <div className="space-y-8 animate-slide-in">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-3xl p-6 lg:p-8 text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/3" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-2">
-            <Zap className="w-4 h-4 text-accent-300" />
-            <span className="text-xs font-semibold text-primary-200 uppercase tracking-wider">Your Trade Command Center</span>
+      <div className="bg-gradient-to-br from-primary-600 via-primary-700 to-slate-900 rounded-3xl p-8 lg:p-10 text-white relative overflow-hidden shadow-2xl border border-white/10 select-none">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 rounded-full translate-y-1/2 -translate-x-1/3 blur-xl" />
+        <div className="relative z-10 space-y-2">
+          <div className="flex items-center gap-2.5 font-mono text-xs">
+            <Badge className="bg-yellow-400 text-black font-black uppercase text-[10px] tracking-widest px-3 py-1 shadow-md">Sovereign Command Desk</Badge>
+            <span className="text-primary-200 font-bold hidden sm:inline">● Shipped Hybrid Enterprise Trajectory Engine</span>
           </div>
-          <h1 className="text-2xl lg:text-3xl font-bold mb-2">Welcome back to Tureep AI+</h1>
-          <p className="text-primary-100 max-w-xl text-sm lg:text-base">
-            Your AI-powered trade platform is actively matching opportunities across Iraq, Iran, Turkey, and global markets.
+          <h1 className="text-3xl lg:text-4xl font-black tracking-tight pt-1">Institutional Deal Command Center</h1>
+          <p className="text-primary-100 max-w-2xl text-xs lg:text-sm leading-relaxed font-sans">
+            Your smart heuristic trade terminal is actively correlating purchasing queries and physical spot ledgers across the primary Iraq, Iran, Turkey, and EU cross-border lanes.
           </p>
         </div>
       </div>
@@ -304,23 +304,26 @@ function DashboardPage() {
       </div>
 
       {/* Two Column Layout */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-8">
         {/* Recent Deals */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-surface-800">AI-Matched Deals</h3>
-            <Link to="/deals" className="text-sm font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1">
-              View All <ChevronRight className="w-4 h-4" />
+        <div className="space-y-4">
+          <div className="flex items-center justify-between bg-surface-100 p-4 rounded-2xl border border-surface-200">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary-600" />
+              <h3 className="text-base font-extrabold text-surface-800 font-sans">Smart-Matched Pre-Deals</h3>
+            </div>
+            <Link to="/deals" className="text-xs font-black text-primary-600 hover:text-primary-700 flex items-center gap-1 font-mono uppercase tracking-wider bg-white px-3 py-1.5 rounded-full shadow-sm">
+              <span>View Hub Desk</span> <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           <div className="space-y-3 stagger-children">
             {deals.length === 0 ? (
-              <div className="bg-white rounded-2xl p-8 border border-surface-200 text-center">
-                <Sparkles className="w-10 h-10 text-surface-300 mx-auto mb-3" />
-                <p className="text-surface-500 font-medium">No deals yet</p>
-                <p className="text-sm text-surface-400 mt-1">Add products to get AI-matched</p>
-                <Link to="/products" className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-primary-500 text-white rounded-xl text-sm font-semibold hover:bg-primary-600 transition-colors">
-                  <Package className="w-4 h-4" /> List a Product
+              <div className="bg-white rounded-3xl p-10 border border-surface-200 text-center shadow-sm">
+                <Sparkles className="w-12 h-12 text-primary-400 mx-auto mb-3 animate-spin" style={{ animationDuration: "10s" }} />
+                <p className="text-surface-800 font-extrabold text-base">Zero Smart Deals Generated</p>
+                <p className="text-xs text-surface-500 mt-1 leading-relaxed">Add verified target inventory or commercial purchasing inquiries to get matched automatically.</p>
+                <Link to="/products" className="inline-flex items-center gap-2 mt-5 px-6 py-3 bg-primary-600 text-white rounded-2xl text-xs font-bold hover:bg-primary-500 transition-all shadow-md">
+                  <Package className="w-4 h-4" /> List Commodity Product
                 </Link>
               </div>
             ) : (
@@ -330,21 +333,24 @@ function DashboardPage() {
         </div>
 
         {/* Recent Orders */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-surface-800">Active Orders</h3>
-            <Link to="/orders" className="text-sm font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1">
-              View All <ChevronRight className="w-4 h-4" />
+        <div className="space-y-4">
+          <div className="flex items-center justify-between bg-surface-100 p-4 rounded-2xl border border-surface-200">
+            <div className="flex items-center gap-2">
+              <ClipboardCheck className="w-5 h-5 text-accent-600" />
+              <h3 className="text-base font-extrabold text-surface-800 font-sans">Active Orders & Custody Separate Separate Payout</h3>
+            </div>
+            <Link to="/orders" className="text-xs font-black text-accent-600 hover:text-accent-700 flex items-center gap-1 font-mono uppercase tracking-wider bg-white px-3 py-1.5 rounded-full shadow-sm">
+              <span>View Escrow Paper</span> <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           <div className="space-y-3 stagger-children">
             {orders.length === 0 ? (
-              <div className="bg-white rounded-2xl p-8 border border-surface-200 text-center">
-                <ClipboardCheck className="w-10 h-10 text-surface-300 mx-auto mb-3" />
-                <p className="text-surface-500 font-medium">No active orders</p>
-                <p className="text-sm text-surface-400 mt-1">Accept a pre-deal to create an order</p>
-                <Link to="/deals" className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-accent-500 text-white rounded-xl text-sm font-semibold hover:bg-accent-600 transition-colors">
-                  <Handshake className="w-4 h-4" /> Browse Deals
+              <div className="bg-white rounded-3xl p-10 border border-surface-200 text-center shadow-sm">
+                <ClipboardCheck className="w-12 h-12 text-accent-400 mx-auto mb-3 animate-bounce" />
+                <p className="text-surface-800 font-extrabold text-base">Zero Active Transaction Manifests Manifests Manifests</p>
+                <p className="text-xs text-surface-500 mt-1 leading-relaxed">Accept any pre-deal from your deal stream to immediately initialize formal neutral custody separate Payout handshakes.</p>
+                <Link to="/deals" className="inline-flex items-center gap-2 mt-5 px-6 py-3 bg-accent-600 text-white rounded-2xl text-xs font-bold hover:bg-accent-500 transition-all shadow-md">
+                  <Handshake className="w-4 h-4" /> Inspect Safe Deals Hub
                 </Link>
               </div>
             ) : (
