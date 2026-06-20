@@ -29,8 +29,8 @@ const tiers = [
     price: "$0",
     period: "forever",
     icon: Star,
-    color: "bg-surface-100 text-surface-600",
-    features: ["Basic product listing", "5 AI matches/month", "Standard support", "120h deal delay"],
+    color: "bg-surface-100 text-surface-600 font-mono",
+    features: ["Basic product listing", "5 smart matches/month", "Standard support", "120h deal delay"],
     cta: "Current Plan",
     popular: false,
   },
@@ -40,8 +40,8 @@ const tiers = [
     price: "$49",
     period: "/month",
     icon: Zap,
-    color: "bg-amber-100 text-amber-700",
-    features: ["Up to 20 products", "25 AI matches/month", "Email support", "72h deal delay", "Basic analytics"],
+    color: "bg-amber-100 text-amber-700 font-mono",
+    features: ["Up to 20 products", "25 smart matches/month", "Email support", "72h deal delay", "Basic analytics"],
     cta: "Upgrade",
     popular: false,
   },
@@ -51,8 +51,8 @@ const tiers = [
     price: "$149",
     period: "/month",
     icon: Sparkles,
-    color: "bg-slate-200 text-slate-700",
-    features: ["Unlimited products", "100 AI matches/month", "Priority support", "24h deal delay", "Full analytics", "L/C support"],
+    color: "bg-slate-200 text-slate-700 font-mono",
+    features: ["Unlimited products", "100 smart matches/month", "Priority support", "24h deal delay", "Full analytics", "L/C support"],
     cta: "Upgrade",
     popular: true,
   },
@@ -62,8 +62,8 @@ const tiers = [
     price: "$399",
     period: "/month",
     icon: Crown,
-    color: "bg-yellow-100 text-yellow-700",
-    features: ["Unlimited everything", "500 AI matches/month", "Dedicated manager", "Instant deals", "ML predictions", "Escrow priority"],
+    color: "bg-yellow-100 text-yellow-700 font-mono",
+    features: ["Unlimited everything", "500 smart matches/month", "Dedicated manager", "Instant deals", "Market forecasts", "Escrow priority"],
     cta: "Upgrade",
     popular: false,
   },
@@ -73,8 +73,8 @@ const tiers = [
     price: "$999",
     period: "/month",
     icon: Gem,
-    color: "bg-indigo-100 text-indigo-700",
-    features: ["Enterprise features", "Unlimited matches", "24/7 concierge", "Instant deals", "Custom ML models", "White-glove onboarding"],
+    color: "bg-indigo-100 text-indigo-700 font-mono",
+    features: ["Enterprise features", "Unlimited matches", "24/7 concierge", "Instant deals", "Custom heuristics", "White-glove onboarding"],
     cta: "Upgrade",
     popular: false,
   },
@@ -84,7 +84,7 @@ const tiers = [
     price: "Custom",
     period: "",
     icon: Diamond,
-    color: "bg-surface-800 text-white",
+    color: "bg-surface-800 text-white font-mono",
     features: ["Bespoke solutions", "Dedicated infrastructure", "Custom integrations", "SLA guarantees", "Executive reporting", "Private corridors"],
     cta: "Contact Sales",
     popular: false,
@@ -309,9 +309,9 @@ function SettingsPage() {
                       <Icon className="w-5 h-5" />
                     </div>
                     <h4 className="font-bold text-surface-800">{tier.name}</h4>
-                    <div className="flex items-baseline gap-1 mt-1 mb-4">
-                      <span className="text-2xl font-bold text-surface-800">{tier.price}</span>
-                      <span className="text-sm text-surface-500">{tier.period}</span>
+                    <div className="flex items-baseline gap-1 mt-1 mb-4 font-mono">
+                      <span className="text-2xl font-black text-surface-800 font-mono">{tier.price}</span>
+                      <span className="text-sm text-surface-500 font-sans">{tier.period}</span>
                     </div>
                     <ul className="space-y-2 mb-5">
                       {tier.features.map((feature, i) => (
@@ -347,7 +347,7 @@ function SettingsPage() {
         <div className="bg-white rounded-2xl p-6 border border-surface-200 space-y-6">
           <h3 className="font-bold text-surface-800">Notification Preferences</h3>
           {[
-            { label: "Deal Alerts", desc: "Get notified when new AI matches are found", checked: true },
+            { label: "Deal Alerts", desc: "Get notified when new smart matches are found", checked: true },
             { label: "Order Updates", desc: "Status changes for your orders and shipments", checked: true },
             { label: "Price Alerts", desc: "Market price movements for your commodities", checked: false },
             { label: "Compliance Alerts", desc: "KYC and sanctions screening updates", checked: true },

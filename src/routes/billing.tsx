@@ -92,7 +92,7 @@ function MasterAccountBillingPage() {
       description: "Entry-level commercial tools for emerging regional suppliers.",
       delay: "+72h Visibility Delay",
       commission: "0.8% Platform Commission",
-      features: ["Standard ML Feature Weights", "Max 10 Active Products", "Escrow & Documentary Collection (D/P)"],
+      features: ["Standard Heuristic Feature Weights", "Max 10 Active Products", "Escrow & Documentary Collection (D/P)"],
     },
     {
       id: "silver",
@@ -101,16 +101,16 @@ function MasterAccountBillingPage() {
       description: "Enhanced priority routing for established cross-border operations.",
       delay: "+24h Visibility Delay",
       commission: "0.5% Platform Commission",
-      features: ["Full AI/ML Matching Model Access", "Unlimited Active Products/Demands", "Dedicated L/C State Machine Routing"],
+      features: ["Full Rule-Based Matching Access", "Unlimited Active Products/Demands", "Dedicated L/C State Machine Routing"],
     },
     {
       id: "gold",
       name: "Gold Priority",
       monthlyPrice: "$899",
-      description: "Top-tier priority pool matching recommended for major Turkish/EU buyers.",
+      description: "Top-tier priority pool matching recommended for major Turkish/EU counterparties.",
       delay: "+6h Visibility Delay",
       commission: "0.3% Platform Commission",
-      features: ["Advanced Commodity Price Prediction", "Regional Demand Imbalance Alerts", "Automated OFAC/EU/UN Sanctions Sweeps"],
+      features: ["Advanced Commodity Price Forecasts", "Regional Demand Imbalance Alerts", "Automated OFAC/EU/UN Sanctions Sweeps"],
       popular: true,
     },
     {
@@ -130,15 +130,13 @@ function MasterAccountBillingPage() {
       description: "Absolute apex priority node for multi-national holding conglomerates.",
       delay: "Instant Apex Visibility",
       commission: "0.0% Platform Commission (Zero Fee)",
-      features: ["Custom ML Model Fine-Tuning", "Private Sovereign Escrow Pools", "Automated Customs Clearance Webhooks"],
+      features: ["Custom Criteria Heuristic Tuning", "Private Sovereign Escrow Pools", "Automated Customs Clearance Webhooks"],
       vip: true,
     },
   ];
 
   return (
     <div className="flex min-h-screen bg-background">
-      <AppSidebar activeRoute="billing" />
-
       <main className="flex-1 overflow-auto">
         <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">
           <div className="flex items-center gap-3">
@@ -242,9 +240,9 @@ function MasterAccountBillingPage() {
                         <Badge variant="secondary" className="uppercase font-mono text-[10px] mb-1">{tier.id}</Badge>
                         <CardTitle className="text-lg font-extrabold text-foreground">{tier.name}</CardTitle>
                       </div>
-                      <div className="flex items-baseline gap-1 pt-1">
-                        <span className="text-3xl font-black text-foreground">{tier.monthlyPrice}</span>
-                        {tier.monthlyPrice !== "Custom Quote" && <span className="text-xs text-muted-foreground font-medium">/ month</span>}
+                      <div className="flex items-baseline gap-1 pt-1 font-mono">
+                        <span className="text-3xl font-black text-foreground font-mono">{tier.monthlyPrice}</span>
+                        {tier.monthlyPrice !== "Custom Quote" && <span className="text-xs text-muted-foreground font-medium font-sans">/ month</span>}
                       </div>
                       <p className="text-xs text-muted-foreground pt-1 leading-relaxed">{tier.description}</p>
                     </CardHeader>

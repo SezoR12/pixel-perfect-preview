@@ -69,8 +69,6 @@ function MLAnalyticsPage() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <AppSidebar activeRoute="ml-analytics" />
-
       <main className="flex-1 overflow-auto">
         <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">
           <div className="flex items-center gap-3">

@@ -16,6 +16,7 @@ export interface BuildVersionInfo {
   message: string;
   timestamp: string;
   release: string;
+  author: string;
   isStale: boolean;
 }
 
@@ -26,6 +27,7 @@ export function getActiveVersionManifest(): BuildVersionInfo {
     message: DEPLOYED_COMMIT_MESSAGE,
     timestamp: DEPLOYED_TIMESTAMP,
     release: TARGET_RELEASE,
+    author: DEPLOYED_AUTHOR,
     isStale: false,
   };
 }

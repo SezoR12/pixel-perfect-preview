@@ -163,8 +163,8 @@ function CompliancePage() {
                 <p className="text-[10px] text-surface-400 uppercase tracking-wider mb-1">Submitted</p>
                 <p className="text-sm font-semibold text-surface-800">{new Date(kyc.submitted_at).toLocaleDateString()}</p>
               </div>
-              <div className="bg-surface-50 rounded-xl p-4">
-                <p className="text-[10px] text-surface-400 uppercase tracking-wider mb-1">Document Hash</p>
+              <div className="bg-surface-50 rounded-xl p-4 font-mono">
+                <p className="text-[10px] text-surface-400 uppercase tracking-wider mb-1 font-sans">Document Hash</p>
                 <p className="text-xs font-mono text-surface-600 truncate">{kyc.document_hash.slice(0, 16)}...</p>
               </div>
             </div>

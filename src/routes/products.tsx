@@ -54,14 +54,14 @@ function ProductCard({ product }: { product: Product }) {
               <DollarSign className="w-3 h-3 text-surface-400" />
               <span className="text-[10px] text-surface-400 uppercase tracking-wider">Price</span>
             </div>
-            <p className="text-sm font-bold text-surface-800">${product.price}/{product.unit}</p>
+            <p className="text-sm font-black text-surface-800 font-mono">${product.price}/{product.unit}</p>
           </div>
           <div className="bg-surface-50 rounded-xl p-3">
             <div className="flex items-center gap-1.5 mb-1">
               <Box className="w-3 h-3 text-surface-400" />
               <span className="text-[10px] text-surface-400 uppercase tracking-wider">Stock</span>
             </div>
-            <p className="text-sm font-bold text-surface-800">{product.quantity} {product.unit}</p>
+            <p className="text-sm font-black text-surface-800 font-mono">{product.quantity} {product.unit}</p>
           </div>
         </div>
 
@@ -102,7 +102,10 @@ function AddProductModal({ onClose, onSuccess }: { onClose: () => void; onSucces
     setSubmitting(true);
     setError("");
     try {
-      await createProduct(form);
+      await createProduct({
+        ...form,
+        quantity: Number(form.quantity) || 100,
+      });
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -408,21 +411,21 @@ function ProductsPage() {
       {/* Stats Summary */}
       {!loading && products.length > 0 && (
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white rounded-2xl p-5 border border-surface-200 text-center">
-            <p className="text-2xl font-bold text-surface-800">{products.length}</p>
-            <p className="text-xs text-surface-500 mt-1">Total Products</p>
+          <div className="bg-white rounded-2xl p-5 border border-surface-200 text-center shadow-sm">
+            <p className="text-3xl font-black text-surface-800 font-mono">{products.length}</p>
+            <p className="text-xs text-surface-500 mt-1 font-sans">Total Listed Products</p>
           </div>
-          <div className="bg-white rounded-2xl p-5 border border-surface-200 text-center">
-            <p className="text-2xl font-bold text-success-600">
+          <div className="bg-white rounded-2xl p-5 border border-surface-200 text-center shadow-sm">
+            <p className="text-3xl font-black text-success-600 font-mono">
               {products.filter((p) => p.is_available).length}
             </p>
-            <p className="text-xs text-surface-500 mt-1">Available</p>
+            <p className="text-xs text-surface-500 mt-1 font-sans">Available In Inventory</p>
           </div>
-          <div className="bg-white rounded-2xl p-5 border border-surface-200 text-center">
-            <p className="text-2xl font-bold text-primary-600">
+          <div className="bg-white rounded-2xl p-5 border border-surface-200 text-center shadow-sm">
+            <p className="text-3xl font-black text-primary-600 font-mono">
               ${products.reduce((sum, p) => sum + parseFloat(p.price) * p.quantity, 0).toFixed(0)}
             </p>
-            <p className="text-xs text-surface-500 mt-1">Total Value</p>
+            <p className="text-xs text-surface-500 mt-1 font-sans">Total Estimated Value</p>
           </div>
         </div>
       )}

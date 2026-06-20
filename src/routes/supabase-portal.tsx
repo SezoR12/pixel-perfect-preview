@@ -63,8 +63,6 @@ CREATE POLICY "Sellers manage own products" ON products
 
   return (
     <div className="flex min-h-screen bg-background">
-      <AppSidebar activeRoute="supabase-portal" />
-
       <main className="flex-1 overflow-auto">
         <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">
           <div className="flex items-center gap-3">
@@ -97,18 +95,18 @@ CREATE POLICY "Sellers manage own products" ON products
           </Card>
 
           <Tabs defaultValue="verify" className="w-full">
-            <TabsList className="mb-6 grid w-full grid-cols-3 max-w-2xl">
-              <TabsTrigger value="verify" className="flex items-center gap-2">
+            <TabsList className="mb-6 grid w-full grid-cols-3 max-w-3xl font-mono">
+              <TabsTrigger value="verify" className="flex items-center gap-2 font-bold text-xs cursor-pointer">
                 <Database className="h-4 w-4" />
-                1. Connection & Pooler Verifier
+                1. Connection Pooler
               </TabsTrigger>
-              <TabsTrigger value="rls" className="flex items-center gap-2">
+              <TabsTrigger value="rls" className="flex items-center gap-2 font-bold text-xs cursor-pointer">
                 <FileCode className="h-4 w-4" />
-                2. RLS Security Policies
+                2. RLS Policies
               </TabsTrigger>
-              <TabsTrigger value="auth" className="flex items-center gap-2">
+              <TabsTrigger value="auth" className="flex items-center gap-2 font-bold text-xs cursor-pointer">
                 <Lock className="h-4 w-4" />
-                3. Supabase Auth & Session Hook
+                3. Supabase Session Guard
               </TabsTrigger>
             </TabsList>
 

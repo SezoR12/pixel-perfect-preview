@@ -100,8 +100,6 @@ function PreDealsPage() {
 
   return (
     <div className={`flex min-h-screen bg-background ${isRtl ? "font-sans text-right" : "font-sans text-left"}`} dir={dir}>
-      <AppSidebar activeRoute="pre-deals" />
-
       <main className="flex-1 overflow-auto">
         <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8 select-none">
           <div className="flex items-center gap-3">
@@ -180,8 +178,8 @@ function PreDealsPage() {
                           <Badge className="bg-primary text-white font-mono text-[10px]">{deal.payment_terms} Flow</Badge>
                         </div>
                         
-                        <p className="text-xs text-muted-foreground font-mono pt-1">
-                          Settlement Target: {deal.quantity} {deal.product?.unit} @ Suggested FOB Rate: <strong className="text-foreground">${deal.suggested_price}</strong> / {deal.product?.unit}
+                        <p className="text-xs text-muted-foreground font-sans pt-1">
+                          Settlement Target: <strong className="text-foreground font-mono">{deal.quantity} {deal.product?.unit}</strong> @ Suggested FOB Rate: <strong className="text-foreground font-mono">${deal.suggested_price}</strong> / {deal.product?.unit}
                         </p>
 
                         <div className="mt-4 grid gap-3 text-xs text-muted-foreground sm:grid-cols-2 lg:grid-cols-4 bg-secondary/30 p-3.5 rounded-xl font-mono">
