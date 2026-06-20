@@ -17,6 +17,7 @@ import {
   ArrowUpDown
 } from "lucide-react";
 import { getProducts, createProduct, type Product } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/products")({
   component: ProductsPage,
