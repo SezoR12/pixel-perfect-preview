@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
+import { createRootRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
@@ -28,7 +28,7 @@ import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { UniversalInAppHelpDrawer } from "@/components/UniversalInAppHelpDrawer";
 import { ClientErrorConsole } from "@/components/ClientErrorConsole";
 
-export const Route = createFileRoute("/__root")({
+export const Route = createRootRoute({
   component: RootLayout,
 });
 
