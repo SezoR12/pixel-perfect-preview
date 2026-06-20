@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +40,7 @@ function ShipmentsPage() {
         setTargetShipmentId(data[0].id);
       }
     } catch (err: any) {
-      setError(err.message || "Failed to retrieve tracking ledger");
+      setError(err.message || "Failed to consolidate tracking ledger");
     } finally {
       setLoading(false);
     }
@@ -56,11 +55,11 @@ function ShipmentsPage() {
     try {
       const updated = await addTrackingEvent(targetShipmentId, checkpointLocation, checkpointDesc, nextStatus);
       setShipments(shipments.map((item) => (item.id === targetShipmentId ? updated : item)));
-      setSuccess("Secure logistics checkpoint cryptographically injected.");
+      setSuccess("Secure satellite logistics checkpoint cryptographically timestamped.");
       setCheckpointLocation("");
       setCheckpointDesc("");
     } catch (err: any) {
-      setError(err.message || "Checkpoint injection failed");
+      setError(err.message || "Checkpoint injection dropped");
     } finally {
       setInjecting(false);
     }
@@ -73,266 +72,262 @@ function ShipmentsPage() {
   }
 
   const shipmentStatuses = [
-    { id: "label_created", label: "Manifest Dispatched" },
-    { id: "picked_up", label: "Freight Secured" },
+    { id: "label_created", label: "Manifest Manifest Handshake" },
+    { id: "picked_up", label: "Haulage Active" },
     { id: "customs_export", label: "Export Customs Audit" },
     { id: "in_transit", label: "Maritime Steaming" },
-    { id: "customs_import", label: "Import Customs Node" },
-    { id: "out_for_delivery", label: "Final Haulage" },
-    { id: "delivered", label: "Delivered & Verified" },
+    { id: "customs_import", label: "Import Customs Clearing" },
+    { id: "out_for_delivery", label: "Final Haulage Haulage" },
+    { id: "delivered", label: "Delivered & Escrow Ready" },
   ];
 
+  const inputClass = "w-full px-4 py-3 bg-surface-100/80 border border-surface-200 rounded-2xl text-xs text-surface-900 font-mono placeholder:text-surface-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all";
+  const labelClass = "block text-xs font-bold text-surface-700 mb-1.5 font-sans uppercase tracking-wider";
+
   return (
-    <div className="flex min-h-screen bg-background">
-      <main className="flex-1 overflow-auto">
-        <header className="flex h-16 items-center justify-between border-b border-border bg-white px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <Truck className="h-5 w-5 text-primary flex-shrink-0" />
-            <h1 className="text-lg font-semibold text-foreground">Logistics Container Tracking & GPS Waypoints</h1>
-          </div>
-          <Badge variant="outline" className="border-primary text-primary bg-primary/5 font-mono">
-            Carrier APIs Connected: DHL / Maersk / Maersk Line
-          </Badge>
-        </header>
-
-        <div className="p-6 lg:p-8 max-w-6xl mx-auto space-y-6">
-          <Card className="bg-gradient-to-r from-secondary/40 via-secondary/20 to-transparent border-border">
-            <CardHeader className="pb-3">
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div>
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Navigation className="h-5 w-5 text-primary" />
-                    Electronic Bill of Lading & Webhook Subsystem
-                  </CardTitle>
-                  <CardDescription>
-                    Monitor physical cross-border freight trajectories. The platform consumes automated EDI tracking webhooks from shipping lines, updating commercial escrow custody locks upon customs clearing.
-                  </CardDescription>
-                </div>
-                <Button size="sm" variant="outline" onClick={load} disabled={loading}>
-                  <RefreshCw className="mr-2 h-4 w-4" /> Sync Satellite Data
-                </Button>
-              </div>
-            </CardHeader>
-          </Card>
-
-          <div className="grid lg:grid-cols-3 gap-6">
-            {/* Active Shipments Timeline Column */}
-            <div className="lg:col-span-2 space-y-6">
-              {loading ? (
-                <p className="text-muted-foreground text-sm">Querying global freight satellites...</p>
-              ) : shipments.length === 0 ? (
-                <Card className="p-12 text-center bg-secondary/30">
-                  <Truck className="mx-auto h-8 w-8 text-muted-foreground" />
-                  <p className="mt-3 font-medium text-foreground">Zero Active Containers</p>
-                  <p className="text-xs text-muted-foreground mt-1">Accept a deal and generate an Order to create an active container tracking manifest.</p>
-                </Card>
-              ) : (
-                shipments.map((ship) => {
-                  const currentStatusIdx = shipmentStatuses.findIndex((s) => s.id === ship.status);
-
-                  return (
-                    <Card key={ship.id} className="overflow-hidden border border-border bg-white shadow-sm">
-                      <CardHeader className="bg-secondary/40 border-b border-border pb-4">
-                        <div className="flex flex-wrap items-center justify-between gap-4">
-                          <div className="flex items-center gap-3">
-                            <Badge className="font-mono text-xs bg-primary text-white">{ship.tracking_number}</Badge>
-                            <CardTitle className="text-base font-bold text-foreground">
-                              {ship.carrier}
-                            </CardTitle>
-                            <Badge variant={ship.status === "delivered" ? "outline" : "secondary"} className={ship.status === "delivered" ? "bg-green-50 text-green-700 border-green-300 uppercase font-mono text-[10px]" : "uppercase font-mono text-[10px]"}>
-                              State: {ship.status.replace("_", " ")}
-                            </Badge>
-                          </div>
-                          <span className="text-xs text-muted-foreground font-mono">
-                            Target SLA: {ship.estimated_delivery ? new Date(ship.estimated_delivery).toLocaleDateString() : "Pending Calculation"}
-                          </span>
-                        </div>
-                      </CardHeader>
-
-                      <CardContent className="p-6 space-y-6">
-                        {/* Corridor Metadata Bar */}
-                        <div className="grid md:grid-cols-2 gap-4 p-4 bg-secondary/30 rounded-xl text-xs font-mono">
-                          <div>
-                            <span className="font-bold text-foreground block mb-0.5 font-sans">Origin Trade Port:</span>
-                            <span className="text-primary font-semibold">{ship.origin_corridor}</span>
-                          </div>
-                          <div>
-                            <span className="font-bold text-foreground block mb-0.5 font-sans">Destination Customs Node:</span>
-                            <span className="text-primary font-semibold">{ship.destination_corridor}</span>
-                          </div>
-                        </div>
-
-                        {/* Logistics Horizon Progress Bar */}
-                        <div className="space-y-2">
-                          <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block font-mono">
-                            Cross-Border Physical Horizon
-                          </span>
-                          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1.5">
-                            {shipmentStatuses.map((st, idx) => {
-                              const isCompleted = idx <= (currentStatusIdx >= 0 ? currentStatusIdx : 0);
-                              const isCurrent = st.id === ship.status;
-
-                              return (
-                                <div
-                                  key={st.id}
-                                  className={`p-2 rounded-lg border text-center transition-all ${
-                                    isCurrent
-                                      ? "bg-primary text-primary-foreground font-bold border-primary shadow-sm scale-105 select-none"
-                                      : isCompleted
-                                      ? "bg-green-50 border-green-200 text-green-900 font-medium"
-                                      : "bg-secondary/40 border-border text-muted-foreground opacity-50 text-[10px]"
-                                  }`}
-                                >
-                                  <span className="text-[10px] block font-mono">Stage {idx + 1}</span>
-                                  <span className="text-[11px] tracking-tight block truncate">{st.label}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-
-                        {/* Immutable Timeline Tracking Events */}
-                        <div className="space-y-3 pt-2 border-t border-border">
-                          <span className="text-[11px] font-bold text-foreground uppercase tracking-wider block font-mono flex items-center gap-1.5">
-                            <Clock className="h-3.5 w-3.5 text-primary" />
-                            GPS Telemetry Events ({ship.events.length})
-                          </span>
-                          
-                          <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
-                            {ship.events.map((ev, evtIdx) => (
-                              <div key={ev.id || evtIdx} className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30 border border-border/80 text-xs">
-                                <div className="p-1 rounded bg-primary/10 text-primary mt-0.5 flex-shrink-0">
-                                  <MapPin className="h-3.5 w-3.5" />
-                                </div>
-                                <div className="space-y-0.5 flex-1 font-mono">
-                                  <span className="font-bold text-foreground font-sans block">{ev.location}</span>
-                                  <p className="text-muted-foreground font-sans text-[11px] leading-relaxed">{ev.description}</p>
-                                  <span className="text-[9px] text-muted-foreground block pt-0.5">
-                                    Telemetry Hash: {new Date(ev.timestamp).toUTCString()}
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })
-              )}
-            </div>
-
-            {/* Checkpoint Injection Control Box */}
-            <Card className="border border-primary/20 bg-white h-fit">
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Send className="h-4 w-4 text-primary" />
-                  Simulate EDI Webhook Hook
-                </CardTitle>
-                <CardDescription>Transmit mock GPS coordinates</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <form onSubmit={handleInjectCheckpoint} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="targetShipmentId">Target Container Manifest</Label>
-                    <Select
-                      value={targetShipmentId ? String(targetShipmentId) : ""}
-                      onValueChange={(v) => setTargetShipmentId(Number(v))}
-                    >
-                      <SelectTrigger id="targetShipmentId">
-                        <SelectValue placeholder="Select manifest" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {shipments.map((s) => (
-                          <SelectItem key={s.id} value={String(s.id)}>
-                            {s.tracking_number} ({s.carrier})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="checkpointLocation">Satellite Geo-Waypoint</Label>
-                    <Input
-                      id="checkpointLocation"
-                      value={checkpointLocation}
-                      onChange={(e) => setCheckpointLocation(e.target.value)}
-                      placeholder="e.g. Mersin Free Zone, Turkey"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="nextStatus">Advance Freight SLA Stage</Label>
-                    <Select value={nextStatus} onValueChange={setNextStatus}>
-                      <SelectTrigger id="nextStatus">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="in_transit">Maritime Steaming (In Transit)</SelectItem>
-                        <SelectItem value="customs_import">Import Customs Audit Node</SelectItem>
-                        <SelectItem value="out_for_delivery">Final Haulage (Out for Delivery)</SelectItem>
-                        <SelectItem value="delivered">Delivered & Escrow Ready</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="checkpointDesc">Inspector XML Remarks</Label>
-                    <Input
-                      id="checkpointDesc"
-                      value={checkpointDesc}
-                      onChange={(e) => setCheckpointDesc(e.target.value)}
-                      placeholder="e.g. Customs papers unsealed. Physical container seal intact."
-                      required
-                    />
-                  </div>
-
-                  {error && <p className="text-sm text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200">{error}</p>}
-                  {success && <p className="text-sm text-green-600 bg-green-50 p-2.5 rounded-lg border border-green-200">{success}</p>}
-
-                  <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white" disabled={injecting || !targetShipmentId}>
-                    {injecting ? "Injunction pending..." : "Inject Cryptographic Checkpoint"}
-                  </Button>
-                </form>
-
-                {/* Quick autofill sample buttons */}
-                <div className="pt-4 border-t border-border space-y-2">
-                  <span className="text-[11px] font-bold text-foreground block">Quick Autopopulate Targets:</span>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-full justify-start text-xs border-blue-300 hover:bg-blue-50 font-mono"
-                    onClick={() => autofillSample("Suez Canal / Eastern Med Maritime Waypoint", "Vessel transiting restricted corridor seamlessly. Military escort accompanying fleet.", "in_transit")}
-                  >
-                    <Navigation className="mr-2 h-3.5 w-3.5 text-blue-600 flex-shrink-0" />
-                    Suez Canal Waypoint (In Transit)
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-full justify-start text-xs border-amber-300 hover:bg-amber-50 font-mono"
-                    onClick={() => autofillSample("Mersin Free Zone Import Customs Desk", "Cargo unloaded to bonded warehouse. Commercial invoice and certificate of origin authenticated.", "customs_import")}
-                  >
-                    <ShieldCheck className="mr-2 h-3.5 w-3.5 text-amber-600 flex-shrink-0" />
-                    Mersin Import Customs Audit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-full justify-start text-xs border-green-300 hover:bg-green-50 font-mono"
-                    onClick={() => autofillSample("Istanbul Importer Industrial Facility", "Physical commodity delivered. 100% Quality verification confirmed by SGS field inspector.", "delivered")}
-                  >
-                    <CheckCircle2 className="mr-2 h-3.5 w-3.5 text-green-600 flex-shrink-0" />
-                    Final Importer Facility (Delivered)
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+    <div className="space-y-8 animate-slide-in font-sans select-none">
+      
+      {/* Vercel Style Main Title Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-br from-surface-900 via-surface-800 to-slate-950 text-white p-8 rounded-3xl border border-surface-800 shadow-2xl">
+        <div className="space-y-1">
+          <Badge className="bg-primary-500 text-white font-black font-mono text-[10px] uppercase tracking-widest px-3 py-1">Logistics desk</Badge>
+          <h1 className="text-3xl font-black tracking-tight text-white font-serif">Satellite EDI Shipping Telemetry & GPS Geo-Waypoints</h1>
+          <p className="text-xs text-surface-400 font-mono">Consume automated satellite tracking webhooks from DHL Global Forwarding and Maersk Line</p>
         </div>
-      </main>
+
+        <Badge variant="outline" className="border-primary text-primary bg-primary-50/10 font-mono font-extrabold text-xs px-4 py-2 self-start sm:self-auto uppercase tracking-wider">
+          Carrier Links: Fully Active
+        </Badge>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-8 items-start">
+        
+        {/* Active Container Timelines */}
+        <div className="lg:col-span-2 space-y-6">
+          {loading ? (
+            <p className="text-muted-foreground text-xs font-mono">Querying global shipping satellites...</p>
+          ) : shipments.length === 0 ? (
+            <Card className="p-16 text-center bg-white rounded-3xl border border-surface-200 shadow-sm select-none space-y-3">
+              <Truck className="mx-auto h-12 w-12 text-surface-300 animate-bounce" />
+              <p className="font-black text-surface-900 text-lg font-sans">Zero Active Ocean or Air Consignments</p>
+              <p className="text-xs text-surface-500 max-w-md mx-auto leading-relaxed font-sans">
+                Accept any handshake from your deal desk and emit a formal commercial order to immediately bind continuous container GPS tracking telemetry.
+              </p>
+            </Card>
+          ) : (
+            shipments.map((ship) => {
+              const currentStatusIdx = shipmentStatuses.findIndex((s) => s.id === ship.status);
+
+              return (
+                <Card key={ship.id} className="overflow-hidden border border-surface-200 bg-white shadow-sm hover:border-primary-500/60 transition-all duration-300 rounded-3xl">
+                  <CardHeader className="bg-surface-50 border-b border-surface-100 p-6 pb-4 select-none font-sans">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <Badge className="font-mono font-black text-xs bg-primary-600 text-white uppercase tracking-widest px-3 py-1 shadow-sm border border-primary-500">
+                          {ship.tracking_number}
+                        </Badge>
+                        <CardTitle className="text-lg font-black text-surface-900 tracking-tight">
+                          {ship.carrier}
+                        </CardTitle>
+                        <Badge variant={ship.status === "delivered" ? "outline" : "secondary"} className={ship.status === "delivered" ? "bg-success-50 text-success-700 border-success-300 font-mono uppercase font-black text-[10px]" : "font-mono uppercase font-black text-[10px]"}>
+                          ● Stage: {ship.status.replace("_", " ")}
+                        </Badge>
+                      </div>
+                      <span className="text-xs text-surface-500 font-mono font-extrabold">
+                        Target Haulage SLA: <strong className="text-surface-900">{ship.estimated_delivery ? new Date(ship.estimated_delivery).toLocaleDateString() : "Pending XML Ruling"}</strong>
+                      </span>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="p-8 space-y-8 select-text">
+                    
+                    {/* Corridor Port Bar */}
+                    <div className="grid md:grid-cols-2 gap-4 p-5 bg-surface-100 rounded-2xl font-mono text-xs border border-surface-200/80 select-text">
+                      <div>
+                        <span className="font-bold text-surface-500 block mb-1 font-sans uppercase text-[10px] tracking-widest">Export Port Corridor</span>
+                        <span className="text-primary-700 font-extrabold text-sm select-all block">{ship.origin_corridor}</span>
+                      </div>
+                      <div>
+                        <span className="font-bold text-surface-500 block mb-1 font-sans uppercase text-[10px] tracking-widest">Destination customs Node</span>
+                        <span className="text-primary-700 font-extrabold text-sm select-all block">{ship.destination_corridor}</span>
+                      </div>
+                    </div>
+
+                    {/* Highly Definitive Horizon Walkthrough Bar */}
+                    <div className="space-y-3 select-none">
+                      <span className="text-[10px] font-black text-surface-500 uppercase tracking-widest block font-mono pl-1">
+                        Physical Consignment Velocity Infographics
+                      </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                        {shipmentStatuses.map((st, idx) => {
+                          const isCompleted = idx <= (currentStatusIdx >= 0 ? currentStatusIdx : 0);
+                          const isCurrent = st.id === ship.status;
+
+                          return (
+                            <div
+                              key={st.id}
+                              className={`p-3 rounded-2xl border text-center transition-all duration-500 flex flex-col justify-between ${
+                                isCurrent
+                                  ? "bg-primary-600 text-white font-black border-primary-500 shadow-lg shadow-primary-600/30 scale-105 select-none"
+                                  : isCompleted
+                                  ? "bg-success-50 border-success-200 text-success-900 font-bold"
+                                  : "bg-surface-50 border-surface-200 text-surface-400 opacity-60 text-[10px]"
+                              }`}
+                            >
+                              <span className="text-[10px] block font-mono">Stage 0{idx + 1}</span>
+                              <span className="text-[11px] tracking-tight block truncate pt-1">{st.label}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* GPS Events Stream */}
+                    <div className="space-y-4 pt-4 border-t border-surface-100 select-text">
+                      <span className="text-[11px] font-black text-surface-900 uppercase tracking-wider block font-mono flex items-center gap-2 select-none">
+                        <Clock className="h-4 w-4 text-primary-600 flex-shrink-0" />
+                        <span>Cryptographic GPS Waypoint Logs ({ship.events.length})</span>
+                      </span>
+                      
+                      <div className="space-y-3 max-h-60 overflow-y-auto pr-2 select-text font-mono">
+                        {ship.events.map((ev, evtIdx) => (
+                          <div key={ev.id || evtIdx} className="flex items-start gap-4 p-4 rounded-2xl bg-surface-50 border border-surface-200 text-xs select-text hover:bg-white hover:border-primary-300 transition-colors">
+                            <div className="p-2 rounded-xl bg-primary-600 text-white mt-0.5 flex-shrink-0 shadow-sm select-none">
+                              <MapPin className="h-3.5 w-3.5" />
+                            </div>
+                            <div className="space-y-1 flex-1 select-text">
+                              <span className="font-extrabold text-surface-900 font-sans block text-sm">{ev.location}</span>
+                              <p className="text-surface-600 font-sans text-xs leading-relaxed select-text font-medium">{ev.description}</p>
+                              <span className="text-[10px] text-surface-400 block pt-1 select-all border-t border-surface-200/50 mt-1">
+                                Electronic Telemetry Digest Hash: {new Date(ev.timestamp).toUTCString()}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
+        </div>
+
+        {/* Checkpoint Timestamp Control Sidebar */}
+        <Card className="border border-surface-200 bg-white rounded-3xl shadow-sm h-fit select-none">
+          <CardHeader className="bg-surface-50 border-b border-surface-100 rounded-t-3xl p-6 font-sans">
+            <CardTitle className="text-lg font-black text-surface-900 flex items-center gap-2">
+              <Send className="h-5 w-5 text-primary-600" />
+              <span>Time-Stamp Telemetry</span>
+            </CardTitle>
+            <CardDescription className="text-xs font-mono mt-0.5">Inject verified waypoint telemetry</CardDescription>
+          </CardHeader>
+
+          <CardContent className="p-6 space-y-6">
+            <form onSubmit={handleInjectCheckpoint} className="space-y-5 select-text font-mono text-xs">
+              <div className="space-y-2 select-none">
+                <Label htmlFor="targetShipmentId" className="font-bold font-sans">Target Consignment</Label>
+                <Select
+                  value={targetShipmentId ? String(targetShipmentId) : ""}
+                  onValueChange={(v) => setTargetShipmentId(Number(v))}
+                >
+                  <SelectTrigger id="targetShipmentId" className="h-12 rounded-2xl bg-surface-50 border-surface-200 font-mono font-bold">
+                    <SelectValue placeholder="Select manifest" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {shipments.map((s) => (
+                      <SelectItem key={s.id} value={String(s.id)}>
+                        {s.tracking_number} ({s.carrier})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="checkpointLocation" className="font-bold font-sans">GPS Checkpoint Port Name</Label>
+                <Input
+                  id="checkpointLocation"
+                  value={checkpointLocation}
+                  onChange={(e) => setCheckpointLocation(e.target.value)}
+                  placeholder="e.g. Mersin Deep Port Node, Turkey"
+                  required
+                  className="h-12 rounded-2xl bg-surface-50 border-surface-200 font-mono text-xs pl-4"
+                />
+              </div>
+
+              <div className="space-y-2 select-none">
+                <Label htmlFor="nextStatus" className="font-bold font-sans">Advance Consignment Stage</Label>
+                <Select value={nextStatus} onValueChange={setNextStatus}>
+                  <SelectTrigger id="nextStatus" className="h-12 rounded-2xl bg-surface-50 border-surface-200 font-mono font-bold">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="in_transit">Maritime Steaming (In Steaming)</SelectItem>
+                    <SelectItem value="customs_import">Import Customs Clearing Clearing Audit</SelectItem>
+                    <SelectItem value="out_for_delivery">Final Terminal Haulage</SelectItem>
+                    <SelectItem value="delivered">Consignee Handshake (Delivered)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="checkpointDesc" className="font-bold font-sans">Inspector Phytosanitary & Manifest Remarks</Label>
+                <textarea
+                  id="checkpointDesc"
+                  value={checkpointDesc}
+                  onChange={(e) => setCheckpointDesc(e.target.value)}
+                  placeholder="e.g. Consignment manifest unsealed. Seal #8819 intact. Exemption ruled under bilateral trade framework."
+                  required
+                  rows={3}
+                  className={inputClass}
+                />
+              </div>
+
+              {error && <p className="text-xs text-danger-700 bg-danger-50 p-4 rounded-2xl border border-danger-200 font-bold select-text">{error}</p>}
+              {success && <p className="text-xs text-success-700 bg-success-50 p-4 rounded-2xl border border-success-200 font-bold select-text">{success}</p>}
+
+              <Button type="submit" className="w-full bg-primary-600 hover:bg-primary-500 text-white font-extrabold py-4 h-auto rounded-2xl shadow-lg shadow-primary-600/30 transition-all font-sans text-xs cursor-pointer select-none" disabled={injecting || !targetShipmentId}>
+                {injecting ? "Injunction pending..." : "+ Time-Stamp Cryptographic Checkpoint"}
+              </Button>
+            </form>
+
+            {/* Quick autofill test helpers */}
+            <div className="pt-6 border-t border-surface-100 space-y-2.5 select-none">
+              <span className="text-xs font-bold text-surface-900 block font-sans">Quick Autopopulate Telemetry:</span>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full justify-start text-xs border-primary-300 hover:bg-primary-50 text-primary-800 h-10 rounded-xl font-mono cursor-pointer transition-all hover:translate-x-1"
+                onClick={() => autofillSample("Suez Canal / Steaming GPS Node", "Vessel securely steaming through ocean corridor. Fleet telemetry parameters fully stable.", "in_transit")}
+              >
+                <Navigation className="mr-2 h-4 w-4 text-primary-600 flex-shrink-0" />
+                Suez Canal Steaming Node
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full justify-start text-xs border-amber-300 hover:bg-amber-50 text-amber-800 h-10 rounded-xl font-mono cursor-pointer transition-all hover:translate-x-1"
+                onClick={() => autofillSample("Mersin Import Customs Clearance Gate", "Container unsealed at bonded warehouse node. Commercial L/C papers and Origin proofs authenticated.", "customs_import")}
+              >
+                <ShieldCheck className="mr-2 h-4 w-4 text-amber-600 flex-shrink-0" />
+                Mersin Import Customs Gate
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full justify-start text-xs border-success-300 hover:bg-success-50 text-success-800 h-10 rounded-xl font-mono cursor-pointer transition-all hover:translate-x-1"
+                onClick={() => autofillSample("Istanbul Consignee Enterprise Hub Desk", "Physical haulage completed successfully. Verified clean delivery confirmation signature.", "delivered")}
+              >
+                <CheckCircle2 className="mr-2 h-4 w-4 text-success-600 flex-shrink-0" />
+                Final Corporate Buyer Desk
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
+
+export default ShipmentsPage;
