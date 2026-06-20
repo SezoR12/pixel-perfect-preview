@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { getDashboard, getPreDeals, getOrders, getNotifications, type PreDeal, type Order, type DashboardStats } from "@/lib/api";
 import { Link } from "@tanstack/react-router";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
