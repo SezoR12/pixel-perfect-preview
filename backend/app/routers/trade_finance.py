@@ -11,7 +11,7 @@ from app.security import get_current_user, require_ownership
 from app.audit import log_audit_event
 from app.pagination import PaginatedResponse, paginate
 
-router = APIRouter(prefix="/api/trade-finance", tags=["trade_finance"])
+router = APIRouter(prefix="/trade-finance", tags=["trade_finance"])
 
 
 # 1. Letter of Credit Endpoints

@@ -12,7 +12,7 @@ from app.security import get_current_user, require_ownership
 from app.audit import log_audit_event
 from app.pagination import PaginatedResponse, paginate
 
-router = APIRouter(prefix="/api/orders", tags=["orders"])
+router = APIRouter(prefix="/orders", tags=["orders"])
 
 
 def _generate_order_number(db: Session) -> str:

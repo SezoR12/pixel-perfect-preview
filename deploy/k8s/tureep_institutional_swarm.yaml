@@ -1,0 +1,653 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tureep-ai-prod
+  labels:
+    environment: production
+    sovereignty: sovereign-mena-mesh
+    app.kubernetes.io/name: tureep-ai-plus
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tureep-app-config
+  namespace: tureep-ai-prod
+data:
+  APP_ENV: "production"
+  DEBUG: "false"
+  LOG_LEVEL: "INFO"
+  ALLOWED_ORIGINS: "https://tureep.ai,https://api.tureep.ai,https://app.tureep.ai"
+  REDIS_HOST: "redis.tureep-ai-prod.svc.cluster.local"
+  REDIS_PORT: "6379"
+  DATABASE_POOL_SIZE: "20"
+  DATABASE_MAX_OVERFLOW: "10"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tureep-app-secrets
+  namespace: tureep-ai-prod
+type: Opaque
+stringData:
+  # Supabase Transaction Pooler URL (with pgbouncer=true)
+  DATABASE_URL: "postgresql://postgres.nfzowljlswwbfdzitkrc:Tureep*Db#Sovereign2026@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+  SECRET_KEY: "Tureep*Institutional#Core!MasterKey2026xKey"
+  STRIPE_SECRET_KEY: "stripe_live_secret_key_placeholder"
+  STRIPE_WEBHOOK_SECRET: "whsec_live_InstitutionalStripeWebhookSecret"
+  SUMSUB_SECRET_KEY: "sumsub_live_InstitutionalSecretKey"
+  SUMSUB_APP_TOKEN: "sumsub_token_InstitutionalAppToken"
+  SWIFT_GATEWAY_API_KEY: "swift_key_InstitutionalSwiftGatewayKey"
+---
+# --------------------------------------------------------- #
+# 1. AUTHENTICATION & IDENTITY SOVEREIGNTY MICROSERVICE     #
+# --------------------------------------------------------- #
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tureep-auth-service
+  namespace: tureep-ai-prod
+  labels:
+    app: tureep-auth
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tureep-auth
+  template:
+    metadata:
+      labels:
+        app: tureep-auth
+    spec:
+      containers:
+      - name: fastapi-worker
+        image: 012345678901.dkr.ecr.eu-central-1.amazonaws.com/tureep/auth-service:v2.0.0
+        imagePullPolicy: IfNotPresent
+        command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001", "--workers", "4"]
+        envFrom:
+        - configMapRef:
+            name: tureep-app-config
+        - secretRef:
+            name: tureep-app-secrets
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2048Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tureep-auth-service
+  namespace: tureep-ai-prod
+spec:
+  ports:
+  - port: 8001
+    targetPort: 8001
+  selector:
+    app: tureep-auth
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tureep-auth-hpa
+  namespace: tureep-ai-prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tureep-auth-service
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 75
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: tureep-auth-pdb
+  namespace: tureep-ai-prod
+spec:
+  minAvailable: "80%"
+  selector:
+    matchLabels:
+      app: tureep-auth
+
+---
+# --------------------------------------------------------- #
+# 2. CORE SPOT COMMODITY TRADE & PAIRING MICROSERVICE       #
+# --------------------------------------------------------- #
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tureep-core-trade-service
+  namespace: tureep-ai-prod
+  labels:
+    app: tureep-core-trade
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: tureep-core-trade
+  template:
+    metadata:
+      labels:
+        app: tureep-core-trade
+    spec:
+      containers:
+      - name: fastapi-worker
+        image: 012345678901.dkr.ecr.eu-central-1.amazonaws.com/tureep/core-trade-service:v2.0.0
+        command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8002", "--workers", "4"]
+        envFrom:
+        - configMapRef:
+            name: tureep-app-config
+        - secretRef:
+            name: tureep-app-secrets
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1024Mi"
+          limits:
+            cpu: "2000m"
+            memory: "4096Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tureep-core-trade-service
+  namespace: tureep-ai-prod
+spec:
+  ports:
+  - port: 8002
+    targetPort: 8002
+  selector:
+    app: tureep-core-trade
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tureep-core-trade-hpa
+  namespace: tureep-ai-prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tureep-core-trade-service
+  minReplicas: 5
+  maxReplicas: 30
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+
+---
+# --------------------------------------------------------- #
+# 3. ESCROW, SIGHT SETTLEMENT & TRADE FINANCE MICROSERVICE  #
+# --------------------------------------------------------- #
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tureep-escrow-finance-service
+  namespace: tureep-ai-prod
+  labels:
+    app: tureep-escrow-finance
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tureep-escrow-finance
+  template:
+    metadata:
+      labels:
+        app: tureep-escrow-finance
+    spec:
+      containers:
+      - name: fastapi-worker
+        image: 012345678901.dkr.ecr.eu-central-1.amazonaws.com/tureep/escrow-finance-service:v2.0.0
+        command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8003", "--workers", "4"]
+        envFrom:
+        - configMapRef:
+            name: tureep-app-config
+        - secretRef:
+            name: tureep-app-secrets
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1024Mi"
+          limits:
+            cpu: "2000m"
+            memory: "4096Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8003
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tureep-escrow-finance-service
+  namespace: tureep-ai-prod
+spec:
+  ports:
+  - port: 8003
+    targetPort: 8003
+  selector:
+    app: tureep-escrow-finance
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tureep-escrow-finance-hpa
+  namespace: tureep-ai-prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tureep-escrow-finance-service
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+
+---
+# --------------------------------------------------------- #
+# 4. LOGISTICS, GPS WAYPOINTS & CARRIER EDI MICROSERVICE    #
+# --------------------------------------------------------- #
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tureep-logistics-edi-service
+  namespace: tureep-ai-prod
+  labels:
+    app: tureep-logistics-edi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tureep-logistics-edi
+  template:
+    metadata:
+      labels:
+        app: tureep-logistics-edi
+    spec:
+      containers:
+      - name: fastapi-worker
+        image: 012345678901.dkr.ecr.eu-central-1.amazonaws.com/tureep/logistics-edi-service:v2.0.0
+        command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8004", "--workers", "4"]
+        envFrom:
+        - configMapRef:
+            name: tureep-app-config
+        - secretRef:
+            name: tureep-app-secrets
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2048Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8004
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tureep-logistics-edi-service
+  namespace: tureep-ai-prod
+spec:
+  ports:
+  - port: 8004
+    targetPort: 8004
+  selector:
+    app: tureep-logistics-edi
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tureep-logistics-edi-hpa
+  namespace: tureep-ai-prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tureep-logistics-edi-service
+  minReplicas: 3
+  maxReplicas: 15
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
+
+---
+# --------------------------------------------------------- #
+# 5. CORPORATE COMPLIANCE, KYC & SANCTIONS MICROSERVICE     #
+# --------------------------------------------------------- #
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tureep-compliance-kyc-service
+  namespace: tureep-ai-prod
+  labels:
+    app: tureep-compliance-kyc
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tureep-compliance-kyc
+  template:
+    metadata:
+      labels:
+        app: tureep-compliance-kyc
+    spec:
+      containers:
+      - name: fastapi-worker
+        image: 012345678901.dkr.ecr.eu-central-1.amazonaws.com/tureep/compliance-kyc-service:v2.0.0
+        command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8005", "--workers", "4"]
+        envFrom:
+        - configMapRef:
+            name: tureep-app-config
+        - secretRef:
+            name: tureep-app-secrets
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2048Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8005
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tureep-compliance-kyc-service
+  namespace: tureep-ai-prod
+spec:
+  ports:
+  - port: 8005
+    targetPort: 8005
+  selector:
+    app: tureep-compliance-kyc
+
+---
+# --------------------------------------------------------- #
+# 6. HEURISTIC INTELLIGENCE & CORRIDOR FORECAST SERVICE     #
+# --------------------------------------------------------- #
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tureep-ml-intelligence-service
+  namespace: tureep-ai-prod
+  labels:
+    app: tureep-ml-intelligence
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tureep-ml-intelligence
+  template:
+    metadata:
+      labels:
+        app: tureep-ml-intelligence
+    spec:
+      containers:
+      - name: fastapi-worker
+        image: 012345678901.dkr.ecr.eu-central-1.amazonaws.com/tureep/ml-intelligence-service:v2.0.0
+        command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8006", "--workers", "4"]
+        envFrom:
+        - configMapRef:
+            name: tureep-app-config
+        - secretRef:
+            name: tureep-app-secrets
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1024Mi"
+          limits:
+            cpu: "2000m"
+            memory: "4096Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8006
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tureep-ml-intelligence-service
+  namespace: tureep-ai-prod
+spec:
+  ports:
+  - port: 8006
+    targetPort: 8006
+  selector:
+    app: tureep-ml-intelligence
+
+---
+# --------------------------------------------------------- #
+# 7. MULTILINGUAL NOTIFICATION & BUREAU EMISSION SERVICE    #
+# --------------------------------------------------------- #
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tureep-notification-bureau-service
+  namespace: tureep-ai-prod
+  labels:
+    app: tureep-notification-bureau
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tureep-notification-bureau
+  template:
+    metadata:
+      labels:
+        app: tureep-notification-bureau
+    spec:
+      containers:
+      - name: fastapi-worker
+        image: 012345678901.dkr.ecr.eu-central-1.amazonaws.com/tureep/notification-bureau-service:v2.0.0
+        command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8007", "--workers", "2"]
+        envFrom:
+        - configMapRef:
+            name: tureep-app-config
+        - secretRef:
+            name: tureep-app-secrets
+        resources:
+          requests:
+            cpu: "150m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "1024Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8007
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tureep-notification-bureau-service
+  namespace: tureep-ai-prod
+spec:
+  ports:
+  - port: 8007
+    targetPort: 8007
+  selector:
+    app: tureep-notification-bureau
+
+---
+# --------------------------------------------------------- #
+# 8. TRAEFIK / NGINX EDGE API GATEWAY INGRESS ROUTING TABLE #
+# --------------------------------------------------------- #
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tureep-edge-gateway-ingress
+  namespace: tureep-ai-prod
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    traefik.ingress.kubernetes.io/router.middlewares: "tureep-ai-prod-security-headers@kubecrd"
+    nginx.ingress.kubernetes.io/proxy-body-size: "5m"
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+spec:
+  tls:
+  - hosts:
+    - api.tureep.ai
+    secretName: tureep-api-tls-cert
+  rules:
+  - host: api.tureep.ai
+    http:
+      paths:
+      # Service 1 paths (Auth & Identity)
+      - path: /api/v1/auth
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-auth-service
+            port:
+              number: 8001
+      - path: /api/v1/users
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-auth-service
+            port:
+              number: 8001
+
+      # Service 2 paths (Core Spot Trading)
+      - path: /api/v1/products
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-core-trade-service
+            port:
+              number: 8002
+      - path: /api/v1/demands
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-core-trade-service
+            port:
+              number: 8002
+      - path: /api/v1/deals
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-core-trade-service
+            port:
+              number: 8002
+
+      # Service 3 paths (Escrow & Trade Finance)
+      - path: /api/v1/orders
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-escrow-finance-service
+            port:
+              number: 8003
+      - path: /api/v1/billing
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-escrow-finance-service
+            port:
+              number: 8003
+      - path: /api/v1/trade-finance
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-escrow-finance-service
+            port:
+              number: 8003
+
+      # Service 4 paths (Logistics & Telemetry)
+      - path: /api/v1/logistics
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-logistics-edi-service
+            port:
+              number: 8004
+
+      # Service 5 paths (Compliance & Sanctions)
+      - path: /api/v1/kyc
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-compliance-kyc-service
+            port:
+              number: 8005
+      - path: /api/v1/compliance
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-compliance-kyc-service
+            port:
+              number: 8005
+
+      # Service 6 paths (Heuristic Intelligence Engine)
+      - path: /api/v1/ml-analytics
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-ml-intelligence-service
+            port:
+              number: 8006
+
+      # Service 7 paths (Notification Bureau)
+      - path: /api/v1/notifications
+        pathType: Prefix
+        backend:
+          service:
+            name: tureep-notification-bureau-service
+            port:
+              number: 8007

@@ -20,7 +20,7 @@ from app.security import (
 from app.audit import log_audit_event
 from app.ratelimit import limiter
 
-router = APIRouter(prefix="/api/auth", tags=["auth"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 # Enterprise In-Memory Lockout Ledger & Reset Token Custody (Resilient Fallbacks)
 # Track format: username -> (failed_attempts, lockout_expiry_timestamp)

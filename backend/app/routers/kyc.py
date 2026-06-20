@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status, Request
@@ -9,8 +9,9 @@ from app.models import KYCVerification, KYCStatus, User
 from app.schemas import KYCSubmission, KYCRead, KYCReview
 from app.security import get_current_user, get_current_active_user, require_ownership
 from app.audit import log_audit_event
+from app.validators import sanitize_string
 
-router = APIRouter(prefix="/api/kyc", tags=["kyc"])
+router = APIRouter(prefix="/kyc", tags=["kyc"])
 
 
 @router.post("/submit", response_model=KYCRead, status_code=status.HTTP_201_CREATED)
@@ -20,6 +21,11 @@ async def submit_kyc(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    try:
+        sanitize_string(kyc_in.document_url)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Malicious document URL detected")
+
     existing = (
         db.query(KYCVerification)
         .filter(
@@ -37,7 +43,7 @@ async def submit_kyc(
         document_type=kyc_in.document_type,
         document_url=kyc_in.document_url,
         document_hash=kyc_in.document_hash,
-        next_review_date=datetime.utcnow() + timedelta(days=365),
+        next_review_date=datetime.now(UTC) + timedelta(days=365),
     )
     db.add(kyc)
     db.commit()
@@ -99,7 +105,7 @@ async def review_kyc(
     kyc.status = KYCStatus.APPROVED if review.status == "approved" else KYCStatus.REJECTED
     kyc.rejection_reason = review.rejection_reason if review.status == "rejected" else None
     kyc.reviewed_by = current_user.id
-    kyc.reviewed_at = datetime.utcnow()
+    kyc.reviewed_at = datetime.now(UTC)
 
     user = db.query(User).filter(User.id == kyc.user_id).first()
     if kyc.status == KYCStatus.APPROVED:

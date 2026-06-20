@@ -1,6 +1,6 @@
 import uuid
 import logging
-from datetime import datetime
+from datetime import datetime, UTC
 from fastapi import FastAPI, Request, Response, HTTPException, status, APIRouter
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -45,11 +45,12 @@ async def attach_request_id_and_transport_security(request: Request, call_next):
         return JSONResponse(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             content={
+                "detail": f"Security Gatekeeper: HTTP method {request.method} is actively restricted.",
                 "error": {
                     "code": 405,
                     "message": f"Security Gatekeeper: HTTP method {request.method} is actively restricted.",
                     "request_id": req_id,
-                    "timestamp": datetime.utcnow().isoformat()
+                    "timestamp": datetime.now(UTC).isoformat()
                 }
             }
         )
@@ -60,11 +61,12 @@ async def attach_request_id_and_transport_security(request: Request, call_next):
         return JSONResponse(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
             content={
+                "detail": "Security Gatekeeper: Payload size exceeds active Enterprise 5MB limitation.",
                 "error": {
                     "code": 413,
                     "message": "Security Gatekeeper: Payload size exceeds active Enterprise 5MB limitation.",
                     "request_id": req_id,
-                    "timestamp": datetime.utcnow().isoformat()
+                    "timestamp": datetime.now(UTC).isoformat()
                 }
             }
         )
@@ -92,12 +94,13 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={
+            "detail": "Payload structure validation failed.",
             "error": {
                 "code": 422,
                 "message": "Payload structure validation failed.",
                 "details": sanitized_errors,
                 "request_id": req_id,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(UTC).isoformat()
             }
         }
     )
@@ -110,11 +113,12 @@ async def standardized_http_exception_handler(request: Request, exc: HTTPExcepti
         status_code=exc.status_code,
         headers=exc.headers,
         content={
+            "detail": exc.detail,
             "error": {
                 "code": exc.status_code,
                 "message": exc.detail,
                 "request_id": req_id,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(UTC).isoformat()
             }
         }
     )
@@ -161,22 +165,7 @@ def _attach_versioned_routers(target_app: FastAPI, version_prefix: str):
 
 
 # Attach Legacy/Standard paths (/api) and Active Versioned paths (/api/v1)
-app.include_router(auth.router)
-app.include_router(users.router)
-app.include_router(products.router)
-app.include_router(demands.router)
-app.include_router(pre_deals.router)
-app.include_router(waitlist.router)
-app.include_router(orders.router)
-app.include_router(kyc.router)
-app.include_router(sanctions.router)
-app.include_router(notifications.router)
-app.include_router(billing.router)
-app.include_router(trade_finance.router)
-app.include_router(shipments.router)
-app.include_router(ml_analytics.router)
-app.include_router(supabase_portal.router)
-
+_attach_versioned_routers(app, "/api")
 _attach_versioned_routers(app, "/api/v1")
 
 
@@ -189,6 +178,6 @@ def health_check(request: Request):
             "service": "tureep-institutional-backend",
             "api_versions": ["v1", "legacy"],
             "request_id": req_id,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(UTC).isoformat()
         }
     )

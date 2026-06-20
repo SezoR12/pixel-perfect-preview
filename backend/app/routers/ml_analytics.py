@@ -10,7 +10,7 @@ from app.schemas import PricePrediction, DemandAnalytics
 from app.security import get_current_user
 from app.cache import cached
 
-router = APIRouter(prefix="/api/ml-analytics", tags=["ml_analytics"])
+router = APIRouter(prefix="/ml-analytics", tags=["ml_analytics"])
 
 
 @router.get("/feature-weights")

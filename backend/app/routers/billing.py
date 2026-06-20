@@ -11,7 +11,7 @@ from app.security import get_current_user
 from app.audit import log_audit_event
 from app.ratelimit import limiter
 
-router = APIRouter(prefix="/api/billing", tags=["billing"])
+router = APIRouter(prefix="/billing", tags=["billing"])
 
 
 @router.get("/my-subscription", response_model=Optional[SubscriptionRead])

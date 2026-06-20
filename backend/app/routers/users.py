@@ -6,7 +6,7 @@ from app.models import User
 from app.schemas import UserRead, DashboardStats
 from app.security import get_current_user
 
-router = APIRouter(prefix="/api/users", tags=["users"])
+router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/me", response_model=UserRead)

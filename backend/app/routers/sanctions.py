@@ -11,7 +11,7 @@ from app.security import get_current_user
 from app.audit import log_audit_event
 from app.ratelimit import limiter
 
-router = APIRouter(prefix="/api/compliance/sanctions", tags=["sanctions"])
+router = APIRouter(prefix="/compliance/sanctions", tags=["sanctions"])
 
 # Demo SDN-like consolidated list (in production, fetch from OFAC/EU/UN APIs)
 SANCTIONS_LIST = [

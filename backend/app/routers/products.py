@@ -10,7 +10,7 @@ from app.audit import log_audit_event
 from app.pagination import PaginatedResponse, paginate
 from app.validators import sanitize_string
 
-router = APIRouter(prefix="/api/products", tags=["products"])
+router = APIRouter(prefix="/products", tags=["products"])
 
 
 @router.post("/", response_model=ProductRead, status_code=status.HTTP_201_CREATED)

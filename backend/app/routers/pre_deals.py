@@ -13,7 +13,7 @@ from app.security import get_current_user
 from app.audit import log_audit_event
 from app.ratelimit import limiter
 
-router = APIRouter(prefix="/api/deals", tags=["deals"])
+router = APIRouter(prefix="/deals", tags=["deals"])
 
 
 @router.post("/match", response_model=List[MatchResult])

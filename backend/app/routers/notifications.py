@@ -9,7 +9,7 @@ from app.models import Notification, NotificationType, NotificationPriority, Use
 from app.schemas import NotificationRead
 from app.security import get_current_user
 
-router = APIRouter(prefix="/api/notifications", tags=["notifications"])
+router = APIRouter(prefix="/notifications", tags=["notifications"])
 
 
 @router.get("/", response_model=List[NotificationRead])

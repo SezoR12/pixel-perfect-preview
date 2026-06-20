@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     STRIPE_SECRET_KEY: Optional[str] = None
     STRIPE_WEBHOOK_SECRET: Optional[str] = None
+    SUMSUB_SECRET_KEY: Optional[str] = None
+    SUMSUB_APP_TOKEN: Optional[str] = None
+    SWIFT_GATEWAY_API_KEY: Optional[str] = None
+    LOGISTICS_WEBHOOK_SECRET: Optional[str] = None
 
     # Sanctions API keys
     OFAC_API_KEY: Optional[str] = None

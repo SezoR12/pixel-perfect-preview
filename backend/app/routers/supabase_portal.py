@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.supabase_verify import verify_supabase_connection
 
-router = APIRouter(prefix="/api/supabase", tags=["supabase"])
+router = APIRouter(prefix="/supabase", tags=["supabase"])
 
 @router.get("/verify-connection")
 def verify_connection():

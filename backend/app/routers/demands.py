@@ -9,7 +9,7 @@ from app.security import get_current_user, require_ownership
 from app.audit import log_audit_event
 from app.pagination import PaginatedResponse, paginate
 
-router = APIRouter(prefix="/api/demands", tags=["demands"])
+router = APIRouter(prefix="/demands", tags=["demands"])
 
 
 @router.post("/", response_model=DemandRead, status_code=status.HTTP_201_CREATED)

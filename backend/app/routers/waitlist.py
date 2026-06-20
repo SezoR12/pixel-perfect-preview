@@ -5,7 +5,7 @@ from app.database import get_db
 from app.models import WaitlistEntry
 from app.schemas import WaitlistEntryCreate, WaitlistEntryRead
 
-router = APIRouter(prefix="/api/waitlist", tags=["waitlist"])
+router = APIRouter(prefix="/waitlist", tags=["waitlist"])
 
 
 @router.post("/", response_model=WaitlistEntryRead, status_code=status.HTTP_201_CREATED)

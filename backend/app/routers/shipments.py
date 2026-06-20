@@ -11,7 +11,7 @@ from app.security import get_current_user, require_ownership
 from app.audit import log_audit_event
 from app.pagination import PaginatedResponse, paginate
 
-router = APIRouter(prefix="/api/logistics/shipments", tags=["shipments"])
+router = APIRouter(prefix="/logistics/shipments", tags=["shipments"])
 
 
 @router.post("/", response_model=ShipmentRead, status_code=status.HTTP_201_CREATED)
