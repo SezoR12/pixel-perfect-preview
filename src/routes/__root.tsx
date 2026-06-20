@@ -52,9 +52,13 @@ function RootLayout() {
   const location = useLocation();
   const { logout } = useAuth();
 
+  const isPublicRoute =
+    location.pathname === "/" || location.pathname.startsWith("/login");
+
   useEffect(() => {
+    if (isPublicRoute) return;
     getMe().then(setUser).catch(() => setUser(null));
-  }, []);
+  }, [isPublicRoute]);
 
   const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + "/");
 
@@ -66,6 +70,18 @@ function RootLayout() {
     platinum: "bg-indigo-100 text-indigo-700",
     black: "bg-surface-800 text-white",
   };
+
+  if (isPublicRoute) {
+    return (
+      <GlobalStoreProvider>
+        <Outlet />
+        <CookieConsentBanner />
+        <UniversalInAppHelpDrawer />
+        <ClientErrorConsole />
+      </GlobalStoreProvider>
+    );
+  }
+
 
   return (
     <GlobalStoreProvider>
