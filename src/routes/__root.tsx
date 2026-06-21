@@ -19,6 +19,7 @@ import {
   Menu,
   X,
   Globe,
+  HelpCircle,
   User as UserIcon
 } from "lucide-react";
 import { getMe, removeToken } from "@/lib/api";
@@ -26,8 +27,9 @@ import type { User as ApiUser } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalStoreProvider } from "@/stores/GlobalStoreProvider";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
-import { UniversalInAppHelpDrawer } from "@/components/UniversalInAppHelpDrawer";
+import { UniversalInAppHelpDrawer, HELP_DESK_OPEN_EVENT } from "@/components/UniversalInAppHelpDrawer";
 import { ClientErrorConsole } from "@/components/ClientErrorConsole";
+import { SidebarLanguageSwitcher } from "@/lib/i18n";
 import appCss from "@/index.css?url";
 
 export const Route = createRootRoute({
