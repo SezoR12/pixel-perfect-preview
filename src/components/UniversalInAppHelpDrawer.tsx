@@ -1,9 +1,17 @@
-import React, { useState } from "react";
-import { HelpCircle, ExternalLink, Search, Shield, FileText, X, ChevronRight, Sparkles } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { HelpCircle, Search, FileText, X, ChevronRight } from "lucide-react";
+
+export const HELP_DESK_OPEN_EVENT = "tureep:open-help-desk";
 
 export const UniversalInAppHelpDrawer: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const onOpen = () => setIsOpen(true);
+    window.addEventListener(HELP_DESK_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(HELP_DESK_OPEN_EVENT, onOpen);
+  }, []);
 
   const helpTopics = [
     {
@@ -42,22 +50,11 @@ export const UniversalInAppHelpDrawer: React.FC = () => {
     ? helpTopics
     : helpTopics.filter((t) => t.title.toLowerCase().includes(searchQuery.toLowerCase()) || t.desc.toLowerCase().includes(searchQuery.toLowerCase()));
 
+  if (!isOpen) return null;
+
   return (
     <div className="fixed bottom-6 left-6 z-50 font-sans select-none pointer-events-auto">
-      {/* Floating In-App Trigger Button */}
-      {!isOpen && (
-        <button
-          type="button"
-          aria-label="Launch institutional interactive Self-Help & Documentation desk"
-          onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2.5 px-5 py-3.5 rounded-3xl bg-surface-900 hover:bg-surface-800 text-white font-extrabold text-xs shadow-2xl border border-surface-700 hover:border-primary-500 transition-all hover:scale-105 group font-mono tracking-tight cursor-pointer"
-        >
-          <div className="w-6 h-6 rounded-full bg-primary-600 flex items-center justify-center text-white flex-shrink-0 group-hover:rotate-180 transition-transform duration-500">
-            <HelpCircle className="w-3.5 h-3.5" />
-          </div>
-          <span>💬 Institutional B2B Tooltips & FAQ Desk</span>
-        </button>
-      )}
+
 
       {/* Floating Searchable Self-Help Drawer Component */}
       {isOpen && (

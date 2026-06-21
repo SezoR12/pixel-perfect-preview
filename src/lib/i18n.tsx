@@ -193,43 +193,51 @@ const DICTIONARY: Translations = {
 };
 
 // --------------------------------------------------------------------
-// 🌟 CUSTOM FLOATING MULTI-LANGUAGE SWITCHER COMPONENT
-// Embeds permanently at the bottom center of any screen
+// SIDEBAR LANGUAGE SWITCHER — replaces the old floating bottom bar
 // --------------------------------------------------------------------
-function UniversalLanguageBar() {
+export const LANGUAGE_CHIPS: Array<{ id: Language; label: string; flag: string }> = [
+  { id: "en", label: "English", flag: "🇬🇧" },
+  { id: "ar", label: "العربية", flag: "🇸🇦" },
+  { id: "tr", label: "Türkçe", flag: "🇹🇷" },
+  { id: "ku", label: "کوردی", flag: "☀️" },
+  { id: "fa", label: "فارسی", flag: "🇮🇷" },
+];
+
+export function SidebarLanguageSwitcher({ collapsed = false }: { collapsed?: boolean }) {
   const { language, setLanguage } = useI18n();
-
-  const chips: Array<{ id: Language; label: string; flag: string }> = [
-    { id: "ar", label: "العربية", flag: "🇸🇦" },
-    { id: "tr", label: "Türkçe", flag: "🇹🇷" },
-    { id: "ku", label: "کوردی", flag: "☀️" },
-    { id: "fa", label: "فارسی", flag: "🇮🇷" },
-    { id: "en", label: "English", flag: "🇬🇧" },
-  ];
-
+  if (collapsed) {
+    return (
+      <div className="px-1 py-1 text-center text-[10px] font-bold uppercase tracking-wide text-surface-400">
+        {language.toUpperCase()}
+      </div>
+    );
+  }
   return (
-    <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-[9999] bg-slate-950/90 border-2 border-yellow-500/80 p-1.5 rounded-full flex items-center gap-1 shadow-2xl backdrop-blur-md select-none font-mono text-xs">
-      <span className="text-yellow-400 font-extrabold px-2.5 hidden sm:inline select-none">🌐 Locale:</span>
-      {chips.map((c) => {
-        const isSel = language === c.id;
-        return (
-          <button
-            key={c.id}
-            onClick={() => setLanguage(c.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold transition-all ${
-              isSel
-                ? "bg-yellow-500 text-black shadow-md scale-105"
-                : "text-white hover:bg-white/10 hover:text-yellow-300"
-            }`}
-          >
-            <span className="text-sm select-none">{c.flag}</span>
-            <span>{c.label}</span>
-          </button>
-        );
-      })}
+    <div className="px-2 py-2 space-y-1">
+      <p className="px-2 text-[10px] font-bold uppercase tracking-wider text-surface-400">Language</p>
+      <div className="grid grid-cols-1 gap-1">
+        {LANGUAGE_CHIPS.map((c) => {
+          const isSel = language === c.id;
+          return (
+            <button
+              key={c.id}
+              onClick={() => setLanguage(c.id)}
+              className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                isSel
+                  ? "bg-primary-50 text-primary-700"
+                  : "text-surface-600 hover:bg-surface-100"
+              }`}
+            >
+              <span className="text-sm">{c.flag}</span>
+              <span className="truncate">{c.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
+
 
 interface I18nContextType {
   language: Language;
@@ -287,7 +295,6 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       <div dir={dir} style={{ fontFamily }} className={`min-h-screen transition-all ${dir === "rtl" ? "text-right" : "text-left"}`}>
         {children}
       </div>
-      <UniversalLanguageBar />
     </I18nContext.Provider>
   );
 }

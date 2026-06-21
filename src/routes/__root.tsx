@@ -19,6 +19,7 @@ import {
   Menu,
   X,
   Globe,
+  HelpCircle,
   User as UserIcon
 } from "lucide-react";
 import { getMe, removeToken } from "@/lib/api";
@@ -26,8 +27,9 @@ import type { User as ApiUser } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { GlobalStoreProvider } from "@/stores/GlobalStoreProvider";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
-import { UniversalInAppHelpDrawer } from "@/components/UniversalInAppHelpDrawer";
+import { UniversalInAppHelpDrawer, HELP_DESK_OPEN_EVENT } from "@/components/UniversalInAppHelpDrawer";
 import { ClientErrorConsole } from "@/components/ClientErrorConsole";
+import { SidebarLanguageSwitcher } from "@/lib/i18n";
 import appCss from "@/index.css?url";
 
 export const Route = createRootRoute({
@@ -217,6 +219,28 @@ function RootLayout() {
               </Link>
             );
           })}
+
+          {/* Institutional B2B Tooltips & FAQ Desk */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event(HELP_DESK_OPEN_EVENT))}
+            className={`mt-1 w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-surface-600 hover:bg-surface-100 hover:text-surface-800 transition-all group relative ${collapsed ? "justify-center" : ""}`}
+          >
+            <HelpCircle className="w-[18px] h-[18px] flex-shrink-0 text-surface-400 group-hover:text-primary-600" />
+            {!collapsed && (
+              <span className="truncate">Tooltips &amp; FAQ Desk</span>
+            )}
+            {collapsed && (
+              <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-surface-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity">
+                Tooltips & FAQ Desk
+              </div>
+            )}
+          </button>
+
+          {/* Language Switcher */}
+          <div className="mt-2 pt-2 border-t border-surface-100">
+            <SidebarLanguageSwitcher collapsed={collapsed} />
+          </div>
         </nav>
 
         {/* Bottom actions */}
