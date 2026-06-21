@@ -295,7 +295,6 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       <div dir={dir} style={{ fontFamily }} className={`min-h-screen transition-all ${dir === "rtl" ? "text-right" : "text-left"}`}>
         {children}
       </div>
-      <UniversalLanguageBar />
     </I18nContext.Provider>
   );
 }
